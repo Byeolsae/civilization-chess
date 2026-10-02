@@ -1,0 +1,6 @@
+Chessnut chess piece artwork
+Author: Alexis Luengas
+License: Apache License 2.0 (see LICENSE.txt)
+Source: https://github.com/lichess-org/lila/tree/master/public/piece/chessnut
+Attribution: https://github.com/lichess-org/lila/blob/master/COPYING.md
+SVG artwork is distributed unmodified.

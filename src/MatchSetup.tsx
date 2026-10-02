@@ -1,0 +1,20 @@
+import { useState } from 'react';
+import { ArrowRight, Bot, Users, Shield } from 'lucide-react';
+import { difficultyNames, type MatchSettings, type Difficulty } from './matchSettings';
+
+export default function MatchSetup({ initial, onContinue }: { initial: MatchSettings; onContinue: (settings: MatchSettings) => void }) {
+  const [settings, setSettings] = useState(initial);
+  return <section className="match-setup" aria-label="대전 설정">
+    <div className="setup-intro"><span className="eyebrow">CHOOSE YOUR OPPONENT</span><h1>누구와 겨룰까요?</h1><p>상대를 정하고, 당신의 문명을 선택하세요.</p></div>
+    <div className="setup-modes" role="group" aria-label="대전 방식">
+      <button aria-pressed={settings.mode === 'ai'} onClick={() => setSettings({ ...settings, mode: 'ai' })}><Bot size={34} /><strong>AI 대전</strong><span>혼자서, 나만의 속도로</span></button>
+      <button aria-pressed={settings.mode === 'local'} onClick={() => setSettings({ ...settings, mode: 'local' })}><Users size={34} /><strong>로컬 2인 대전</strong><span>한 화면에서 번갈아 두기</span></button>
+    </div>
+    {settings.mode === 'ai' && <div className="setup-ai-options">
+      <fieldset><legend>난이도</legend><div className="setup-segments">{(Object.keys(difficultyNames) as Difficulty[]).map(difficulty => <button key={difficulty} aria-pressed={settings.difficulty === difficulty} onClick={() => setSettings({ ...settings, difficulty })}>{difficultyNames[difficulty]}</button>)}</div><p>{settings.difficulty === 'easy' ? '가볍게 연습해 보세요. AI가 실수하기도 합니다.' : settings.difficulty === 'normal' ? '기물의 가치와 상대의 응수를 살핍니다.' : '더 깊이 수를 읽습니다. 계산에 잠시 시간이 걸릴 수 있어요.'}</p></fieldset>
+      <fieldset><legend>내 진영</legend><div className="setup-segments">{(['w', 'b'] as const).map(color => <button key={color} aria-pressed={settings.humanColor === color} onClick={() => setSettings({ ...settings, humanColor: color })}><span className={`side-dot ${color}`} />{color === 'w' ? '백 · 먼저 두기' : '흑 · 나중에 두기'}</button>)}</div></fieldset>
+    </div>}
+    <p className="setup-note"><Shield size={16} />기본 체스 규칙으로 진행하며, 문명 스킬 효과는 아직 적용되지 않습니다.</p>
+    <button className="primary-button setup-continue" onClick={() => onContinue(settings)}>문명 선택으로 <ArrowRight size={18} /></button>
+  </section>;
+}

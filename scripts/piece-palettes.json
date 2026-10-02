@@ -1,0 +1,110 @@
+{
+  "classic": {
+    "w": {
+      "fill": "#FAFAF8",
+      "shade": "#DEDFDD",
+      "line": "#515653"
+    },
+    "b": {
+      "fill": "#55575A",
+      "shade": "#414447",
+      "line": "#242927"
+    }
+  },
+  "greece": {
+    "w": {
+      "fill": "#F3EFE6",
+      "shade": "#CFD6D8",
+      "line": "#2F6F7E",
+      "accent": "#2F6F7E",
+      "ornament": "#D9B98C"
+    },
+    "b": {
+      "fill": "#2F6F7E",
+      "shade": "#24515D",
+      "line": "#173D48",
+      "accent": "#D9B98C",
+      "ornament": "#7FB6B0"
+    }
+  },
+  "rome": {
+    "w": {
+      "fill": "#FBFCEA",
+      "shade": "#D1C29B",
+      "line": "#79302D",
+      "accent": "#A11111",
+      "ornament": "#C8A758"
+    },
+    "b": {
+      "fill": "#A11111",
+      "shade": "#730F17",
+      "line": "#420F15",
+      "accent": "#C8A758",
+      "ornament": "#91C6F0"
+    }
+  },
+  "egypt": {
+    "w": {
+      "fill": "#F1E3B0",
+      "shade": "#D4AF37",
+      "line": "#0E1F4F",
+      "accent": "#1C3F95",
+      "ornament": "#D4AF37"
+    },
+    "b": {
+      "fill": "#0E1F4F",
+      "shade": "#1C3F95",
+      "line": "#080F25",
+      "accent": "#D4AF37",
+      "ornament": "#F1E3B0"
+    }
+  },
+  "china": {
+    "w": {
+      "fill": "#F0F5E9",
+      "shade": "#C7DCC9",
+      "line": "#325F4B",
+      "accent": "#27765A",
+      "ornament": "#CBA95B"
+    },
+    "b": {
+      "fill": "#24664E",
+      "shade": "#194A3C",
+      "line": "#10382C",
+      "accent": "#CBA95B",
+      "ornament": "#E4EDD8"
+    }
+  },
+  "korea": {
+    "w": {
+      "fill": "#FFF6F7",
+      "shade": "#E7DDE3",
+      "line": "#386C80",
+      "accent": "#64B2CA",
+      "ornament": "#E8B8CE"
+    },
+    "b": {
+      "fill": "#E6B5C9",
+      "shade": "#C988A5",
+      "line": "#89566F",
+      "accent": "#FFF6F7",
+      "ornament": "#64B2CA"
+    }
+  },
+  "japan": {
+    "w": {
+      "fill": "#FFF8FC",
+      "shade": "#EED2DF",
+      "line": "#82536D",
+      "accent": "#D878A0",
+      "ornament": "#F1B5CF"
+    },
+    "b": {
+      "fill": "#C982A3",
+      "shade": "#AE688A",
+      "line": "#70465F",
+      "accent": "#FFF3F8",
+      "ornament": "#F3C3D8"
+    }
+  }
+}
