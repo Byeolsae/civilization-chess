@@ -10,6 +10,8 @@ import { defaultSettings, localSettings, isMatchSettings, SETUP_KEY, difficultyN
 import { canUndoTurn, undoTurn } from './aiMatch';
 import { useAiTurn } from './useAiTurn';
 import { useMoveAnimation } from './useMoveAnimation';
+import MatchAtmosphere from './MatchAtmosphere';
+import { opponentCivilization } from './civilizationMedia';
 import { squareAtPoint } from './boardPointer';
 import Piece from './Piece';
 import CivilizationIcon, { hasCivilizationIcon } from './CivilizationIcon';
@@ -261,6 +263,7 @@ export default function App() {
               </div>
             </section>
             <div className="match-actions"><button onClick={() => setConfirm('new')}><RotateCcw size={16} /> 새 대전</button><button onClick={() => setConfirm('resign')} disabled={status.over}><Flag size={16} /> 기권</button></div>
+            <MatchAtmosphere civilization={opponentCivilization(players, settings, game.turn())} />
             <details className="match-loadouts"><summary>선택한 스킬 보기</summary><LoadoutList players={players} loadouts={loadouts} /><p>선택 저장됨 · 현재 스킬 효과 미적용</p></details>
             <div className="match-civilizations"><span>{getCivilization(players.w).name}</span><span>VS</span><span>{getCivilization(players.b).name}</span><small>문명 능력 미적용 · 기본 체스</small></div>
           </>
