@@ -57,7 +57,7 @@ pnpm build
 - Output: dist
 - 서버 환경변수는 필요하지 않습니다.
 
-GitHub 저장소를 Vercel에 연결하면 main으로 push할 때 자동 배포됩니다. .vercel/, 환경변수 파일, node_modules/, dist/는 Git에서 제외합니다.
+GitHub 저장소 https://github.com/Byeolsae/civilization-chess 가 Vercel에 연결되어 있으며 main으로 push할 때 자동 배포됩니다. .vercel/, 환경변수 파일, node_modules/, dist/는 Git에서 제외합니다.
 
 ## 기물 및 문장
 
