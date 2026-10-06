@@ -62,7 +62,7 @@ export default function App() {
   const [selected, setSelected] = useState<Square | null>(null);
   const [pieceMode, setPieceMode] = useState('');
   const [pieceCargo, setPieceCargo] = useState('');
-  const [flipped, setFlipped] = useState(restored?.settings.mode === 'ai' && restored.settings.humanColor === 'b');
+  const [flipped, setFlipped] = useState(restored?.settings.mode === 'ai' ? restored.settings.humanColor === 'b' : restored?.game.turn() === 'b');
   const [promotion, setPromotion] = useState<{ from: Square; to: Square } | null>(null);
   const [quiz, setQuiz] = useState<AbilityAction | null>(null);
   const [, refreshClock] = useState(0);
@@ -96,6 +96,21 @@ export default function App() {
   }, []);
   const history = game.history({ verbose: true });
   const lastMove = history.at(-1);
+  const turn = game.turn();
+  const autoFlipPrevious = useRef({ game, count: history.length });
+  useEffect(() => {
+    const previous = autoFlipPrevious.current;
+    autoFlipPrevious.current = { game, count: history.length };
+    if (!started || settings.mode !== 'local' || status.over) return;
+    // Finish the move/skill effect before handing the board to the next player.
+    const newAction = previous.game === game && history.length > previous.count;
+    const delay = newAction ? lastMove?.flags.includes('s') ? 1300 : 360 : 0;
+    const timer = setTimeout(() => {
+      dragRef.current = null; setDragVisual(null); setSelected(null);
+      setFlipped(turn === 'b');
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [game, turn, started, settings.mode, status.over]);
   const ranks = flipped ? [1, 2, 3, 4, 5, 6, 7, 8] : [8, 7, 6, 5, 4, 3, 2, 1];
   const files = (flipped ? 'hgfedcba' : 'abcdefgh').split('');
   const topColor: Color = flipped ? 'w' : 'b';
