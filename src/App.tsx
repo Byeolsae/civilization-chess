@@ -12,6 +12,8 @@ import { useAiTurn } from './useAiTurn';
 import { useMoveAnimation } from './useMoveAnimation';
 import MatchAtmosphere from './MatchAtmosphere';
 import { opponentCivilization } from './civilizationMedia';
+import { AbilityGame, type AbilityAction } from './AbilityGame';
+import { AbilityPanel, SphinxChallenge } from './AbilityPanel';
 import { squareAtPoint } from './boardPointer';
 import Piece from './Piece';
 import CivilizationIcon, { hasCivilizationIcon } from './CivilizationIcon';
@@ -55,6 +57,8 @@ export default function App() {
   const [selected, setSelected] = useState<Square | null>(null);
   const [flipped, setFlipped] = useState(restored?.settings.mode === 'ai' && restored.settings.humanColor === 'b');
   const [promotion, setPromotion] = useState<{ from: Square; to: Square } | null>(null);
+  const [quiz, setQuiz] = useState<AbilityAction | null>(null);
+  const [, refreshClock] = useState(0);
   const [confirm, setConfirm] = useState<'new' | 'resign' | null>(null);
   const [storageError, setStorageError] = useState(false);
   const historyRef = useRef<HTMLDivElement>(null);
@@ -66,7 +70,7 @@ export default function App() {
   const [dragVisual, setDragVisual] = useState<DragVisual | null>(null);
   const status = gameStatus(game, resigned);
   const aiTurn = started && settings.mode === 'ai' && game.turn() !== settings.humanColor && !status.over;
-  const humanTurn = started && !status.over && !aiTurn;
+  const humanTurn = started && !status.over && !aiTurn && !quiz;
   const resigningColor = settings.mode === 'ai' ? settings.humanColor : game.turn();
   const ai = useAiTurn(game, revision, aiTurn && !confirm, settings.difficulty, setRevision);
   const modeLabel = settings.mode === 'ai' ? `AI 대전 · ${difficultyNames[settings.difficulty]}` : '로컬 2인 대전';
@@ -77,6 +81,25 @@ export default function App() {
   const files = (flipped ? 'hgfedcba' : 'abcdefgh').split('');
   const topColor: Color = flipped ? 'w' : 'b';
   const bottomColor = opposite(topColor);
+
+  useEffect(() => {
+    if (!started || status.over || !(game instanceof AbilityGame) || !game.state.clocks) return;
+    let last = performance.now();
+    const timer = setInterval(() => {
+      const now = performance.now(); const ended = game.tick(now - last); last = now;
+      refreshClock(value => value + 1);
+      if (ended) { ai.cancel(); setQuiz(null); setRevision(value => value + 1); }
+      try { localStorage.setItem(STORAGE_KEY, encodeMatch(game, players, resigned, loadouts, settings)); } catch { /* Main save reports errors. */ }
+    }, 250);
+    return () => clearInterval(timer);
+  }, [game, started, status.over, players, resigned, loadouts, settings]);
+
+  function performAbility(action: AbilityAction) {
+    if (!(game instanceof AbilityGame) || status.over || aiTurn || confirm) return;
+    if (action.quiz === undefined && action.skill === 'ballista' && game.needsQuiz(action.from, action.to)) { setQuiz(action); return; }
+    try { game.perform(action); setSelected(null); setPromotion(null); setQuiz(null); setRevision(value => value + 1); }
+    catch { setQuiz(null); }
+  }
 
   useEffect(() => {
     try {
@@ -102,6 +125,9 @@ export default function App() {
 
   function commit(from: Square, to: Square, choice?: Promotion) {
     if (!humanTurn) return;
+    if (game instanceof AbilityGame && game.needsQuiz(from, to)) {
+      setQuiz({ kind: 'move', from, to, ...(choice ? { promotion: choice } : {}) }); return;
+    }
     if (playMove(game, from, to, choice)) {
       setSelected(null);
       setPromotion(null);
@@ -168,7 +194,7 @@ export default function App() {
   function reset() {
     ai.cancel(); setSetupReady(false); setFlipped(false); dragRef.current = null; setDragVisual(null);
     setGame(new Chess()); setStarted(false); setResigned(null); setSelected(null);
-    setPromotion(null); setConfirm(null); setRevision(0); setLoadouts(null);
+    setPromotion(null); setQuiz(null); setConfirm(null); setRevision(0); setLoadouts(null);
     try { localStorage.removeItem(DRAFT_KEY); localStorage.removeItem(SETUP_KEY); } catch { /* Draft handles save failures. */ }
   }
 
@@ -176,12 +202,12 @@ export default function App() {
     ai.cancel(); dragRef.current = null; setDragVisual(null);
     if (resigned) setResigned(null);
     else undoTurn(game, settings);
-    setSelected(null); setPromotion(null); setRevision(value => value + 1);
+    setSelected(null); setPromotion(null); setQuiz(null); setRevision(value => value + 1);
   }
 
   function playerBar(color: Color) {
     const civ = getCivilization(players[color]);
-    const captured = history.filter(move => move.color === color && move.captured).map(move => move.captured!);
+    const captured = game instanceof AbilityGame ? game.graves(opposite(color)).map(piece => piece.type) : history.filter(move => move.color === color && move.captured).map(move => move.captured!);
     return <div className={`player-bar ${started && !status.over && game.turn() === color ? 'current-player' : ''}`}>
       {hasCivilizationIcon(players[color]) && <div className={`player-avatar ${color}`}><CivilizationIcon civilization={players[color]} color={color} size={36} /></div>}
       <div className="player-identity"><strong>{civ.name}{settings.mode === 'ai' && <small className="opponent-label">{color === settings.humanColor ? '나' : 'AI'}</small>}<span className={`color-chip ${color}`}>{colorNames[color]}</span></strong><span>{started ? (game.turn() === color && !status.over ? (settings.mode === 'ai' && color !== settings.humanColor ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : '당신의 차례') : status.over ? '대전 종료' : '상대의 수를 기다리는 중') : '문명 선택 중'}</span></div>
@@ -205,8 +231,8 @@ export default function App() {
           localStorage.setItem(SETUP_KEY, JSON.stringify(next));
         } catch { setStorageError(true); }
         setSettings(next); setSetupReady(true);
-      }} /> : <Draft settings={settings} onSettings={() => setSetupReady(false)} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} /> : <>
-      <div className="page-heading"><div><div className="eyebrow">THE FIRST AGE</div><h1>한 수로 시작하는 문명</h1></div><span className="rules-badge"><Shield size={15} /> 기본 체스</span></div>
+      }} /> : <Draft settings={settings} onSettings={() => setSetupReady(false)} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts) : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} /> : <>
+      <div className="page-heading"><div><div className="eyebrow">THE FIRST AGE</div><h1>한 수로 시작하는 문명</h1></div><span className="rules-badge"><Shield size={15} /> {game instanceof AbilityGame ? '문명 능력 대전' : '기본 체스'}</span></div>
       <div className="game-layout">
         <section className="board-section" aria-label="체스 대전">
           {playerBar(topColor)}
@@ -215,12 +241,12 @@ export default function App() {
               {ranks.flatMap((rank, row) => files.map((file, column) => {
                 const square = `${file}${rank}` as Square;
                 const piece = game.get(square);
-                const possible = moves.some(move => move.to === square);
+                const possible = moves.some(move => move.to === square); const abilityNote = game instanceof AbilityGame ? game.squareNote(square) : ''; const viewer = settings.mode === 'ai' ? settings.humanColor : game.turn(); const fogged = game instanceof AbilityGame && game.state.stormUntil[viewer] > 0 && game.state.stormUntil[viewer] >= game.state.turns[viewer] && (viewer === 'w' ? rank >= 5 : rank <= 4);
                 const checked = piece?.type === 'k' && piece.color === game.turn() && game.isCheck();
                 return <button key={square} type="button" data-square={square}
                   className={`square ${(file.charCodeAt(0) - 97 + rank) % 2 === 1 ? 'dark' : 'light'} ${selected === square ? 'selected' : ''} ${lastMove?.from === square || lastMove?.to === square ? 'last-move' : ''} ${checked ? 'in-check' : ''} ${piece?.color === game.turn() && humanTurn ? 'can-drag' : ''} ${dragVisual?.from === square ? 'drag-origin' : ''} ${dragVisual?.over === square ? 'drop-target' : ''}`}
-                  aria-label={`${square}${piece ? ` ${colorNames[piece.color]} ${pieceNames[piece.type]}` : ' 빈 칸'}${possible ? ' 이동 가능' : ''}${checked ? ' 체크' : ''}`}
-                  aria-pressed={selected === square} disabled={!humanTurn}
+                  title={abilityNote || undefined} aria-label={`${square}${fogged ? ' 시야 제한' : piece ? ` ${colorNames[piece.color]} ${pieceNames[piece.type]}` : ' 빈 칸'}${possible ? ' 이동 가능' : ''}${checked ? ' 체크' : ''}`}
+                  aria-pressed={selected === square} disabled={!humanTurn || (game instanceof AbilityGame && !!game.state.duel)}
                   onPointerDown={event => beginDrag(event, square)}
                   onPointerMove={moveDrag}
                   onPointerUp={event => endDrag(event)}
@@ -241,14 +267,14 @@ export default function App() {
                   }}>
                   {column === 0 && <span className="rank-label">{rank}</span>}
                   {row === 7 && <span className="file-label">{file}</span>}
-                  {piece && <Piece key={`${square}-${piece.type}-${piece.color}`} type={piece.type} color={piece.color} civilization={players[piece.color]} />}
-                  {possible && <span className={piece ? 'capture-ring' : 'move-dot'} />}
+                  {!fogged && piece && <Piece key={`${square}-${piece.type}-${piece.color}`} type={piece.type} color={piece.color} civilization={players[piece.color]} />}
+                  {fogged && <span aria-hidden="true">?</span>}{abilityNote && !fogged && <span className="ability-marker">{abilityNote}</span>}{possible && <span className={piece ? 'capture-ring' : 'move-dot'} />}
                 </button>;
               }))}
             </div>
           </div>
           {playerBar(bottomColor)}
-          <div className="board-toolbar"><span>{started ? `${Math.floor(history.length / 2) + 1} 라운드 · ${history.length}수 진행` : '백이 먼저 시작합니다'}</span><div>
+          <div className="board-toolbar"><span>{started ? game instanceof AbilityGame ? `백 ${game.state.turns.w}턴 · 흑 ${game.state.turns.b}턴 · ${history.length}행동` : `${Math.floor(history.length / 2) + 1} 라운드 · ${history.length}수 진행` : '백이 먼저 시작합니다'}</span><div>
             <button onClick={undo} disabled={!started || (!canUndoTurn(game, settings) && !resigned)}><RotateCcw size={16} /> {settings.mode === 'ai' ? '내 차례로 무르기' : '한 수 무르기'}</button>
             <button onClick={() => setFlipped(value => !value)}><ArrowLeftRight size={16} /> 보드 뒤집기</button>
           </div></div>
@@ -259,23 +285,23 @@ export default function App() {
             <section className={`status-panel ${status.kind}`} aria-live="polite"><div className="panel-kicker">{status.over ? 'GAME OVER' : aiTurn ? 'AI TURN' : 'YOUR MOVE'}</div><div className="status-title">{status.over ? <Crown size={25} /> : <span className={`side-dot large ${game.turn()}`} />}<h2>{aiTurn ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : status.title}</h2></div><p>{aiTurn ? ai.error ?? `${difficultyNames[settings.difficulty]} AI가 다음 수를 고르고 있어요.` : status.detail}</p>{aiTurn && ai.error && <button className="secondary-button" onClick={ai.retry}>AI 다시 시도</button>}{status.over && <button className="primary-button" onClick={() => setConfirm('new')}>새로운 대전 <ArrowRight size={17} /></button>}</section>
             <section className="history-panel"><div className="section-title"><h3><ScrollText size={18} /> 대전 기록</h3><span>{history.length}수</span></div><div className="history-labels"><span>#</span><span>백</span><span>흑</span></div>
               <div className="history-list" ref={historyRef} aria-label="기보">
-                {!history.length ? <div className="history-empty"><Swords size={29} strokeWidth={1.2} /><p>첫 수를 기다리고 있어요</p><span>{aiTurn ? 'AI의 첫 수를 기다리고 있어요.' : '체스판에서 내 기물을 선택하세요.'}</span></div> : Array.from({ length: Math.ceil(history.length / 2) }, (_, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{[history[index * 2], history[index * 2 + 1]].map((move, side) => <span key={side} className={move && move === lastMove ? 'latest-san' : ''}>{move ? <><Piece type={move.piece} color={move.color} civilization={players[move.color]} small /><b>{move.san}</b></> : '—'}</span>)}</div>)}
+                {!history.length ? <div className="history-empty"><Swords size={29} strokeWidth={1.2} /><p>첫 수를 기다리고 있어요</p><span>{aiTurn ? 'AI의 첫 수를 기다리고 있어요.' : '체스판에서 내 기물을 선택하세요.'}</span></div> : game instanceof AbilityGame ? history.map((move, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{(['w','b'] as const).map(color => <span key={color} className={move === lastMove && move.color === color ? 'latest-san' : ''}>{move.color === color ? <b>{move.san}</b> : '—'}</span>)}</div>) : Array.from({ length: Math.ceil(history.length / 2) }, (_, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{[history[index * 2], history[index * 2 + 1]].map((move, side) => <span key={side} className={move && move === lastMove ? 'latest-san' : ''}>{move ? <><Piece type={move.piece} color={move.color} civilization={players[move.color]} small /><b>{move.san}</b></> : '—'}</span>)}</div>)}
               </div>
             </section>
             <div className="match-actions"><button onClick={() => setConfirm('new')}><RotateCcw size={16} /> 새 대전</button><button onClick={() => setConfirm('resign')} disabled={status.over}><Flag size={16} /> 기권</button></div>
-            <MatchAtmosphere civilization={opponentCivilization(players, settings, game.turn())} />
-            <details className="match-loadouts"><summary>선택한 스킬 보기</summary><LoadoutList players={players} loadouts={loadouts} /><p>선택 저장됨 · 현재 스킬 효과 미적용</p></details>
-            <div className="match-civilizations"><span>{getCivilization(players.w).name}</span><span>VS</span><span>{getCivilization(players.b).name}</span><small>문명 능력 미적용 · 기본 체스</small></div>
+            {game instanceof AbilityGame && <AbilityPanel game={game} players={players} enabled={humanTurn && !confirm} onAction={performAbility} />}<MatchAtmosphere civilization={opponentCivilization(players, settings, game.turn())} />
+            <details className="match-loadouts"><summary>선택한 스킬 보기</summary><LoadoutList players={players} loadouts={loadouts} /><p>{game instanceof AbilityGame ? '능력 적용 중 · 12표법 준비 중' : '기본 체스 · 기존 저장 대전'}</p></details>
+            <div className="match-civilizations"><span>{getCivilization(players.w).name}</span><span>VS</span><span>{getCivilization(players.b).name}</span><small>{game instanceof AbilityGame ? '문명 능력 적용 · 실험 규칙 v1' : '기본 체스'}</small></div>
           </>
-          <details className="rules-details"><summary>플레이 안내 <ChevronRight size={16} /></summary><div><p>기물을 클릭한 뒤 목적지를 누르거나, 마우스·터치로 기물을 끌어서 놓으세요. 둘 수 없는 칸이나 보드 밖에 놓으면 원래 자리로 돌아옵니다. Esc로 드래그를 취소할 수 있습니다.</p><p>캐슬링, 앙파상, 폰 승격을 지원합니다. 체크 상태에서는 킹을 보호해야 하며 체크메이트로 승패가 결정됩니다.</p><p>스테일메이트와 기물 부족은 무승부입니다. 이 버전은 3회 동형 반복과 50수 규칙도 별도 청구 없이 자동 무승부로 처리합니다.</p><p>대전은 이 브라우저에 자동 저장됩니다. {settings.mode === 'ai' ? '무르기를 누르면 AI의 응수와 내 수를 되돌려 내 이전 차례로 돌아갑니다.' : '한 수 무르기는 두 플레이어가 합의하고 사용하세요.'}</p></div></details>
+          <details className="rules-details"><summary>플레이 안내 <ChevronRight size={16} /></summary><div><p>기물을 클릭한 뒤 목적지를 누르거나, 마우스·터치로 기물을 끌어서 놓으세요. 둘 수 없는 칸이나 보드 밖에 놓으면 원래 자리로 돌아옵니다. Esc로 드래그를 취소할 수 있습니다.</p><p>캐슬링, 앙파상, 폰 승격을 지원합니다. 체크 상태에서는 킹을 보호해야 하며 체크메이트로 승패가 결정됩니다.</p><p>{game instanceof AbilityGame ? '능력 대전은 특수 행동까지 포함해 합법적 행동이 없을 때 스테일메이트를 판정합니다. 반복·50수·기물 부족 자동 무승부는 사용하지 않습니다.' : '스테일메이트, 기물 부족, 3회 동형 반복, 50수 규칙은 자동 무승부입니다.'}</p><p>대전은 이 브라우저에 자동 저장됩니다. {settings.mode === 'ai' ? '무르기를 누르면 AI의 응수와 내 수를 되돌려 내 이전 차례로 돌아갑니다.' : '한 수 무르기는 두 플레이어가 합의하고 사용하세요.'}</p></div></details>
           {storageError && <p role="alert" className="storage-warning">자동 저장을 사용할 수 없습니다. 새로고침하면 대전이 사라질 수 있습니다.</p>}
         </aside>
       </div>
       </>}
-      <footer><span>문명체스</span><span>같은 체스판, 서로 다른 문명의 시작.</span><span>{settings.mode === 'ai' ? 'VS AI · NO TIMER' : 'LOCAL PLAY · NO TIMER'}</span></footer>
+      <footer><span>문명체스</span><span>같은 체스판, 서로 다른 문명의 시작.</span><span>{(settings.mode === 'ai' ? 'VS AI' : 'LOCAL PLAY') + (game instanceof AbilityGame && game.state.clocks ? ' · TIMED' : ' · NO TIMER')}</span></footer>
     </main>
     {dragVisual && <div className="drag-layer" aria-hidden="true"><div className="drag-piece" style={{ left: dragVisual.x, top: dragVisual.y, width: dragVisual.size, height: dragVisual.size }}><Piece type={dragVisual.type} color={dragVisual.color} civilization={players[dragVisual.color]} /></div></div>}
-    {promotion && <Modal title="폰을 승격하세요" onClose={() => setPromotion(null)}><p className="muted">마지막 줄에 도착했습니다. 새로운 기물을 선택하세요.</p><div className="promotion-options">{(['q', 'r', 'b', 'n'] as Promotion[]).map(type => <button key={type} onClick={() => commit(promotion.from, promotion.to, type)}><Piece type={type} color={game.turn()} civilization={players[game.turn()]} /><span>{pieceNames[type]}</span></button>)}</div></Modal>}
+    {quiz && <SphinxChallenge onResolve={correct => performAbility({ ...quiz, quiz: correct })} />}{promotion && !quiz && <Modal title="폰을 승격하세요" onClose={() => setPromotion(null)}><p className="muted">마지막 줄에 도착했습니다. 새로운 기물을 선택하세요.</p><div className="promotion-options">{(['q', 'r', 'b', 'n'] as Promotion[]).map(type => <button key={type} onClick={() => commit(promotion.from, promotion.to, type)}><Piece type={type} color={game.turn()} civilization={players[game.turn()]} /><span>{pieceNames[type]}</span></button>)}</div></Modal>}
     {confirm && <Modal title={confirm === 'new' ? '새로운 대전을 시작할까요?' : `${colorNames[resigningColor]}이 기권할까요?`} onClose={() => setConfirm(null)}><p className="muted">{confirm === 'new' ? '현재 기록을 지우고 대전 설정 화면으로 돌아갑니다.' : `${colorNames[opposite(resigningColor)]}의 승리로 대전이 종료됩니다.`}</p><div className="modal-actions"><button className="secondary-button" onClick={() => setConfirm(null)}>계속 두기</button><button className="primary-button" onClick={() => { if (confirm === 'new') reset(); else { ai.cancel(); setResigned(resigningColor); setSelected(null); setConfirm(null); } }}>{confirm === 'new' ? '대전 다시 설정' : '기권하기'}</button></div></Modal>}
   </div>;
 }

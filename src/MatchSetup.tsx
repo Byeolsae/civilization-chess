@@ -14,7 +14,7 @@ export default function MatchSetup({ initial, onContinue }: { initial: MatchSett
       <fieldset><legend>난이도</legend><div className="setup-segments">{(Object.keys(difficultyNames) as Difficulty[]).map(difficulty => <button key={difficulty} aria-pressed={settings.difficulty === difficulty} onClick={() => setSettings({ ...settings, difficulty })}>{difficultyNames[difficulty]}</button>)}</div><p>{settings.difficulty === 'easy' ? '가볍게 연습해 보세요. AI가 실수하기도 합니다.' : settings.difficulty === 'normal' ? '기물의 가치와 상대의 응수를 살핍니다.' : '더 깊이 수를 읽습니다. 계산에 잠시 시간이 걸릴 수 있어요.'}</p></fieldset>
       <fieldset><legend>내 진영</legend><div className="setup-segments">{(['w', 'b'] as const).map(color => <button key={color} aria-pressed={settings.humanColor === color} onClick={() => setSettings({ ...settings, humanColor: color })}><span className={`side-dot ${color}`} />{color === 'w' ? '백 · 먼저 두기' : '흑 · 나중에 두기'}</button>)}</div></fieldset>
     </div>}
-    <p className="setup-note"><Shield size={16} />기본 체스 규칙으로 진행하며, 문명 스킬 효과는 아직 적용되지 않습니다.</p>
+    <p className="setup-note"><Shield size={16} />그리스·이집트·로마의 선택한 능력이 적용됩니다. 철학을 고르면 10분 대전(+철학 3분)이며, 나머지는 시간제한이 없습니다.</p>
     <button className="primary-button setup-continue" onClick={() => onContinue(settings)}>문명 선택으로 <ArrowRight size={18} /></button>
   </section>;
 }

@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, type RefObject } from 'react';
 import type { Chess, Move, Square } from 'chess.js';
 
 export function movingSquares(move: Move): { from: Square; to: Square }[] {
+  if (move.flags.includes('s') || move.from === move.to) return [];
   const pieces = [{ from: move.from, to: move.to }];
   const rank = move.color === 'w' ? '1' : '8';
   if (move.flags.includes('k')) pieces.push({ from: `h${rank}`, to: `f${rank}` });

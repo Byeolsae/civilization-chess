@@ -1,3 +1,4 @@
+import { experimentalRules } from './experimentalRules';
 import { civilizations } from './civilizations';
 import type { Color } from 'chess.js';
 import type { Civilization, Players } from './game';
@@ -65,6 +66,8 @@ export const skills: Record<Civilization, Record<Category, Skill[]>> = {
     ],
   },
 };
+
+for (const categories of Object.values(skills)) for (const cards of Object.values(categories)) for (const card of cards) { if (experimentalRules[card.id]) card.detail = experimentalRules[card.id]; }
 
 export const draftSteps = [
   { category: 'civilization', color: 'w' }, { category: 'civilization', color: 'b' },

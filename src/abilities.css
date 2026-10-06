@@ -1,0 +1,120 @@
+.ability-panel {
+  margin: 16px 0;
+  padding: 16px;
+  background: #202c24;
+  border: 1px solid #60744f;
+  border-radius: 9px;
+}
+.ability-panel h3 {
+  font-size: 15px;
+}
+.ability-panel h3 small {
+  font-size: 9px;
+  color: #b8c99d;
+  margin-left: 8px;
+}
+.ability-panel p {
+  font-size: 11px;
+  color: #b6c7ac;
+  line-height: 1.8;
+  margin: 10px 0;
+}
+.ability-panel label {
+  display: block;
+  font-size: 11px;
+  margin: 10px 0;
+}
+.ability-panel select {
+  width: 100%;
+  padding: 9px;
+  margin-top: 5px;
+  background: #172219;
+  color: #e2ecd5;
+  border: 1px solid #4a6146;
+  border-radius: 5px;
+}
+.ability-panel > button {
+  padding: 10px;
+  width: 100%;
+  background: #bed8a1;
+  color: #21301d;
+  border-radius: 5px;
+  font-size: 12px;
+}
+.ability-panel details {
+  margin-top: 12px;
+  font-size: 11px;
+}
+.ability-panel details b {
+  color: #e3efd5;
+}
+.ability-clocks {
+  margin-top: 10px;
+  font-variant-numeric: tabular-nums;
+  font-size: 18px;
+}
+.duel-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 10px 0;
+}
+.duel-board span {
+  padding: 10px 3px;
+  text-align: center;
+  border: 1px solid #75815d;
+  background: #465e41;
+  font-size: 12px;
+}
+.duel-board .collapsed {
+  opacity: 0.25;
+  background: #231c18;
+}
+.square .ability-marker {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  z-index: 3;
+  font-size: 8px;
+  max-width: 90%;
+  background: #162819e8;
+  color: #e3efb2;
+  padding: 2px;
+  border-radius: 3px;
+  pointer-events: none;
+}
+.square.fogged {
+  background: #53615b;
+}
+.quiz-overlay {
+  position: fixed;
+  inset: 0;
+  background: #071009d9;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.quiz-overlay section {
+  max-width: 410px;
+  background: #263623;
+  border: 1px solid #b3c985;
+  border-radius: 12px;
+  padding: 25px;
+}
+.quiz-overlay p {
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 14px 0;
+}
+.quiz-overlay input {
+  width: 100px;
+  padding: 10px;
+  font-size: 20px;
+}
+.quiz-overlay button {
+  padding: 12px;
+  margin-left: 10px;
+  background: #c4d9a8;
+  color: #25341a;
+  border-radius: 5px;
+}

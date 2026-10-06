@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 
 import type { Chess } from 'chess.js';
 import type { Difficulty } from './matchSettings';
 import type { AiRequest, AiResponse } from './ai.worker';
+import { AbilityGame } from './AbilityGame';
 
 export function useAiTurn(game: Chess, revision: number, enabled: boolean, difficulty: Difficulty, setRevision: Dispatch<SetStateAction<number>>) {
   const [error, setError] = useState<string | null>(null);
@@ -34,6 +35,13 @@ export function useAiTurn(game: Chess, revision: number, enabled: boolean, diffi
         worker.onmessage = (event: MessageEvent<AiResponse>) => {
           if (cancelled || game.fen() !== fen || game.history().length !== history.length) return;
           const data = event.data;
+          if (data && 'action' in data && game instanceof AbilityGame) {
+            try {
+              if (!data.action) { fail(); return; }
+              game.perform(data.action); cancel(); setRevision(value => value + 1);
+            } catch { fail(); }
+            return;
+          }
           if (!data || !('result' in data) || !data.result?.move) { fail(); return; }
           try {
             game.move(data.result.move);
@@ -42,7 +50,7 @@ export function useAiTurn(game: Chess, revision: number, enabled: boolean, diffi
           } catch { fail(); }
         };
         watchdog = setTimeout(fail, 15000);
-        worker.postMessage({ history, difficulty } satisfies AiRequest);
+        worker.postMessage({ history, difficulty, ...(game instanceof AbilityGame ? { variant: game.save() } : {}) } satisfies AiRequest);
       } catch { fail(); }
     }, 350);
     cancelRef.current = cancel;

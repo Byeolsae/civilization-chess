@@ -114,7 +114,7 @@ export default function Draft({ onStart, settings, onSettings }: { settings: Mat
     {complete ? <div className="draft-complete">
       <div className="draft-intro"><span className="draft-eyebrow">READY TO PLAY</span><h1 ref={titleRef} tabIndex={-1}>두 문명, 하나의 전장</h1><p>선택이 끝났습니다. 서로의 조합을 확인하세요.</p></div>
       <LoadoutList players={complete.players} loadouts={complete.loadouts} />
-      <p className="draft-disclaimer"><Shield size={15} />스킬 선택은 저장되지만, 현재 대전에는 효과가 적용되지 않습니다.</p>
+      <p className="draft-disclaimer"><Shield size={15} />선택한 능력이 실제 대전에 적용됩니다. 12표법은 준비 중이며, 임시 규칙은 카드와 대전 도움말에서 확인하세요.</p>
       <div className="draft-controls"><button className="draft-back" onClick={back} disabled={!previous}><ArrowLeft size={16} /> 이전 선택</button><button className="primary-button" onClick={() => { try { localStorage.removeItem(DRAFT_KEY); } catch { /* Match saving reports storage failures. */ } onStart(complete.players, complete.loadouts); }}>체스 대전 시작 <Swords size={18} /></button></div>
     </div> : <>
       <div className="draft-intro" aria-live="polite"><span className="draft-eyebrow">{currentCivilization ? `${currentCivilization.english} / ${category?.english}` : 'CHOOSE YOUR CIVILIZATION'}</span><h1 key={`title-${picks.length}`} ref={titleRef} tabIndex={-1}>{colorNames[step.color]}, {category ? `${category.name}${category.id === 'piece' ? '을' : '를'} 선택하세요` : '문명을 선택하세요'}</h1><p>{aiTurn ? 'AI가 문명과 스킬을 고르고 있어요.' : category?.description ?? '당신의 문명이 전투의 시작을 결정합니다.'}</p></div>
@@ -147,7 +147,7 @@ export default function Draft({ onStart, settings, onSettings }: { settings: Mat
       </div>
       {!category && !visibleCivilizations.length && <div className="civilization-empty" role="status"><p>조건에 맞는 문명이 없습니다. 검색어·나라·대륙·시대를 바꿔보세요.</p><button className="draft-back" disabled={locking || aiTurn} onClick={resetFilters}>필터 초기화</button></div>}
       <div className="draft-controls"><button className="draft-back" onClick={back} disabled={!previous || locking || aiTurn}><ArrowLeft size={16} /> 이전 선택</button><span className="draft-counter">{picks.length + 1} / 8<span>{category ? '카드 3장 중 하나를 선택하세요' : '같은 문명도 선택할 수 있습니다'}</span></span><button className="primary-button" disabled={!choice || locking || aiTurn} onClick={() => setLocking(true)}>{aiTurn ? 'AI 선택 중' : locking ? '선택 확정 중' : '선택 확정'}{locking ? <Check size={18} /> : <ArrowRight size={18} />}</button></div>
-      <p className="draft-disclaimer"><Shield size={14} />현재는 선택 과정 체험 버전입니다. 스킬 효과는 대전에 적용되지 않습니다.</p>
+      <p className="draft-disclaimer"><Shield size={14} />그리스·이집트·로마의 선택한 능력이 적용됩니다. 12표법만 준비 중이며 카드의 임시 규칙을 확인하세요.</p>
     </>}
     {saveFailed && <p className="storage-warning" role="alert">선택 내용을 저장할 수 없습니다. 새로고침하면 다시 선택해야 합니다.</p>}
   </section>;
