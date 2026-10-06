@@ -17,7 +17,7 @@ export function AbilityPanel({
   const [category, setCategory] = useState("");
   const [choice, setChoice] = useState("");
   const actions = enabled
-    ? game.actions().filter((a) => a.kind !== "move" && a.skill !== game.loadouts[game.turn()].active)
+    ? game.actions().filter((a) => a.kind === "duel" || a.kind === "pass")
     : [];
   const groups = [...new Set(actions.map((a) => a.skill ?? a.kind))];
   const options = actions.filter((a) => (a.skill ?? a.kind) === category);
@@ -88,7 +88,8 @@ export function AbilityPanel({
           })}
         </div>
       )}
-      <label>
+      {!duel && <p>기물을 클릭하면 보드 아래에서 스킬과 사용 조건을 확인할 수 있습니다.</p>}
+      {!!groups.length && <><label>
         능력 / 특수 행동
         <select
           aria-label="능력 선택"
@@ -136,7 +137,7 @@ export function AbilityPanel({
         }}
       >
         선택한 행동 실행
-      </button>
+      </button></>}
       <details>
         <summary>선택한 능력과 임시 규칙</summary>
         <p>
