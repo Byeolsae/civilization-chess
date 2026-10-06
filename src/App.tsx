@@ -18,6 +18,7 @@ import { useActiveTargeting } from './useActiveTargeting';
 import { ActiveButton, ActiveGuide } from './ActiveToolbar';
 import { PieceSkillGuide } from './PieceSkillGuide';
 import { pieceSkillInfo } from './pieceSkills';
+import SkillEffects from './SkillEffects';
 import { squareAtPoint } from './boardPointer';
 import Piece from './Piece';
 import CivilizationIcon, { hasCivilizationIcon } from './CivilizationIcon';
@@ -304,6 +305,7 @@ export default function App() {
                   {fogged && <span aria-hidden="true">?</span>}{abilityNote && !fogged && <span className="ability-marker">{abilityNote}</span>}{possible && <span className={piece ? 'capture-ring' : 'move-dot'} />}
                 </button>;
               }))}
+              <SkillEffects game={game} flipped={flipped} />
             </div>
           </div>
           </div>
