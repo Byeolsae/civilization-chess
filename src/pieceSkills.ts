@@ -1,8 +1,9 @@
 import type { Square } from 'chess.js';
 import { AbilityGame } from './AbilityGame';
 import { adjacentSquares, effectActive } from './abilityState';
+import { specialPieceTypes } from './specialPieces';
 
-const types: Record<string, string> = { trojan: 'n', sparta: 'p', minotaur: 'n', mummy: 'p', cleopatra: 'q', sphinx: 'n', gladiator: 'b', ballista: 'r', praetorian: 'n' };
+const types = specialPieceTypes;
 const timing: Record<string, string> = {
   trojan: '탑승·하차마다 한 행동 · 상하좌우 1칸 · 최대 폰 4개',
   minotaur: '주변 8칸 피아 모두 기절 · 사용 후 내 3번째 턴에 재사용',

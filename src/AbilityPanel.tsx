@@ -3,6 +3,7 @@ import { AbilityGame, abilityNames, type AbilityAction } from "./AbilityGame";
 import { skills } from "./draft";
 import { type Players, colorNames, pieceNames } from "./game";
 import "./abilities.css";
+import Piece from './Piece';
 export function AbilityPanel({
   game,
   players,
@@ -80,9 +81,7 @@ export function AbilityPanel({
                     : ""
                 }
               >
-                {id
-                  ? `${game.state.pieces[id].owner === "w" ? "백" : "흑"} ${game.state.pieces[id].type.toUpperCase()}`
-                  : s}
+                {id ? <Piece type={game.state.pieces[id].type} color={game.state.pieces[id].owner} civilization={players[game.state.pieces[id].owner]} skill={game.loadouts[game.state.pieces[id].owner].piece} /> : s}
               </span>
             );
           })}

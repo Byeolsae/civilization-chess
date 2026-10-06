@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Color } from 'chess.js';
 import Piece from './Piece';
+import { specialPieceTypes } from './specialPieces';
 import { difficultyNames, type MatchSettings } from './matchSettings';
 import CivilizationIcon, { hasCivilizationIcon } from './CivilizationIcon';
 import { regions, countries, belongsToCountry, civilizationAppearance } from './civilizations';
@@ -131,7 +132,7 @@ export default function Draft({ onStart, settings, onSettings }: { settings: Mat
       </div>}
       <div className={`draft-card-grid ${!category ? 'civilization-grid' : ''} ${locking ? 'is-locking' : ''}`} key={`cards-${picks.length}`} role="group" aria-label={`${colorNames[step.color]} ${category?.name ?? '문명'} 카드 ${currentCards?.length ?? visibleCivilizations.length}장`}>
         {currentCards ? currentCards.map((skill, index) => <button key={skill.id} className={`draft-card skill-card ${choice === skill.id ? 'is-selected' : ''} ${choice && choice !== skill.id ? 'not-selected' : ''}`} style={{ '--card-index': index } as CSSProperties} aria-pressed={choice === skill.id} aria-label={`${skill.name} 선택`} disabled={locking || aiTurn} onClick={() => setChoice(skill.id)}>
-          <div className="card-topline"><span>{category?.english}</span><span>0{index + 1}</span></div><div className="card-symbol"><SkillSymbol skill={skill} /></div><span className="card-subtitle">{skill.subtitle}</span><h2>{skill.name}</h2><p className="card-description">{skill.description}</p><p className="card-detail">{skill.detail}</p>{skill.pending && <span className="pending-tag">세부 효과 기획 중</span>}<div className="card-select-label">{choice === skill.id ? <><Check size={15} />{locking ? '선택 확정' : '선택됨'}</> : <>카드 선택 <ArrowRight size={14} /></>}</div>
+          <div className="card-topline"><span>{category?.english}</span><span>0{index + 1}</span></div><div className="card-symbol">{civilization && specialPieceTypes[skill.id] ? <div style={{width:88,height:88}}><Piece type={specialPieceTypes[skill.id]} color={step.color} civilization={civilization} skill={skill.id} /></div> : <SkillSymbol skill={skill} />}</div><span className="card-subtitle">{skill.subtitle}</span><h2>{skill.name}</h2><p className="card-description">{skill.description}</p><p className="card-detail">{skill.detail}</p>{skill.pending && <span className="pending-tag">세부 효과 기획 중</span>}<div className="card-select-label">{choice === skill.id ? <><Check size={15} />{locking ? '선택 확정' : '선택됨'}</> : <>카드 선택 <ArrowRight size={14} /></>}</div>
         </button>) : countries.flatMap(group => {
           if (country !== '전체' && country !== group) return [];
           const members = visibleCivilizations.filter(civ => belongsToCountry(civ, group));
