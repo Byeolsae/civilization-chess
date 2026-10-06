@@ -14,6 +14,8 @@ import MatchAtmosphere from './MatchAtmosphere';
 import { opponentCivilization } from './civilizationMedia';
 import { AbilityGame, type AbilityAction } from './AbilityGame';
 import { AbilityPanel, SphinxChallenge } from './AbilityPanel';
+import { useActiveTargeting } from './useActiveTargeting';
+import { ActiveButton, ActiveGuide } from './ActiveToolbar';
 import { squareAtPoint } from './boardPointer';
 import Piece from './Piece';
 import CivilizationIcon, { hasCivilizationIcon } from './CivilizationIcon';
@@ -74,7 +76,9 @@ export default function App() {
   const resigningColor = settings.mode === 'ai' ? settings.humanColor : game.turn();
   const ai = useAiTurn(game, revision, aiTurn && !confirm, settings.difficulty, setRevision);
   const modeLabel = settings.mode === 'ai' ? `AI 대전 · ${difficultyNames[settings.difficulty]}` : '로컬 2인 대전';
-  const moves = selected && humanTurn ? legalMoves(game, selected) : [];
+  const activeOwner = settings.mode === 'ai' ? settings.humanColor : game.turn();
+  const activeTarget = useActiveTargeting(game, humanTurn && !confirm && !promotion && !(game instanceof AbilityGame && game.state.duel), revision, flipped, activeOwner, performAbility);
+  const moves = selected && humanTurn && !activeTarget.armed ? legalMoves(game, selected) : [];
   const history = game.history({ verbose: true });
   const lastMove = history.at(-1);
   const ranks = flipped ? [1, 2, 3, 4, 5, 6, 7, 8] : [8, 7, 6, 5, 4, 3, 2, 1];
@@ -146,6 +150,7 @@ export default function App() {
 
   function selectSquare(square: Square) {
     if (!humanTurn || promotion || confirm) return;
+    if (activeTarget.armed) { activeTarget.select(square); return; }
     if (selected === square) { setSelected(null); return; }
     if (selected && requestMove(selected, square)) return;
     const piece = game.get(square);
@@ -153,6 +158,7 @@ export default function App() {
   }
 
   function beginDrag(event: ReactPointerEvent<HTMLButtonElement>, from: Square) {
+    if (activeTarget.armed) { suppressClick.current = true; activeTarget.down(event, from); return; }
     if (!event.isPrimary || dragRef.current) return;
     suppressClick.current = false;
     if (event.button !== 0 || !humanTurn || promotion || confirm) return;
@@ -163,6 +169,7 @@ export default function App() {
   }
 
   function moveDrag(event: ReactPointerEvent<HTMLButtonElement>) {
+    if (activeTarget.armed) { activeTarget.move(event); return; }
     const drag = dragRef.current;
     if (!drag || drag.pointerId !== event.pointerId) return;
     if (!drag.active && Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) < 6) return;
@@ -174,6 +181,7 @@ export default function App() {
   }
 
   function endDrag(event: ReactPointerEvent<HTMLButtonElement>, cancelled = false) {
+    if (activeTarget.armed) { activeTarget.up(event, cancelled); return; }
     const drag = dragRef.current;
     if (!drag || drag.pointerId !== event.pointerId) return;
     dragRef.current = null;
@@ -236,18 +244,22 @@ export default function App() {
       <div className="game-layout">
         <section className="board-section" aria-label="체스 대전">
           {playerBar(topColor)}
+          <div className={game instanceof AbilityGame ? 'board-with-active' : ''}>
+          {game instanceof AbilityGame && <ActiveButton game={game} target={activeTarget} owner={activeOwner} onToggle={() => { setSelected(null); activeTarget.toggle(); }} />}
           <div className={`board-frame ${!started ? 'awaiting-start' : ''}`}>
-            <div className={`board ${dragVisual ? 'is-dragging' : ''}`} ref={boardRef} role="group" aria-label="체스판. 클릭 또는 드래그로 이동. 방향키로 칸 이동, Enter로 선택">
+            <div className={`board ${dragVisual ? 'is-dragging' : ''} ${activeTarget.armed ? 'is-targeting' : ''}`} ref={boardRef} role="group" aria-label="체스판. 클릭 또는 드래그로 이동. 방향키로 칸 이동, Enter로 선택">
               {ranks.flatMap((rank, row) => files.map((file, column) => {
                 const square = `${file}${rank}` as Square;
                 const piece = game.get(square);
                 const possible = moves.some(move => move.to === square); const abilityNote = game instanceof AbilityGame ? game.squareNote(square) : ''; const viewer = settings.mode === 'ai' ? settings.humanColor : game.turn(); const fogged = game instanceof AbilityGame && game.state.stormUntil[viewer] > 0 && game.state.stormUntil[viewer] >= game.state.turns[viewer] && (viewer === 'w' ? rank >= 5 : rank <= 4);
                 const checked = piece?.type === 'k' && piece.color === game.turn() && game.isCheck();
                 return <button key={square} type="button" data-square={square}
-                  className={`square ${(file.charCodeAt(0) - 97 + rank) % 2 === 1 ? 'dark' : 'light'} ${selected === square ? 'selected' : ''} ${lastMove?.from === square || lastMove?.to === square ? 'last-move' : ''} ${checked ? 'in-check' : ''} ${piece?.color === game.turn() && humanTurn ? 'can-drag' : ''} ${dragVisual?.from === square ? 'drag-origin' : ''} ${dragVisual?.over === square ? 'drop-target' : ''}`}
+                  className={`square ${activeTarget.valid.has(square) ? 'active-target' : ''} ${activeTarget.area.includes(square) ? 'active-area' : ''} ${(file.charCodeAt(0) - 97 + rank) % 2 === 1 ? 'dark' : 'light'} ${selected === square ? 'selected' : ''} ${lastMove?.from === square || lastMove?.to === square ? 'last-move' : ''} ${checked ? 'in-check' : ''} ${piece?.color === game.turn() && humanTurn ? 'can-drag' : ''} ${dragVisual?.from === square ? 'drag-origin' : ''} ${dragVisual?.over === square ? 'drop-target' : ''}`}
                   title={abilityNote || undefined} aria-label={`${square}${fogged ? ' 시야 제한' : piece ? ` ${colorNames[piece.color]} ${pieceNames[piece.type]}` : ' 빈 칸'}${possible ? ' 이동 가능' : ''}${checked ? ' 체크' : ''}`}
                   aria-pressed={selected === square} disabled={!humanTurn || (game instanceof AbilityGame && !!game.state.duel)}
                   onPointerDown={event => beginDrag(event, square)}
+                  onPointerEnter={() => activeTarget.hover(square)}
+                  onPointerLeave={() => activeTarget.hover(null)}
                   onPointerMove={moveDrag}
                   onPointerUp={event => endDrag(event)}
                   onPointerCancel={event => endDrag(event, true)}
@@ -265,7 +277,7 @@ export default function App() {
                     const next = row * 8 + column + offsets[event.key];
                     if (next >= 0 && next < 64) boardRef.current?.querySelectorAll('button')[next]?.focus();
                   }}>
-                  {column === 0 && <span className="rank-label">{rank}</span>}
+                  {activeTarget.area.includes(square) && <span className="target-mark" />}{column === 0 && <span className="rank-label">{rank}</span>}
                   {row === 7 && <span className="file-label">{file}</span>}
                   {!fogged && piece && <Piece key={`${square}-${piece.type}-${piece.color}`} type={piece.type} color={piece.color} civilization={players[piece.color]} />}
                   {fogged && <span aria-hidden="true">?</span>}{abilityNote && !fogged && <span className="ability-marker">{abilityNote}</span>}{possible && <span className={piece ? 'capture-ring' : 'move-dot'} />}
@@ -273,6 +285,8 @@ export default function App() {
               }))}
             </div>
           </div>
+          </div>
+          {game instanceof AbilityGame && <ActiveGuide game={game} target={activeTarget} />}
           {playerBar(bottomColor)}
           <div className="board-toolbar"><span>{started ? game instanceof AbilityGame ? `백 ${game.state.turns.w}턴 · 흑 ${game.state.turns.b}턴 · ${history.length}행동` : `${Math.floor(history.length / 2) + 1} 라운드 · ${history.length}수 진행` : '백이 먼저 시작합니다'}</span><div>
             <button onClick={undo} disabled={!started || (!canUndoTurn(game, settings) && !resigned)}><RotateCcw size={16} /> {settings.mode === 'ai' ? '내 차례로 무르기' : '한 수 무르기'}</button>

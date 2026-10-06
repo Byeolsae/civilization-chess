@@ -17,7 +17,7 @@ export function AbilityPanel({
   const [category, setCategory] = useState("");
   const [choice, setChoice] = useState("");
   const actions = enabled
-    ? game.actions().filter((a) => a.kind !== "move")
+    ? game.actions().filter((a) => a.kind !== "move" && a.skill !== game.loadouts[game.turn()].active)
     : [];
   const groups = [...new Set(actions.map((a) => a.skill ?? a.kind))];
   const options = actions.filter((a) => (a.skill ?? a.kind) === category);
