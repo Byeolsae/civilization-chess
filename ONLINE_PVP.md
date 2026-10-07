@@ -13,7 +13,7 @@ Upstash REST and atomic EVAL documentation: https://upstash.com/docs/redis/featu
 
 ## Behavior
 
-- Host is white; guest is black. Invitation links contain only the 8-character room code.
+- After creating a room, the host chooses white or black in the lobby; the guest receives the opposite color. Drafting starts only after color confirmation and both players joining. Invitation links contain only the 8-character room code.
 - Participant authentication uses a random 256-bit bearer token stored in that tab's sessionStorage; only its SHA-256 hash is stored in Redis. Refresh resumes; closing the tab may lose the seat.
 - Draft, passive placements, moves, skills, quizzes and resignation are server-validated. Only each side's turn may act. Client board snapshots and quiz results are never accepted.
 - Revision compare-and-swap is atomic in Redis. Mutation retries carry a request ID for deduplication.

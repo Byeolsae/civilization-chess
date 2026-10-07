@@ -1,5 +1,5 @@
 import { useOnlineRoom } from './useOnlineRoom';
-import { OnlineLobby, OnlineBanner, OnlineQuiz } from './OnlineLobby';
+import { OnlineLobby, OnlineBanner, OnlineQuiz, OnlineWaitingRoom } from './OnlineLobby';
 import { completeDraft } from './draft';
 import { desertTerrainMask } from './desertTerrain';
 import { useEffect, useRef, useState, type ReactNode, type PointerEvent as ReactPointerEvent } from 'react';
@@ -336,7 +336,7 @@ export default function App() {
           localStorage.setItem(SETUP_KEY, JSON.stringify(next));
         } catch { setStorageError(true); }
         setSettings(next); setSetupReady(true);
-      }} /> : settings.mode === 'online' ? !online.session ? <OnlineLobby online={online} onBack={()=>setSetupReady(false)}/> : !online.room?.joined ? <section className="online-lobby"><h1>친구의 입장을 기다리고 있어요</h1><p>위의 초대 링크나 방 코드를 공유하세요.</p></section> : <Draft settings={settings} network={{picks:online.room.picks,color:online.session.color,busy:online.busy,connected:online.connected,onPick:choice=>online.send({kind:'pick',choice})}} onSettings={()=>void leaveOnline()} onStart={()=>{}}/> : <Draft settings={settings} onSettings={() => setSetupReady(false)} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts).beginPlacement() : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} /> : <>
+      }} /> : settings.mode === 'online' ? !online.session ? <OnlineLobby online={online} onBack={()=>setSetupReady(false)}/> : !online.room?.joined || !online.room.colorsChosen ? <OnlineWaitingRoom online={online}/> : <Draft settings={settings} network={{picks:online.room.picks,color:online.session.color,busy:online.busy,connected:online.connected,onPick:choice=>online.send({kind:'pick',choice})}} onSettings={()=>void leaveOnline()} onStart={()=>{}}/> : <Draft settings={settings} onSettings={() => setSetupReady(false)} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts).beginPlacement() : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} /> : <>
       <div className="page-heading"><div><div className="eyebrow">THE FIRST AGE</div><h1>한 수로 시작하는 문명</h1></div><span className="rules-badge"><Shield size={15} /> {game instanceof AbilityGame ? '문명 능력 대전' : '기본 체스'}</span></div>
       {placementOwner && game instanceof AbilityGame && <section className="placement-guide" aria-label="시작 지형 배치">
         <div><strong>{colorNames[placementOwner]} · {game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드 배치' : '로마길 배치'}</strong><p>{!placementHuman ? settings.mode === 'online' ? '상대 배치 또는 서버 응답을 기다리고 있어요.' : 'AI가 시작 지형을 배치하고 있어요.' : game.loadouts[placementOwner].passive === 'pyramid' ? '중심 칸을 누르세요. 주변 8칸까지 보호합니다. 기물이 있는 칸도 선택할 수 있어요.' : '방향을 고르고 보드에서 인접한 두 줄을 선택하세요.'}</p></div>

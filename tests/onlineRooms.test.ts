@@ -10,7 +10,7 @@ import { draftSteps } from '../src/draft';
 import type { RoomCommand } from '../src/onlineProtocol';
 const w='a'.repeat(64),b='b'.repeat(64),intruder='c'.repeat(64),now=1000000;
 const ordinary=['greece','egypt','olympics','sandstorm','zeus','osiris','sparta','sphinx'];
-async function setup(picks=ordinary){const store=new MemoryRoomStore();let room=await createRoom(store,w,now);room=await joinRoom(store,room.id,b,now);for(const choice of picks){room=await commandRoom(store,room.id,draftSteps[room.picks.length].color==='w'?w:b,room.revision,randomUUID(),{kind:'pick',choice},now);}return {store,room};}
+async function setup(picks=ordinary){const store=new MemoryRoomStore();let room=await createRoom(store,w,now);room=await joinRoom(store,room.id,b,now);room=await commandRoom(store,room.id,w,room.revision,randomUUID(),{kind:'color',color:'w'},now);for(const choice of picks){room=await commandRoom(store,room.id,draftSteps[room.picks.length].color==='w'?w:b,room.revision,randomUUID(),{kind:'pick',choice},now);}return {store,room};}
 async function act(store:MemoryRoomStore,room:Room,command:RoomCommand,token=w,time=now){return commandRoom(store,room.id,token,room.revision,randomUUID(),command,time);}
 function move(room:Room,from:string,to:string):RoomCommand{const g=AbilityGame.restoreSave(room.variant!);const action=g.actions().find(a=>a.kind==='move'&&a.from===from&&a.to===to);assert.ok(action);return {kind:'action',action};}
 test('rooms keep seats private, reject intruders and admit only one guest atomically',async()=>{
@@ -27,6 +27,7 @@ test('server validates drafting turn and card choice',async()=>{
  const store=new MemoryRoomStore();let room=await createRoom(store,w,now);
  await assert.rejects(()=>act(store,room,{kind:'pick',choice:'greece'}));
  room=await joinRoom(store,room.id,b,now);
+ room=await act(store,room,{kind:'color',color:'w'});
  await assert.rejects(()=>act(store,room,{kind:'pick',choice:'greece'},b));
  await assert.rejects(()=>act(store,room,{kind:'pick',choice:'nonexistent'}));
  room=await act(store,room,{kind:'pick',choice:'greece'});assert.deepEqual(room.picks,['greece']);
@@ -80,4 +81,27 @@ test('HTTP room endpoint supports two independent authenticated clients',async()
  const denied=await fetch(base+'?room='+id,{headers:{Authorization:'Bearer '+intruder}});assert.equal(denied.status,403);
  const poll=await(await fetch(base+'?room='+id,{headers:{Authorization:'Bearer '+w}})).json();assert.equal(poll.room.joined,true);assert.equal(poll.color,'w');
  }finally{server.closeAllConnections();await new Promise<void>(resolve=>server.close(()=>resolve()));}
+});
+
+test('host chooses black before guest joins and colors persist',async()=>{
+ const store=new MemoryRoomStore();let room=await createRoom(store,w,now);
+ assert.equal(publicRoom(room,now).colorsChosen,false);
+ room=await act(store,room,{kind:'color',color:'b'});
+ assert.equal(seat(room,w),'b');assert.equal(publicRoom(room,now).joined,false);
+ room=await joinRoom(store,room.id,b,now);assert.equal(seat(room,b),'w');
+ assert.equal(publicRoom(room,now).hostColor,'b');
+ await assert.rejects(()=>act(store,room,{kind:'color',color:'w'},b));
+ await assert.rejects(()=>act(store,room,{kind:'pick',choice:'greece'},w));
+ room=await act(store,room,{kind:'pick',choice:'greece'},b);assert.equal(room.picks.length,1);
+ assert.equal(seat(await getRoom(store,room.id,now),w),'b');
+});
+test('joined players wait for host color choice; retry remains idempotent after swap',async()=>{
+ const store=new MemoryRoomStore();let room=await createRoom(store,w,now);room=await joinRoom(store,room.id,b,now);
+ await assert.rejects(()=>act(store,room,{kind:'pick',choice:'greece'}));
+ await assert.rejects(()=>act(store,room,{kind:'color',color:'b'},b));
+ const revision=room.revision,id=randomUUID();
+ room=await commandRoom(store,room.id,w,revision,id,{kind:'color',color:'b'},now);
+ const retry=await commandRoom(store,room.id,w,revision,id,{kind:'color',color:'b'},now);
+ assert.equal(retry.revision,room.revision);assert.equal(seat(room,w),'b');assert.equal(seat(room,b),'w');
+ await assert.rejects(()=>act(store,room,{kind:'color',color:'w'}));
 });

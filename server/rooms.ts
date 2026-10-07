@@ -4,7 +4,7 @@ import { AbilityGame, type AbilityAction, type AbilitySave } from '../src/Abilit
 import { confirmPick, completeDraft, draftSteps } from '../src/draft.js';
 import type { RoomCommand, RoomView } from '../src/onlineProtocol.js';
 export class RoomError extends Error { constructor(public status:number,message:string){super(message);} }
-export type Room = { id:string; revision:number; seats:Record<Color,string|null>; picks:string[]; variant:AbilitySave|null; resigned:Color|null; clockAt:number; expiresAt:number; requests:Partial<Record<Color,string>>; quiz:null|{color:Color;action:AbilityAction;question:string;answer:number;expiresAt:number} };
+export type Room = { id:string; revision:number; host?:string; colorsChosen?:boolean; seats:Record<Color,string|null>; picks:string[]; variant:AbilitySave|null; resigned:Color|null; clockAt:number; expiresAt:number; requests:Partial<Record<Color,string>>; quiz:null|{color:Color;action:AbilityAction;question:string;answer:number;expiresAt:number} };
 export interface RoomStore { get(id:string):Promise<Room|null>; create(room:Room):Promise<boolean>; swap(room:Room,expected:number):Promise<boolean>; }
 export const tokenHash=(token:string)=>createHash('sha256').update(token).digest('hex');
 export function seat(room:Room,token:string):Color { const hash=tokenHash(token);if(room.seats.w===hash)return 'w';if(room.seats.b===hash)return 'b';throw new RoomError(403,'이 방의 참가자 인증이 필요합니다.'); }
@@ -12,27 +12,35 @@ export function checkedToken(token:string){if(!/^[a-f0-9]{64}$/.test(token))thro
 export async function getRoom(store:RoomStore,id:string,now=Date.now()) { if(!/^[A-F0-9]{8}$/.test(id))throw new RoomError(400,'방 코드는 8자리입니다.');const room=await store.get(id);if(!room||room.expiresAt<=now)throw new RoomError(404,'방이 없거나 만료되었습니다.');return room; }
 export async function createRoom(store:RoomStore,token:string,now=Date.now()) {
  checkedToken(token);
- for(let i=0;i<4;i++){const room:Room={id:randomBytes(4).toString('hex').toUpperCase(),revision:0,seats:{w:tokenHash(token),b:null},picks:[],variant:null,resigned:null,clockAt:now,expiresAt:now+86400000,requests:{},quiz:null};if(await store.create(room))return room;}
+ for(let i=0;i<4;i++){const room:Room={id:randomBytes(4).toString('hex').toUpperCase(),revision:0,host:tokenHash(token),colorsChosen:false,seats:{w:tokenHash(token),b:null},picks:[],variant:null,resigned:null,clockAt:now,expiresAt:now+86400000,requests:{},quiz:null};if(await store.create(room))return room;}
  throw new RoomError(503,'방을 만들지 못했습니다. 다시 시도하세요.');
 }
 export async function joinRoom(store:RoomStore,id:string,token:string,now=Date.now()) {
  checkedToken(token);const room=await getRoom(store,id,now);const hash=tokenHash(token);
  if(Object.values(room.seats).includes(hash))return room;
- if(room.seats.b)throw new RoomError(409,'이미 두 명이 참가한 방입니다.');
- const expected=room.revision;room.seats.b=hash;room.revision++;
+ if(room.seats.w&&room.seats.b)throw new RoomError(409,'이미 두 명이 참가한 방입니다.');
+ const expected=room.revision;room.seats[room.seats.w?'b':'w']=hash;room.revision++;
  if(!await store.swap(room,expected))throw new RoomError(409,'참가 상태가 바뀌었습니다. 다시 시도하세요.');return room;
 }
 function gameAt(room:Room,now:number){if(!room.variant)throw new RoomError(409,'문명과 스킬 선택을 먼저 마쳐주세요.');const game=AbilityGame.restoreSave(room.variant);if(!room.resigned&&!game.isGameOver())game.tick(Math.max(0,now-room.clockAt));return game;}
 export function publicRoom(room:Room,now=Date.now()):RoomView {
  const variant=room.variant?.clocks&&!room.resigned ? gameAt(room,now).save() : room.variant;
- return {id:room.id,revision:room.revision,joined:!!room.seats.b,picks:room.picks,variant,resigned:room.resigned,expiresAt:room.expiresAt,serverTime:now,quiz:room.quiz?{color:room.quiz.color,question:room.quiz.question,expiresAt:room.quiz.expiresAt}:null};
+ return {id:room.id,revision:room.revision,joined:!!room.seats.w&&!!room.seats.b,colorsChosen:room.colorsChosen!==false,hostColor:room.host===room.seats.b?'b':'w',picks:room.picks,variant,resigned:room.resigned,expiresAt:room.expiresAt,serverTime:now,quiz:room.quiz?{color:room.quiz.color,question:room.quiz.question,expiresAt:room.quiz.expiresAt}:null};
 }
 export async function commandRoom(store:RoomStore,id:string,token:string,expected:number,requestId:string,command:RoomCommand,now=Date.now()){
  checkedToken(token);const room=await getRoom(store,id,now);const color=seat(room,token);
  if(!/^[a-zA-Z0-9-]{16,80}$/.test(requestId))throw new RoomError(400,'요청 식별자가 올바르지 않습니다.');
  if(room.requests[color]===requestId)return room;
  if(expected!==room.revision)throw new RoomError(409,'상대의 최신 행동을 반영한 뒤 다시 선택하세요.');
- if(!room.seats.b)throw new RoomError(409,'상대의 입장을 기다려주세요.');
+ if(command.kind==='color'){
+   if(room.host!==tokenHash(token))throw new RoomError(403,'방장만 색을 선택할 수 있습니다.');
+   if(room.colorsChosen!==false||room.picks.length||!['w','b'].includes(command.color))throw new RoomError(409,'이미 색이 확정되었거나 잘못된 선택입니다.');
+   if(command.color!==color){const previous=room.seats.w;room.seats.w=room.seats.b;room.seats.b=previous;room.requests={};}
+   room.colorsChosen=true;room.revision++;room.requests[command.color]=requestId;
+   if(!await store.swap(room,expected))throw new RoomError(409,'참가 상태가 바뀌었습니다. 다시 선택하세요.');return room;
+ }
+ if(room.colorsChosen===false)throw new RoomError(409,'대기실에서 흑백을 먼저 선택해주세요.');
+ if(!room.seats.w||!room.seats.b)throw new RoomError(409,'상대의 입장을 기다려주세요.');
  if(room.resigned)throw new RoomError(409,'이미 종료된 대전입니다.');
  if(command.kind==='pick'){
    if(room.variant||draftSteps[room.picks.length]?.color!==color)throw new RoomError(403,'내 선택 차례가 아닙니다.');
