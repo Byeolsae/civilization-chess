@@ -289,6 +289,7 @@ export default function App() {
                 const square = `${file}${rank}` as Square;
                 const piece = game.get(square);
                 const possible = moves.some(move => move.to === square); const abilityNote = game instanceof AbilityGame ? game.squareNote(square) : ''; const viewer = settings.mode === 'ai' ? settings.humanColor : game.turn(); const fogged = game instanceof AbilityGame && game.state.stormUntil[viewer] > 0 && game.state.stormUntil[viewer] >= game.state.turns[viewer] && (viewer === 'w' ? rank >= 5 : rank <= 4);
+                const markerNote = abilityNote.split(' · ').filter(note => !['행동불가', '무장해제', '매혹'].includes(note)).join(' · ');
                 const checked = piece?.type === 'k' && piece.color === game.turn() && game.isCheck();
                 return <button key={square} type="button" data-square={square}
                   className={`square ${activeTarget.valid.has(square) ? 'active-target' : ''} ${activeTarget.area.includes(square) ? 'active-area' : ''} ${(file.charCodeAt(0) - 97 + rank) % 2 === 1 ? 'dark' : 'light'} ${selected === square ? 'selected' : ''} ${lastMove?.from === square || lastMove?.to === square ? 'last-move' : ''} ${checked ? 'in-check' : ''} ${piece?.color === game.turn() && humanTurn ? 'can-drag' : ''} ${dragVisual?.from === square ? 'drag-origin' : ''} ${dragVisual?.over === square ? 'drop-target' : ''}`}
@@ -318,7 +319,7 @@ export default function App() {
                   {activeTarget.area.includes(square) && <span className="target-mark" />}{column === 0 && <span className="rank-label">{rank}</span>}
                   {row === 7 && <span className="file-label">{file}</span>}
                   {!fogged && piece && <Piece key={`${square}-${piece.type}-${piece.color}`} type={piece.type} color={piece.color} civilization={players[piece.color]} skill={game instanceof AbilityGame ? game.loadouts[piece.color].piece : undefined} />}
-                  {!fogged && game instanceof AbilityGame && <PieceStatusEffects game={game} square={square} />}{abilityNote && !fogged && <span className="ability-marker">{abilityNote}</span>}{possible && <span className={piece ? 'capture-ring' : 'move-dot'} />}
+                  {!fogged && game instanceof AbilityGame && <PieceStatusEffects game={game} square={square} />}{markerNote && !fogged && <span className="ability-marker">{markerNote}</span>}{possible && <span className={piece ? 'capture-ring' : 'move-dot'} />}
                 </button>;
               }))}
               {game instanceof AbilityGame && <Sandstorm game={game} viewer={settings.mode === 'ai' ? settings.humanColor : game.turn()} flipped={flipped} />}
