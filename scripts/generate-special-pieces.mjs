@@ -24,6 +24,11 @@ for (const [skill,[civ,drawing]] of Object.entries(designs)) for (const color of
   const body = drawing.replaceAll('ACCENT',accent).replaceAll('TRIM',trim).replaceAll('OUTLINE',outline).replaceAll('NOSTRIL',color === 'w' ? main : outline).replaceAll('HORN',color === 'w' ? trim : accent);
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="${main}" stroke="${outline}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">${body}<path d="M22 89 V85 Q22 80 29 80 H71 Q78 80 78 85 V89Z"/><path d="M26 85 H74" stroke="${trim}" stroke-width="3"/></g></svg>\n`;
   writeFileSync(`${out}/${color}-${skill}.svg`,svg);
+  if (skill === 'mummy') {
+    const loose = svg.replace(/<path d="M35 24[^>]*\/>/, `<path d="M35 24 L62 20 M39 40 L61 36 M34 70 L65 74" fill="none" stroke="${accent}" stroke-width="4"/>`)
+      .replace(/<path d="M35 50[^>]*\/>/, `<path d="M35 48 L64 58 L61 65 L33 55Z" fill="${accent}"/><path d="M34 53 Q17 52 24 65 Q29 73 16 76 L22 81 Q40 70 31 63 Q24 57 37 59Z M64 58 Q80 54 76 68 L83 76 L77 80 Q65 71 70 65 L62 65Z" fill="${main}" stroke="${outline}" stroke-width="2"/>`);
+    writeFileSync(`${out}/${color}-mummy-unwrapped.svg`, loose);
+  }
   if (skill === 'sparta') {
     const unshielded = svg.replace(/<ellipse cx="36"[^>]*\/>/, '').replace(/<path d="M26 73 L36 53 L46 73"[^>]*\/>/, '');
     writeFileSync(`${out}/${color}-sparta-unshielded.svg`, unshielded);

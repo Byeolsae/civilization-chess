@@ -3,6 +3,17 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { specialPieceSkill, specialPieceTypes, specialPieceVariant } from '../src/specialPieces';
 import { AbilityGame } from '../src/AbilityGame';
+test('revived mummy uses loose bandages and undo restores its dormant appearance', () => {
+  const none={passive:'pending',active:'pending',piece:'pending'};
+  const game=new AbilityGame({w:{...none,piece:'mummy'},b:none},'4k3/8/8/8/1b6/P7/8/4K3 b - - 0 1');
+  const variant=()=>specialPieceVariant('p','mummy',1,game.state.pieces['w-a3'].revived);
+  assert.equal(variant(),'mummy');
+  game.move({from:'b4',to:'a3'});game.move({from:'e1',to:'f1'});game.move({from:'a3',to:'b4'});
+  assert.equal(variant(),'mummy-unwrapped');
+  game.undo();assert.equal(variant(),'mummy');
+  assert.equal(specialPieceVariant('q','mummy',1,true),null);
+  for(const color of ['w','b']) assert.ok(existsSync(new URL(`../public/pieces/special/${color}-mummy-unwrapped.svg`,import.meta.url)));
+});
 test('Spartan shield follows life loss and undo, while previews retain the shield', () => {
   const none={passive:'pending',active:'pending',piece:'pending'};
   const game=new AbilityGame({w:none,b:{...none,piece:'sparta'}},'4k3/8/8/8/3p4/2B5/8/4K3 w - - 0 1');
