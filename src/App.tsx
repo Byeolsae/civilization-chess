@@ -290,7 +290,7 @@ export default function App() {
                 const square = `${file}${rank}` as Square;
                 const piece = game.get(square);
                 const possible = moves.some(move => move.to === square); const abilityNote = game instanceof AbilityGame ? game.squareNote(square) : ''; const viewer = settings.mode === 'ai' ? settings.humanColor : game.turn(); const fogged = game instanceof AbilityGame && game.state.stormUntil[viewer] > 0 && game.state.stormUntil[viewer] >= game.state.turns[viewer] && (viewer === 'w' ? rank >= 5 : rank <= 4);
-                const markerNote = abilityNote.split(' · ').filter(note => !note.startsWith('영광 ') && !['행동불가', '무장해제', '매혹', '추가 목숨'].includes(note)).join(' · ');
+                const markerNote = abilityNote.split(' · ').filter(note => !note.startsWith('영광 ') && !['행동불가', '무장해제', '매혹', '추가 목숨', '사막'].includes(note)).join(' · ');
                 const desertMask = game instanceof AbilityGame ? desertTerrainMask(square, game.state.zones.filter(zone => zone.kind === 'desert').flatMap(zone => zone.squares), flipped) : undefined;
                 const checked = piece?.type === 'k' && piece.color === game.turn() && game.isCheck();
                 return <button key={square} type="button" data-square={square}
