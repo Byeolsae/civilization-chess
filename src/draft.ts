@@ -1,7 +1,7 @@
-import { experimentalRules } from './experimentalRules';
-import { civilizations } from './civilizations';
+import { experimentalRules } from './experimentalRules.js';
+import { civilizations } from './civilizations.js';
 import type { Color } from 'chess.js';
-import type { Civilization, Players } from './game';
+import type { Civilization, Players } from './game.js';
 
 export type Category = 'passive' | 'active' | 'piece';
 export type Loadout = Record<Category, string>;

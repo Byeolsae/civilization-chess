@@ -1,4 +1,4 @@
-import { RoomError, type Room, type RoomStore } from './rooms';
+import { RoomError, type Room, type RoomStore } from './rooms.js';
 export class RedisRoomStore implements RoomStore {
  constructor(private url:string,private token:string){}
  async command(args:(string|number)[]){const response=await fetch(this.url,{method:'POST',headers:{Authorization:`Bearer ${this.token}`,'Content-Type':'application/json'},body:JSON.stringify(args),signal:AbortSignal.timeout(8000)});if(!response.ok)throw new RoomError(503,'온라인 저장소에 연결하지 못했습니다.');const data=await response.json();if(data.error)throw new RoomError(503,'온라인 저장소 요청에 실패했습니다.');return data.result;}

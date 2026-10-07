@@ -1,8 +1,8 @@
 import { createHash, randomBytes, randomInt } from 'node:crypto';
 import type { Color } from 'chess.js';
-import { AbilityGame, type AbilityAction, type AbilitySave } from '../src/AbilityGame';
-import { confirmPick, completeDraft, draftSteps } from '../src/draft';
-import type { RoomCommand, RoomView } from '../src/onlineProtocol';
+import { AbilityGame, type AbilityAction, type AbilitySave } from '../src/AbilityGame.js';
+import { confirmPick, completeDraft, draftSteps } from '../src/draft.js';
+import type { RoomCommand, RoomView } from '../src/onlineProtocol.js';
 export class RoomError extends Error { constructor(public status:number,message:string){super(message);} }
 export type Room = { id:string; revision:number; seats:Record<Color,string|null>; picks:string[]; variant:AbilitySave|null; resigned:Color|null; clockAt:number; expiresAt:number; requests:Partial<Record<Color,string>>; quiz:null|{color:Color;action:AbilityAction;question:string;answer:number;expiresAt:number} };
 export interface RoomStore { get(id:string):Promise<Room|null>; create(room:Room):Promise<boolean>; swap(room:Room,expected:number):Promise<boolean>; }

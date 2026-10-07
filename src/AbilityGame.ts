@@ -6,7 +6,7 @@ import {
   type Square,
   type PieceSymbol,
 } from "chess.js";
-import type { Loadouts } from "./draft";
+import type { Loadouts } from "./draft.js";
 import {
   createAbilityState,
   adjacentSquares,
@@ -16,7 +16,7 @@ import {
   sealGraves,
   type AbilityState,
   type AbilityPiece,
-} from "./abilityState";
+} from "./abilityState.js";
 
 export type AbilityAction = {
   kind: "move" | "skill" | "duel" | "pass";

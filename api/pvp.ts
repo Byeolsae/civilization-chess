@@ -1,6 +1,6 @@
 import type { IncomingMessage,ServerResponse } from 'node:http';
-import { commandRoom,createRoom,getRoom,joinRoom,publicRoom,seat,RoomError,tokenHash,checkedToken,type RoomStore } from '../server/rooms';
-import { productionStore,RedisRoomStore } from '../server/roomStore';
+import { commandRoom,createRoom,getRoom,joinRoom,publicRoom,seat,RoomError,tokenHash,checkedToken,type RoomStore } from '../server/rooms.js';
+import { productionStore,RedisRoomStore } from '../server/roomStore.js';
 export function roomHandler(injected?:RoomStore){return async(req:IncomingMessage&{body?:unknown},res:ServerResponse)=>{
  res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json; charset=utf-8');
  const send=(status:number,data:unknown)=>{res.statusCode=status;res.end(JSON.stringify(data));};
