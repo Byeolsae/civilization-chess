@@ -316,7 +316,7 @@ export default function App() {
                     const next = row * 8 + column + offsets[event.key];
                     if (next >= 0 && next < 64) boardRef.current?.querySelectorAll('button')[next]?.focus();
                   }}>
-                  {desert && <span className="desert-terrain" aria-hidden="true" />}
+                  {desert && <span className="desert-terrain" style={{ backgroundPosition: `${column / 7 * 100}% ${row / 7 * 100}%` }} aria-hidden="true" />}
                   {(pieceTargets.has(square) || pieceArea.includes(square)) && <span className={`piece-target-mark ${pieceMode ? 'armed' : ''} ${pieceArea.includes(square) ? 'area' : ''}`} aria-label={pieceMode ? '스킬 적용 대상' : '스킬 가능 대상'} />}
                   {activeTarget.area.includes(square) && <span className="target-mark" />}{column === 0 && <span className="rank-label">{rank}</span>}
                   {row === 7 && <span className="file-label">{file}</span>}

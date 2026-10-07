@@ -53,6 +53,7 @@ export default function SkillEffects({ game, flipped }: { game: Chess; flipped: 
 function Effect({ effect: e, flipped }: { effect: SkillEffect; flipped: boolean }) {
   const from = boardPoint(e.from, flipped), to = boardPoint(e.to, flipped);
   const color = colors[e.skill] ?? '#f6d58d';
+  if (e.skill === 'set') return <g className="skill-fx skill-fx-set"><ellipse className="set-dust" cx={to.x} cy={to.y} rx="138" ry="118" /></g>;
   const beam = ['ballista', 'pilum', 'cleopatra', 'trojan', 'deploy', 'gladiator'].includes(e.skill);
   const portal = ['osiris', 'hades', 'anubis', 'trojan', 'deploy', 'gladiator', 'revive'].includes(e.skill);
   const zone = ['set', 'vesta', 'alesia'].includes(e.skill);
