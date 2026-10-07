@@ -19,6 +19,7 @@ import { ActiveButton, ActiveGuide } from './ActiveToolbar';
 import { PieceSkillGuide } from './PieceSkillGuide';
 import { pieceSkillInfo } from './pieceSkills';
 import SkillEffects from './SkillEffects';
+import { PieceStatusEffects, Sandstorm } from './StatusEffects';
 import { squareAtPoint } from './boardPointer';
 import Piece from './Piece';
 import CivilizationIcon, { hasCivilizationIcon } from './CivilizationIcon';
@@ -317,9 +318,10 @@ export default function App() {
                   {activeTarget.area.includes(square) && <span className="target-mark" />}{column === 0 && <span className="rank-label">{rank}</span>}
                   {row === 7 && <span className="file-label">{file}</span>}
                   {!fogged && piece && <Piece key={`${square}-${piece.type}-${piece.color}`} type={piece.type} color={piece.color} civilization={players[piece.color]} skill={game instanceof AbilityGame ? game.loadouts[piece.color].piece : undefined} />}
-                  {fogged && <span aria-hidden="true">?</span>}{abilityNote && !fogged && <span className="ability-marker">{abilityNote}</span>}{possible && <span className={piece ? 'capture-ring' : 'move-dot'} />}
+                  {!fogged && game instanceof AbilityGame && <PieceStatusEffects game={game} square={square} />}{abilityNote && !fogged && <span className="ability-marker">{abilityNote}</span>}{possible && <span className={piece ? 'capture-ring' : 'move-dot'} />}
                 </button>;
               }))}
+              {game instanceof AbilityGame && <Sandstorm game={game} viewer={settings.mode === 'ai' ? settings.humanColor : game.turn()} flipped={flipped} />}
               <SkillEffects game={game} flipped={flipped} />
             </div>
           </div>

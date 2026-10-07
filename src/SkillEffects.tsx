@@ -14,6 +14,18 @@ export default function SkillEffects({ game, flipped }: { game: Chess; flipped: 
   const timers = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
   const [playing, setPlaying] = useState<PlayingEffect[]>([]);
   const [announcement, setAnnouncement] = useState('');
+  const layer = useRef<HTMLDivElement>(null);
+  const impactId = [...playing].reverse().find(e => e.skill === 'minotaur')?.id;
+  useLayoutEffect(() => {
+    if (!impactId || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const board = layer.current?.closest('.board-section');
+    const motion = board?.animate([
+      { transform: 'translate(0,0)' }, { transform: 'translate(-4px,3px)' },
+      { transform: 'translate(4px,-2px)' }, { transform: 'translate(-3px,2px)' },
+      { transform: 'translate(2px,-1px)' }, { transform: 'translate(0,0)' },
+    ], { duration: 420, easing: 'ease-out' });
+    return () => motion?.cancel();
+  }, [impactId]);
   useLayoutEffect(() => {
     const old = previous.current;
     previous.current = { game, count, flipped, state: game instanceof AbilityGame ? structuredClone(game.state) : null };
@@ -30,7 +42,7 @@ export default function SkillEffects({ game, flipped }: { game: Chess; flipped: 
     timers.current.add(timer);
   }, [game, count, flipped]);
   useLayoutEffect(() => () => { timers.current.forEach(clearTimeout); timers.current.clear(); }, []);
-  return <div className="skill-effects" aria-live="polite" aria-atomic="true">
+  return <div ref={layer} className="skill-effects" aria-live="polite" aria-atomic="true">
     <span className="sr-only">{announcement}</span>
     <svg viewBox="0 0 800 800" aria-hidden="true" className="skill-fx-svg">
       {playing.map(effect => <Effect key={effect.id} effect={effect} flipped={flipped} />)}
