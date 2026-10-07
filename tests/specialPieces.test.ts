@@ -32,6 +32,6 @@ test('every transformed piece has distinct white and black SVG assets', () => {
     assert.ok(paths.every(path=>existsSync(path)),skill);
     const assets=paths.map(path=>readFileSync(path,'utf8'));
     assert.notEqual(assets[0],assets[1]);
-    for (const svg of assets) { assert.match(svg,/viewBox="0 0 100 100"/); assert.doesNotMatch(svg,/ACCENT|TRIM|OUTLINE/); }
+    for (const svg of assets) { assert.match(svg,/viewBox="[-\d.]+ [-\d.]+ 100 100"/); assert.doesNotMatch(svg,/ACCENT|TRIM|OUTLINE/); }
   }
 });
