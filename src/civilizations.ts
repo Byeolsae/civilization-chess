@@ -366,11 +366,11 @@ export const regions = ['아시아', '유럽', '아프리카', '북아메리카'
 
 // Visual assets are shared until each dynasty receives its own design.
 export const civilizationAppearance: Record<Civilization, string> = {
-  greece: 'greece', rome: 'rome', egypt: 'egypt', heian: 'japan', edo: 'japan', meiji: 'japan', sengoku: 'japan', korea: 'korea',
+  greece: 'greece', rome: 'rome', egypt: 'egypt', heian: 'japan', edo: 'japan', meiji: 'japan', sengoku: 'japan', korea: 'joseon',
   goryeo: 'korea', goguryeo: 'korea', baekje: 'korea', silla: 'korea',
   wei: 'china', shu: 'china', wu: 'china', gojoseon: 'korea', kamakura: 'japan',
   'mongol-empire': 'classic', yuan: 'china', 'russian-empire': 'classic', prussia: 'classic',
-  inca: 'classic', aztec: 'classic', maya: 'classic', gaul: 'classic', babylon: 'classic',
+  inca: 'classic', aztec: 'aztec', maya: 'classic', gaul: 'classic', babylon: 'classic',
   tang: 'china', song: 'china', han: 'china', qing: 'china', qin: 'china',
 };
 

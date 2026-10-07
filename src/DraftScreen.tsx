@@ -13,6 +13,8 @@ import { categories, completeDraft, confirmPick, DRAFT_KEY, draftSteps, previous
 
 const icons: Record<string, LucideIcon> = { crown: Crown, hourglass: Hourglass, trophy: Trophy, zap: Zap, waves: Waves, skull: Skull, shield: Shield, hammer: Hammer, wind: Wind, pyramid: Pyramid, sun: Sun, heart: Heart, question: HelpCircle, route: Route, scroll: ScrollText, fence: Fence, flame: Flame, swords: Swords, crosshair: Crosshair };
 const civilizationCopy: Partial<Record<string, { headline: string; detail: string; traits: string }>> = {
+  joseon: { headline: '진홍과 금빛, 조선의 색', detail: '백은 흰색, 흑은 진홍색을 바탕으로 금빛 장식을 더했습니다.', traits: '스킬 준비 중 · 기본 체스 대전' },
+  aztec: { headline: '깊은 청록과 따뜻한 살구', detail: '백은 살구색, 흑은 청록색을 바탕으로 황금빛 장식을 더했습니다.', traits: '스킬 준비 중 · 기본 체스 대전' },
   china: { headline: '백옥과 비취, 은은한 금빛', detail: '백옥과 비취 바탕에 금색 장식을 더한 기물로 대전을 시작하세요.', traits: '스킬 준비 중 · 기본 체스 대전' },
   korea: { headline: '옥빛 하늘색, 고운 꽃분홍', detail: '옥빛 하늘색과 연한 꽃분홍을 교차 배색한 기물로 대전을 시작하세요.', traits: '스킬 준비 중 · 기본 체스 대전' },
   japan: { headline: '하얀 꽃잎, 벚꽃의 분홍', detail: '흰색과 벚꽃 분홍으로 물든 기물로 대전을 시작하세요.', traits: '스킬 준비 중 · 기본 체스 대전' },
