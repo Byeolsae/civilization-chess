@@ -81,7 +81,7 @@ export function AbilityPanel({
                     : ""
                 }
               >
-                {id ? <Piece type={game.state.pieces[id].type} color={game.state.pieces[id].owner} civilization={players[game.state.pieces[id].owner]} skill={game.loadouts[game.state.pieces[id].owner].piece} /> : s}
+                {id ? <Piece type={game.state.pieces[id].type} color={game.state.pieces[id].owner} civilization={players[game.state.pieces[id].owner]} lives={game.state.pieces[id].lives} skill={game.loadouts[game.state.pieces[id].owner].piece} /> : s}
               </span>
             );
           })}

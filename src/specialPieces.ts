@@ -5,3 +5,7 @@ export const specialPieceTypes: Record<string, PieceSymbol> = {
 export function specialPieceSkill(type: PieceSymbol, skill?: string) {
   return skill && specialPieceTypes[skill] === type ? skill : null;
 }
+export function specialPieceVariant(type: PieceSymbol, skill?: string, lives?: number) {
+  const special = specialPieceSkill(type, skill);
+  return special === 'sparta' && lives !== undefined && lives <= 1 ? 'sparta-unshielded' : special;
+}

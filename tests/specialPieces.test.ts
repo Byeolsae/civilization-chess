@@ -1,7 +1,24 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
-import { specialPieceSkill, specialPieceTypes } from '../src/specialPieces';
+import { specialPieceSkill, specialPieceTypes, specialPieceVariant } from '../src/specialPieces';
+import { AbilityGame } from '../src/AbilityGame';
+test('Spartan shield follows life loss and undo, while previews retain the shield', () => {
+  const none={passive:'pending',active:'pending',piece:'pending'};
+  const game=new AbilityGame({w:none,b:{...none,piece:'sparta'}},'4k3/8/8/8/3p4/2B5/8/4K3 w - - 0 1');
+  const variant=()=>specialPieceVariant('p','sparta',game.unit('d4')!.lives);
+  assert.equal(variant(),'sparta');
+  game.move({from:'c3',to:'d4'});
+  assert.equal(variant(),'sparta-unshielded');
+  game.undo();
+  assert.equal(variant(),'sparta');
+  assert.equal(specialPieceVariant('p','sparta'),'sparta');
+  assert.equal(specialPieceVariant('q','sparta',1),null);
+  for(const color of ['w','b']) {
+    const svg=readFileSync(new URL(`../public/pieces/special/${color}-sparta-unshielded.svg`,import.meta.url),'utf8');
+    assert.doesNotMatch(svg,/<ellipse cx="36"|M26 73 L36 53 L46 73/);
+  }
+});
 test('skill skins only replace the matching piece type, including promotions', () => {
   assert.equal(specialPieceSkill('n','sphinx'),'sphinx');
   assert.equal(specialPieceSkill('b','sphinx'),null);

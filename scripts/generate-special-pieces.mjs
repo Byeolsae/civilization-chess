@@ -24,5 +24,9 @@ for (const [skill,[civ,drawing]] of Object.entries(designs)) for (const color of
   const body = drawing.replaceAll('ACCENT',accent).replaceAll('TRIM',trim).replaceAll('OUTLINE',outline).replaceAll('NOSTRIL',color === 'w' ? main : outline).replaceAll('HORN',color === 'w' ? trim : accent);
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="${main}" stroke="${outline}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">${body}<path d="M22 89 V85 Q22 80 29 80 H71 Q78 80 78 85 V89Z"/><path d="M26 85 H74" stroke="${trim}" stroke-width="3"/></g></svg>\n`;
   writeFileSync(`${out}/${color}-${skill}.svg`,svg);
+  if (skill === 'sparta') {
+    const unshielded = svg.replace(/<ellipse cx="36"[^>]*\/>/, '').replace(/<path d="M26 73 L36 53 L46 73"[^>]*\/>/, '');
+    writeFileSync(`${out}/${color}-sparta-unshielded.svg`, unshielded);
+  }
 }
 console.log(`Generated ${Object.keys(designs).length*2} special piece SVGs`);
