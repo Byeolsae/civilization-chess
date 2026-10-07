@@ -43,7 +43,7 @@ export const skills: Record<Civilization, Record<Category, Skill[]>> = {
       { id: 'anubis', name: '아누비스', subtitle: '죽음의 심판', description: '빈 칸에 함정을 설치해 들어오는 상대 기물을 즉사시킵니다.', detail: '한 번 발동하면 사라지며 아군에게는 무해합니다. 패배 조건과 연결된 킹은 즉사하지 않습니다.', symbol: 'skull' },
     ],
     piece: [
-      { id: 'mummy', name: '미라 병사', subtitle: '폰의 변신', description: '처음 잡힌 칸에 표식을 남기고 다음 자기 턴에 한 번 부활합니다.', detail: '부활할 칸이 비어 있어야 합니다. 한 번 부활한 뒤 다시 잡히면 완전히 사망합니다.', symbol: 'shield' },
+      { id: 'mummy', name: '미라 병사', subtitle: '폰의 변신', description: '처음 잡힌 뒤 자기 턴 시작마다 최대 3번 확인하고, 사망 칸이 비면 한 번 부활합니다.', detail: '부활할 칸이 비어 있어야 합니다. 한 번 부활한 뒤 다시 잡히면 완전히 사망합니다.', symbol: 'shield' },
       { id: 'cleopatra', name: '클레오파트라', subtitle: '퀸의 변신', description: '상대 폰을 잡는 대신 2턴 동안 아군으로 매혹합니다.', detail: '두 기물은 원래 위치에 남습니다. 동시에 하나만 매혹하며 종료 후 원래 진영으로 돌아갑니다.', symbol: 'heart' },
       { id: 'sphinx', name: '스핑크스', subtitle: '나이트의 변신', description: '공격자에게 구구단 문제를 내고 5초 안에 풀지 못하면 공격을 무효화합니다.', detail: '정답을 맞히면 정상적으로 잡힙니다. 오답이나 시간 초과라면 살아남습니다.', symbol: 'question' },
     ],

@@ -883,9 +883,13 @@ export class AbilityGame extends Chess {
           p.square = p.mummyAt;
           p.lives = 1;
         }
-        p.revived = true;
-        delete p.mummyAt;
-        delete p.mummyTurn;
+        // Check at the start of each of the next three owner turns.
+        // A captor occupying the grave on the first turn no longer wastes revival.
+        if (p.square || p.sealed || this.state.turns[c] >= p.mummyTurn! + 2) {
+          p.revived = true;
+          delete p.mummyAt;
+          delete p.mummyTurn;
+        }
       }
     }
     for (const owner of ["w", "b"] as Color[])

@@ -105,12 +105,29 @@ test("trojan carries and deploys pawns without creating graves", () => {
   skill(g, "deploy", "b1", "b2");
   assert.equal(g.get("b2")?.type, "p");
 });
-test("mummy revives once only when its capture square is empty at its next turn", () => {
+test("mummy waits for the captor to leave and revives on the second owner turn; undo restores waiting", () => {
   const g = create({ piece: "mummy" }, {}, "4k3/8/8/8/1b6/P7/8/4K3 b - - 0 1");
   g.move({ from: "b4", to: "a3" });
   assert.equal(g.get("a3")?.color, "b");
-  assert.equal(g.state.pieces["w-a3"].revived, true);
+  assert.equal(g.state.pieces["w-a3"].revived, false);
   assert.equal(g.state.pieces["w-a3"].square, null);
+  g.move({from:'e1',to:'f1'});
+  g.move({from:'a3',to:'b4'});
+  assert.equal(g.get('a3')?.color,'w');
+  assert.equal(g.state.pieces['w-a3'].revived,true);
+  g.undo();
+  assert.equal(g.state.pieces['w-a3'].square,null);
+  assert.equal(g.state.pieces['w-a3'].revived,false);
+});
+test('mummy revival expires after three occupied owner-turn starts', () => {
+  const g=create({piece:'mummy'},{},'4k3/8/8/8/1b6/P7/8/4K3 b - - 0 1');
+  g.move({from:'b4',to:'a3'});
+  g.move({from:'e1',to:'f1'});g.move({from:'e8',to:'f8'});
+  assert.equal(g.state.pieces['w-a3'].revived,false);
+  g.move({from:'f1',to:'g1'});g.move({from:'f8',to:'g8'});
+  assert.equal(g.state.pieces['w-a3'].revived,true);
+  assert.equal(g.state.pieces['w-a3'].mummyAt,undefined);
+  assert.equal(g.state.pieces['w-a3'].square,null);
 });
 test("Osiris restores a dead ally and Hades can seal three distinct enemy graves", () => {
   const g = create(
