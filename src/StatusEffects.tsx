@@ -21,5 +21,5 @@ export function PieceStatusEffects({game,square}:{game:AbilityGame;square:Square
 export function Sandstorm({game,viewer,flipped}:{game:AbilityGame;viewer:Color;flipped:boolean}) {
   if(game.state.stormUntil[viewer]<=0||game.state.stormUntil[viewer]<game.state.turns[viewer])return null;
   const top=(viewer==='w')!==flipped;
-  return <div className={`sandstorm-veil ${top?'top':'bottom'}`} aria-hidden="true"><div className="sand-cloud sand-cloud-back"/><div className="sand-cloud sand-cloud-front"/><div className="sand-grains"/><span>모래폭풍 · 시야 제한</span></div>;
+  return <div className={`sandstorm-veil ${top?'top':'bottom'}`} aria-hidden="true"><div className="sand-cloud sand-cloud-back"/><div className="sand-cloud sand-cloud-front"/><div className="sand-grains"/></div>;
 }
