@@ -1,3 +1,4 @@
+import { civilizationReadiness, readinessLabels, chooseAiDraftPick } from './civilizationReadiness';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Color } from 'chess.js';
 import Piece from './Piece';
@@ -36,11 +37,13 @@ export function LoadoutList({ players, loadouts }: { players: Players; loadouts:
   </section>)}</div>;
 }
 
-export default function Draft({ onStart, settings, onSettings }: { settings: MatchSettings; onSettings: () => void; onStart: (players: Players, loadouts: Loadouts) => void }) {
-  const [picks, setPicks] = useState<string[]>(() => { try { return restoreDraft(localStorage.getItem(DRAFT_KEY)); } catch { return []; } });
+export default function Draft({ onStart, settings, onSettings, network }: { network?: {picks:string[];color:Color;busy:boolean;connected:boolean;onPick:(choice:string)=>Promise<boolean>}; settings: MatchSettings; onSettings: () => void; onStart: (players: Players, loadouts: Loadouts) => void }) {
+  const [localPicks, setPicks] = useState<string[]>(() => { try { return restoreDraft(localStorage.getItem(DRAFT_KEY)); } catch { return []; } });
+  const picks = network?.picks ?? localPicks;
   const [choice, setChoice] = useState<string | null>(null);
   const [locking, setLocking] = useState(false);
   const [saveFailed, setSaveFailed] = useState(false);
+  const [readiness,setReadiness]=useState<'all'|'implemented'|'pending'>('all');
   const [search, setSearch] = useState('');
   const [country, setCountry] = useState<CountryFilter>('전체');
   const [region, setRegion] = useState<RegionFilter>('전체');
@@ -49,29 +52,32 @@ export default function Draft({ onStart, settings, onSettings }: { settings: Mat
   const step = draftSteps[picks.length];
   const complete = completeDraft(picks);
   const aiTurn = settings.mode === 'ai' && !!step && step.color !== settings.humanColor;
-  const previous = settings.mode === 'ai' ? previousHumanPick(picks, settings.humanColor) : picks.length ? previousPick(picks) : null;
+  const onlineWaiting = !!network && (!network.connected || network.busy || step?.color !== network.color);
+  const previous = network ? null : settings.mode === 'ai' ? previousHumanPick(picks, settings.humanColor) : picks.length ? previousPick(picks) : null;
   const category = categories.find(c => c.id === step?.category);
   const civilization = step && step.category !== 'civilization' ? picks[step.color === 'w' ? 0 : 1] as Civilization : null;
   const currentCards = civilization && category ? skills[civilization][category.id] : null;
   const stageIndex = !step ? 4 : step.category === 'civilization' ? 0 : categories.findIndex(c => c.id === step.category) + 1;
   const currentCivilization = civilizations.find(c => c.id === civilization);
-  const visibleCivilizations = filterCivilizations(search, region, era, country);
-  const hasFilters = country !== '전체' || search !== '' || region !== '전체' || era !== '전체';
-  function resetFilters() { setCountry('전체'); setSearch(''); setRegion('전체'); setEra('전체'); }
+  const visibleCivilizations = filterCivilizations(search, region, era, country).filter(civ=>readiness==='all'||(civilizationReadiness(civ.id)==='pending')===(readiness==='pending'));
+  const implementedCount=civilizations.filter(civ=>civilizationReadiness(civ.id)!=='pending').length;
+  const hasFilters = readiness !== 'all' || country !== '전체' || search !== '' || region !== '전체' || era !== '전체';
+  function resetFilters() { setReadiness('all'); setCountry('전체'); setSearch(''); setRegion('전체'); setEra('전체'); }
   const chosenName = civilizations.find(civ => civ.id === choice)?.name;
 
   useEffect(() => { setCountry('전체'); setSearch(''); setRegion('전체'); setEra('전체'); }, [picks.length]);
 
   useEffect(() => {
-    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(picks)); setSaveFailed(false); }
+    try { if (!network) localStorage.setItem(DRAFT_KEY, JSON.stringify(picks)); setSaveFailed(false); }
     catch { setSaveFailed(true); }
     titleRef.current?.focus({ preventScroll: true });
   }, [picks]);
 
   useEffect(() => {
     if (!locking || !choice) return;
-    const timer = window.setTimeout(() => {
-      setPicks(previous => confirmPick(previous, choice));
+    const timer = window.setTimeout(async () => {
+      if (network) await network.onPick(choice);
+      else setPicks(previous => confirmPick(previous, choice));
       setChoice(null); setLocking(false);
     }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 550);
     return () => window.clearTimeout(timer);
@@ -82,20 +88,20 @@ export default function Draft({ onStart, settings, onSettings }: { settings: Mat
     const timer = window.setTimeout(() => {
       const options = optionsAt(picks);
       if (!options.length) return;
-      setChoice(options[Math.floor(Math.random() * options.length)]);
+      setChoice(chooseAiDraftPick(picks) ?? null);
       setLocking(true);
     }, 650);
     return () => window.clearTimeout(timer);
   }, [aiTurn, picks, locking]);
 
   function back() {
-    if (!previous || locking || aiTurn) return;
+    if (!previous || locking || aiTurn || onlineWaiting) return;
     setChoice(picks[previous.length]);
     setPicks(previous);
   }
 
   return <section className={`draft-screen ${civilization ? `theme-${civilizationAppearance[civilization]}` : 'theme-neutral'}`} aria-label="대전 준비">
-    <div className="draft-mode-bar"><span>{settings.mode === 'ai' ? `AI 대전 · ${difficultyNames[settings.difficulty]} · 나 ${colorNames[settings.humanColor]}` : '로컬 2인 대전'}</span><button onClick={onSettings}>대전 설정 변경</button></div>
+    <div className="draft-mode-bar"><span>{network ? `온라인 PvP · 나 ${colorNames[network.color]}` : settings.mode === 'ai' ? `AI 대전 · ${difficultyNames[settings.difficulty]} · 나 ${colorNames[settings.humanColor]}` : '로컬 2인 대전'}</span><button onClick={onSettings}>{network ? '방 나가기' : '대전 설정 변경'}</button></div>
     <nav className="draft-progress" aria-label="선택 진행 상황">{['문명', '패시브', '액티브', '기물 스킬', '대전 준비'].map((name, index) => <div key={name} aria-current={stageIndex === index ? 'step' : undefined} className={`${index === stageIndex ? 'current' : ''} ${index < stageIndex ? 'done' : ''}`}><span>{index < stageIndex ? <Check size={12} /> : `0${index + 1}`}</span><b>{name}</b>{index < 4 && <ChevronRight size={14} />}</div>)}</nav>
     <div className="draft-players">{(['w', 'b'] as Color[]).map((color, index) => {
       const chosenCivilization = civilizations.find(c => c.id === picks[index]);
@@ -118,20 +124,22 @@ export default function Draft({ onStart, settings, onSettings }: { settings: Mat
       <p className="draft-disclaimer"><Shield size={15} />선택한 능력이 실제 대전에 적용됩니다. 12표법은 준비 중이며, 임시 규칙은 카드와 대전 도움말에서 확인하세요.</p>
       <div className="draft-controls"><button className="draft-back" onClick={back} disabled={!previous}><ArrowLeft size={16} /> 이전 선택</button><button className="primary-button" onClick={() => { try { localStorage.removeItem(DRAFT_KEY); } catch { /* Match saving reports storage failures. */ } onStart(complete.players, complete.loadouts); }}>체스 대전 시작 <Swords size={18} /></button></div>
     </div> : <>
-      <div className="draft-intro" aria-live="polite"><span className="draft-eyebrow">{currentCivilization ? `${currentCivilization.english} / ${category?.english}` : 'CHOOSE YOUR CIVILIZATION'}</span><h1 key={`title-${picks.length}`} ref={titleRef} tabIndex={-1}>{colorNames[step.color]}, {category ? `${category.name}${category.id === 'piece' ? '을' : '를'} 선택하세요` : '문명을 선택하세요'}</h1><p>{aiTurn ? 'AI가 문명과 스킬을 고르고 있어요.' : category?.description ?? '당신의 문명이 전투의 시작을 결정합니다.'}</p></div>
+      <div className="draft-intro" aria-live="polite"><span className="draft-eyebrow">{currentCivilization ? `${currentCivilization.english} / ${category?.english}` : 'CHOOSE YOUR CIVILIZATION'}</span><h1 key={`title-${picks.length}`} ref={titleRef} tabIndex={-1}>{colorNames[step.color]}, {category ? `${category.name}${category.id === 'piece' ? '을' : '를'} 선택하세요` : '문명을 선택하세요'}</h1><p>{onlineWaiting ? '상대의 선택 또는 서버 연결을 기다리고 있어요.' : aiTurn ? 'AI가 문명과 스킬을 고르고 있어요.' : category?.description ?? '당신의 문명이 전투의 시작을 결정합니다.'}</p></div>
       {!category && <div className="civilization-browser">
-        <div className="civilization-search"><label htmlFor="civilization-search">문명 검색</label><input id="civilization-search" type="search" placeholder="나라 또는 문명 이름으로 검색" value={search} disabled={locking || aiTurn} onChange={event => setSearch(event.target.value)} /><span aria-live="polite">{visibleCivilizations.length} / {civilizations.length}개 문명 · 중복 제외{chosenName ? ` · ${chosenName} 선택됨` : ''}</span></div>
+        <div className="readiness-filter" role="group" aria-label="스킬 구현 여부"><button aria-pressed={readiness==='all'} onClick={()=>setReadiness('all')}>전체 {civilizations.length}</button><button aria-pressed={readiness==='implemented'} onClick={()=>setReadiness('implemented')}>스킬 구현 {implementedCount}</button><button aria-pressed={readiness==='pending'} onClick={()=>setReadiness('pending')}>스킬 준비 중 {civilizations.length-implementedCount}</button></div>
+        <p className="readiness-help">스킬 준비 중인 문명은 기본 체스로 플레이합니다. 로마는 12표법을 제외한 스킬이 구현되어 있어요.{settings.mode==='ai'&&' AI는 90% 확률로 스킬이 구현된 문명을 선택합니다.'}</p>
+        <div className="civilization-search"><label htmlFor="civilization-search">문명 검색</label><input id="civilization-search" type="search" placeholder="나라 또는 문명 이름으로 검색" value={search} disabled={locking || aiTurn || onlineWaiting} onChange={event => setSearch(event.target.value)} /><span aria-live="polite">{visibleCivilizations.length} / {civilizations.length}개 문명 · 중복 제외{chosenName ? ` · ${chosenName} 선택됨` : ''}</span></div>
         <div className="civilization-filter-panel">
-          <div className="civilization-filter-row"><span className="filter-label">나라</span><div className="civilization-filters" role="group" aria-label="나라별 문명 필터">{(['전체', ...countries] as const).map(item => <button key={item} aria-pressed={country === item} disabled={locking || aiTurn} onClick={() => setCountry(item)}>{item}</button>)}</div></div>
-          <div className="civilization-filter-row"><span className="filter-label">대륙</span><div className="civilization-filters" role="group" aria-label="대륙별 문명 필터">{(['전체', ...regions] as const).map(item => <button key={item} aria-pressed={region === item} disabled={locking || aiTurn} onClick={() => setRegion(item)}>{item}</button>)}</div></div>
-          <div className="civilization-filter-row"><span className="filter-label">시대</span><div className="civilization-filters" role="group" aria-label="시대별 문명 필터">{(['전체', ...eras] as const).map(item => <button key={item} aria-pressed={era === item} disabled={locking || aiTurn} onClick={() => setEra(item)}>{item}</button>)}</div></div>
-          <div className="civilization-filter-summary"><span aria-live="polite">{country === '전체' ? '모든 나라' : country} · {region === '전체' ? '모든 대륙' : region} · {era === '전체' ? '모든 시대' : era}{search.trim() ? ` · “${search.trim()}”` : ''}</span><button disabled={locking || aiTurn || !hasFilters} onClick={resetFilters}>필터 초기화</button></div>
+          <div className="civilization-filter-row"><span className="filter-label">나라</span><div className="civilization-filters" role="group" aria-label="나라별 문명 필터">{(['전체', ...countries] as const).map(item => <button key={item} aria-pressed={country === item} disabled={locking || aiTurn || onlineWaiting} onClick={() => setCountry(item)}>{item}</button>)}</div></div>
+          <div className="civilization-filter-row"><span className="filter-label">대륙</span><div className="civilization-filters" role="group" aria-label="대륙별 문명 필터">{(['전체', ...regions] as const).map(item => <button key={item} aria-pressed={region === item} disabled={locking || aiTurn || onlineWaiting} onClick={() => setRegion(item)}>{item}</button>)}</div></div>
+          <div className="civilization-filter-row"><span className="filter-label">시대</span><div className="civilization-filters" role="group" aria-label="시대별 문명 필터">{(['전체', ...eras] as const).map(item => <button key={item} aria-pressed={era === item} disabled={locking || aiTurn || onlineWaiting} onClick={() => setEra(item)}>{item}</button>)}</div></div>
+          <div className="civilization-filter-summary"><span aria-live="polite">{country === '전체' ? '모든 나라' : country} · {region === '전체' ? '모든 대륙' : region} · {era === '전체' ? '모든 시대' : era}{search.trim() ? ` · “${search.trim()}”` : ''}</span><button disabled={locking || aiTurn || onlineWaiting || !hasFilters} onClick={resetFilters}>필터 초기화</button></div>
           <p className="civilization-era-note">현대 국가와 연결되는 중심지·주요 역사 문화권 기준으로 묶습니다. 여러 나라에 걸친 문명은 중복 표시되며 같은 문명으로 선택됩니다. 전체 정복 영토를 나열한 분류는 아닙니다.</p>
           <p className="civilization-era-note">위·촉·오는 삼국시대, 진은 진시황의 진나라(秦), 송은 송나라(宋)입니다. 시대는 게임 탐색용 구분이며 여러 시대에 걸친 왕조는 중복 표시합니다.</p>
         </div>
       </div>}
       <div className={`draft-card-grid ${!category ? 'civilization-grid' : ''} ${locking ? 'is-locking' : ''}`} key={`cards-${picks.length}`} role="group" aria-label={`${colorNames[step.color]} ${category?.name ?? '문명'} 카드 ${currentCards?.length ?? visibleCivilizations.length}장`}>
-        {currentCards ? currentCards.map((skill, index) => <button key={skill.id} className={`draft-card skill-card ${choice === skill.id ? 'is-selected' : ''} ${choice && choice !== skill.id ? 'not-selected' : ''}`} style={{ '--card-index': index } as CSSProperties} aria-pressed={choice === skill.id} aria-label={`${skill.name} 선택`} disabled={locking || aiTurn} onClick={() => setChoice(skill.id)}>
+        {currentCards ? currentCards.map((skill, index) => <button key={skill.id} className={`draft-card skill-card ${choice === skill.id ? 'is-selected' : ''} ${choice && choice !== skill.id ? 'not-selected' : ''}`} style={{ '--card-index': index } as CSSProperties} aria-pressed={choice === skill.id} aria-label={`${skill.name} 선택`} disabled={locking || aiTurn || onlineWaiting} onClick={() => setChoice(skill.id)}>
           <div className="card-topline"><span>{category?.english}</span><span>0{index + 1}</span></div><div className="card-symbol">{civilization && specialPieceTypes[skill.id] ? <Piece type={specialPieceTypes[skill.id]} color={step.color} civilization={civilization} skill={skill.id} /> : <SkillSymbol skill={skill} />}</div><span className="card-subtitle">{skill.subtitle}</span><h2>{skill.name}</h2><p className="card-description">{skill.description}</p><p className="card-detail">{skill.detail}</p>{skill.pending && <span className="pending-tag">세부 효과 기획 중</span>}<div className="card-select-label">{choice === skill.id ? <><Check size={15} />{locking ? '선택 확정' : '선택됨'}</> : <>카드 선택 <ArrowRight size={14} /></>}</div>
         </button>) : countries.flatMap(group => {
           if (country !== '전체' && country !== group) return [];
@@ -139,15 +147,15 @@ export default function Draft({ onStart, settings, onSettings }: { settings: Mat
           if (!members.length) return [];
           return [<div className="civilization-country-heading" key={group}><h2>{group}</h2><span>{members.length}개 문명</span></div>, ...members.map((civ, index) => {
           const copy = civilizationCopy[civilizationAppearance[civ.id]] ?? { headline: civ.region, detail: '기본 백·흑 기물로 대전을 시작하세요. 문명별 색상은 추후 추가됩니다.', traits: '스킬 준비 중 · 기본 체스 대전' };
-          return <button key={`${group}-${civ.id}`} className={`draft-card civilization-card theme-${civilizationAppearance[civ.id]} ${hasCivilizationIcon(civ.id) ? '' : 'no-emblem'} ${choice === civ.id ? 'is-selected' : ''} ${choice && choice !== civ.id ? 'not-selected' : ''}`} style={{ '--card-index': Math.min(index, 5) } as CSSProperties} aria-pressed={choice === civ.id} aria-label={`${civ.name} 선택`} disabled={locking || aiTurn} onClick={() => setChoice(civ.id)}>
+          return <button key={`${group}-${civ.id}`} className={`draft-card civilization-card theme-${civilizationAppearance[civ.id]} ${hasCivilizationIcon(civ.id) ? '' : 'no-emblem'} ${choice === civ.id ? 'is-selected' : ''} ${choice && choice !== civ.id ? 'not-selected' : ''}`} style={{ '--card-index': Math.min(index, 5) } as CSSProperties} aria-pressed={choice === civ.id} aria-label={`${civ.name} 선택`} disabled={locking || aiTurn || onlineWaiting} onClick={() => setChoice(civ.id)}>
             <span className="civilization-classification" title={civ.countries.join(' · ')}>{civ.region} · {civilizationEras[civ.id].join(' / ')}</span>
-            <div className="card-topline"><span>{civ.english}</span><span>{civ.mark}</span></div>{hasCivilizationIcon(civ.id) && <div className="card-symbol"><CivilizationIcon civilization={civ.id} color={step.color} size={66} /></div>}<span className="card-subtitle">{copy.headline}</span><h2>{civ.name}</h2><p className="card-description">{copy.detail}</p><span className="civilization-traits">{copy.traits}</span><div className="piece-color-preview" aria-label={`${civ.name} 백과 흑 기물 미리보기`}>{(['w', 'b'] as Color[]).map(color => <span className="piece-color-side" key={color}><small>{colorNames[color]}</small>{(['n', 'k', 'p'] as const).map(type => <Piece key={type} type={type} color={color} civilization={civ.id} />)}</span>)}</div><div className="card-select-label">{choice === civ.id ? <><Check size={15} />{locking ? '선택 확정' : '선택됨'}</> : <>문명 선택 <ArrowRight size={14} /></>}</div>
+            <div className="card-topline"><span>{civ.english}</span><span>{civ.mark}</span></div>{hasCivilizationIcon(civ.id) && <div className="card-symbol"><CivilizationIcon civilization={civ.id} color={step.color} size={66} /></div>}<span className="card-subtitle">{copy.headline}</span><h2>{civ.name}</h2><span className={`readiness-badge ${civilizationReadiness(civ.id)}`}>{readinessLabels[civilizationReadiness(civ.id)]}</span><p className="card-description">{copy.detail}</p><span className="civilization-traits">{copy.traits}</span><div className="piece-color-preview" aria-label={`${civ.name} 백과 흑 기물 미리보기`}>{(['w', 'b'] as Color[]).map(color => <span className="piece-color-side" key={color}><small>{colorNames[color]}</small>{(['n', 'k', 'p'] as const).map(type => <Piece key={type} type={type} color={color} civilization={civ.id} />)}</span>)}</div><div className="card-select-label">{choice === civ.id ? <><Check size={15} />{locking ? '선택 확정' : '선택됨'}</> : <>문명 선택 <ArrowRight size={14} /></>}</div>
           </button>;
         })];
         })}
       </div>
-      {!category && !visibleCivilizations.length && <div className="civilization-empty" role="status"><p>조건에 맞는 문명이 없습니다. 검색어·나라·대륙·시대를 바꿔보세요.</p><button className="draft-back" disabled={locking || aiTurn} onClick={resetFilters}>필터 초기화</button></div>}
-      <div className="draft-controls"><button className="draft-back" onClick={back} disabled={!previous || locking || aiTurn}><ArrowLeft size={16} /> 이전 선택</button><span className="draft-counter">{picks.length + 1} / 8<span>{category ? '카드 3장 중 하나를 선택하세요' : '같은 문명도 선택할 수 있습니다'}</span></span><button className="primary-button" disabled={!choice || locking || aiTurn} onClick={() => setLocking(true)}>{aiTurn ? 'AI 선택 중' : locking ? '선택 확정 중' : '선택 확정'}{locking ? <Check size={18} /> : <ArrowRight size={18} />}</button></div>
+      {!category && !visibleCivilizations.length && <div className="civilization-empty" role="status"><p>조건에 맞는 문명이 없습니다. 검색어·나라·대륙·시대를 바꿔보세요.</p><button className="draft-back" disabled={locking || aiTurn || onlineWaiting} onClick={resetFilters}>필터 초기화</button></div>}
+      <div className="draft-controls"><button className="draft-back" onClick={back} disabled={!previous || locking || aiTurn || onlineWaiting}><ArrowLeft size={16} /> 이전 선택</button><span className="draft-counter">{picks.length + 1} / 8<span>{category ? '카드 3장 중 하나를 선택하세요' : '같은 문명도 선택할 수 있습니다'}</span></span><button className="primary-button" disabled={!choice || locking || aiTurn || onlineWaiting} onClick={() => setLocking(true)}>{onlineWaiting ? '상대 선택 대기' : aiTurn ? 'AI 선택 중' : locking ? '선택 확정 중' : '선택 확정'}{locking ? <Check size={18} /> : <ArrowRight size={18} />}</button></div>
       <p className="draft-disclaimer"><Shield size={14} />그리스·이집트·로마의 선택한 능력이 적용됩니다. 12표법만 준비 중이며 카드의 임시 규칙을 확인하세요.</p>
     </>}
     {saveFailed && <p className="storage-warning" role="alert">선택 내용을 저장할 수 없습니다. 새로고침하면 다시 선택해야 합니다.</p>}

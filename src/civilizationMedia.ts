@@ -15,7 +15,7 @@ export function mediaForCivilization(id: Civilization): CivilizationMedia {
 }
 
 export function opponentCivilization(players: Players, settings: MatchSettings, turn: Color): Civilization {
-  const viewer = settings.mode === 'ai' ? settings.humanColor : turn;
+  const viewer = settings.mode !== 'local' ? settings.humanColor : turn;
   return players[viewer === 'w' ? 'b' : 'w'];
 }
 

@@ -269,6 +269,12 @@ export class AbilityGame extends Chess {
       }
     return game;
   }
+  acceptOnlineSave(data: AbilitySave) {
+    if (JSON.stringify(data.loadouts) !== JSON.stringify(this.loadouts)) throw Error('Loadout mismatch');
+    const restored = AbilityGame.restoreSave(data);
+    this.state = restored.state; this.journal = restored.journal; this.placements = restored.placements;
+    this.actionCache = null; this.sync();
+  }
   tick(ms: number) {
     if (this.placementOwner() || !this.state.clocks || this.state.timedOut) return false;
     const c = this.turn();

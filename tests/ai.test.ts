@@ -90,7 +90,7 @@ test('AI settings survive saves while legacy matches remain local and invalid se
   assert.equal(restored.game.turn(), 'b');
   const legacy = { version: 2, moves: [], players: { w: 'greece', b: 'rome' }, resigned: null, loadouts: null };
   assert.deepEqual(decodeMatch(JSON.stringify(legacy))?.settings, localSettings);
-  for (const settings of [null, {}, { ...whiteAI, humanColor: 'x' }, { ...whiteAI, difficulty: 'constructor' }, { ...whiteAI, mode: 'online' }]) {
+  for (const settings of [null, {}, { ...whiteAI, humanColor: 'x' }, { ...whiteAI, difficulty: 'constructor' }, { ...whiteAI, mode: 'unknown' }]) {
     assert.equal(isMatchSettings(settings), false);
     assert.equal(decodeMatch(JSON.stringify({ ...JSON.parse(raw), settings })), null);
   }
