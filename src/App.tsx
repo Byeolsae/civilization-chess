@@ -77,9 +77,23 @@ export default function App() {
   const dragRef = useRef<DragSession | null>(null);
   const suppressClick = useRef(false);
   const [dragVisual, setDragVisual] = useState<DragVisual | null>(null);
+  const placementOwner = game instanceof AbilityGame ? game.placementOwner() : undefined;
+  const [placementSquare, setPlacementSquare] = useState<Square | null>(null);
+  const [placementAxis, setPlacementAxis] = useState<'row' | 'column'>('row');
+  const placementHuman = !!placementOwner && (settings.mode === 'local' || placementOwner === settings.humanColor);
+  const placementArea = game instanceof AbilityGame && placementOwner && placementSquare ? game.placementSquares(placementOwner, {square:placementSquare,axis:placementAxis}) : [];
+  useEffect(() => { setPlacementSquare(null); setPlacementAxis('row'); }, [game, placementOwner]);
+  useEffect(() => {
+    if (!(game instanceof AbilityGame) || !placementOwner || settings.mode !== 'ai' || placementOwner === settings.humanColor) return;
+    const timer = setTimeout(() => {
+      game.placePassive(placementOwner, {square:placementOwner === 'w' ? 'd2' : game.loadouts.b.passive === 'roads' ? 'd6' : 'd7',axis:'row'});
+      setRevision(value => value + 1);
+    }, 650);
+    return () => clearTimeout(timer);
+  }, [game, placementOwner, settings.mode, settings.humanColor]);
   const status = gameStatus(game, resigned);
-  const aiTurn = started && settings.mode === 'ai' && game.turn() !== settings.humanColor && !status.over;
-  const humanTurn = started && !status.over && !aiTurn && !quiz;
+  const aiTurn = !placementOwner && started && settings.mode === 'ai' && game.turn() !== settings.humanColor && !status.over;
+  const humanTurn = !placementOwner && started && !status.over && !aiTurn && !quiz;
   const resigningColor = settings.mode === 'ai' ? settings.humanColor : game.turn();
   const ai = useAiTurn(game, revision, aiTurn && !confirm, settings.difficulty, setRevision);
   const modeLabel = settings.mode === 'ai' ? `AI 대전 · ${difficultyNames[settings.difficulty]}` : '로컬 2인 대전';
@@ -109,17 +123,17 @@ export default function App() {
     const delay = newAction ? lastMove?.flags.includes('s') ? 1300 : 360 : 0;
     const timer = setTimeout(() => {
       dragRef.current = null; setDragVisual(null); setSelected(null);
-      setFlipped(turn === 'b');
+      setFlipped((placementOwner ?? turn) === 'b');
     }, delay);
     return () => clearTimeout(timer);
-  }, [game, turn, started, settings.mode, status.over]);
+  }, [game, turn, started, settings.mode, status.over, placementOwner]);
   const ranks = flipped ? [1, 2, 3, 4, 5, 6, 7, 8] : [8, 7, 6, 5, 4, 3, 2, 1];
   const files = (flipped ? 'hgfedcba' : 'abcdefgh').split('');
   const topColor: Color = flipped ? 'w' : 'b';
   const bottomColor = opposite(topColor);
 
   useEffect(() => {
-    if (!started || status.over || !(game instanceof AbilityGame) || !game.state.clocks) return;
+    if (placementOwner || !started || status.over || !(game instanceof AbilityGame) || !game.state.clocks) return;
     let last = performance.now();
     const timer = setInterval(() => {
       const now = performance.now(); const ended = game.tick(now - last); last = now;
@@ -128,7 +142,7 @@ export default function App() {
       try { localStorage.setItem(STORAGE_KEY, encodeMatch(game, players, resigned, loadouts, settings)); } catch { /* Main save reports errors. */ }
     }, 250);
     return () => clearInterval(timer);
-  }, [game, started, status.over, players, resigned, loadouts, settings]);
+  }, [game, started, status.over, players, resigned, loadouts, settings, placementOwner]);
 
   function performAbility(action: AbilityAction) {
     if (!(game instanceof AbilityGame) || status.over || aiTurn || confirm) return;
@@ -181,6 +195,7 @@ export default function App() {
   }
 
   function selectSquare(square: Square) {
+    if (placementOwner) { if (placementHuman && !confirm) setPlacementSquare(square); return; }
     if (!humanTurn || promotion || confirm) return;
     if (activeTarget.armed) { activeTarget.select(square); return; }
     if (pieceMode) {
@@ -254,13 +269,13 @@ export default function App() {
   function playerBar(color: Color) {
     const civ = getCivilization(players[color]);
     const captured = game instanceof AbilityGame ? game.graves(opposite(color)).map(piece => piece.type) : history.filter(move => move.color === color && move.captured).map(move => move.captured!);
-    return <div className={`player-bar ${started && !status.over && game.turn() === color ? 'current-player' : ''}`}>
+    return <div className={`player-bar ${started && !status.over && (placementOwner ?? game.turn()) === color ? 'current-player' : ''}`}>
       {hasCivilizationIcon(players[color]) && <div className={`player-avatar ${color}`}><CivilizationIcon civilization={players[color]} color={color} size={36} /></div>}
-      <div className="player-identity"><strong>{civ.name}{settings.mode === 'ai' && <small className="opponent-label">{color === settings.humanColor ? '나' : 'AI'}</small>}<span className={`color-chip ${color}`}>{colorNames[color]}</span></strong><span>{started ? (game.turn() === color && !status.over ? (settings.mode === 'ai' && color !== settings.humanColor ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : '당신의 차례') : status.over ? '대전 종료' : '상대의 수를 기다리는 중') : '문명 선택 중'}</span></div>
+      <div className="player-identity"><strong>{civ.name}{settings.mode === 'ai' && <small className="opponent-label">{color === settings.humanColor ? '나' : 'AI'}</small>}<span className={`color-chip ${color}`}>{colorNames[color]}</span></strong><span>{placementOwner ? placementOwner === color ? '시작 지형 배치 중' : '상대 배치를 기다리는 중' : started ? (game.turn() === color && !status.over ? (settings.mode === 'ai' && color !== settings.humanColor ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : '당신의 차례') : status.over ? '대전 종료' : '상대의 수를 기다리는 중') : '문명 선택 중'}</span></div>
       <div className="captured" aria-label={`${colorNames[color]}이 잡은 기물: ${captured.map(p => pieceNames[p]).join(', ') || '없음'}`}>
         {captured.map((type, index) => <Piece key={index} type={type} color={opposite(color)} civilization={players[opposite(color)]} revived={game instanceof AbilityGame ? game.graves(opposite(color))[index]?.revived : undefined} lives={game instanceof AbilityGame ? game.graves(opposite(color))[index]?.lives : undefined} skill={game instanceof AbilityGame ? game.loadouts[opposite(color)].piece : undefined} small />)}
       </div>
-      {started && game.turn() === color && !status.over && <span className="turn-tag">차례</span>}
+      {started && (placementOwner ?? game.turn()) === color && !status.over && <span className="turn-tag">{placementOwner ? '배치' : '차례'}</span>}
     </div>;
   }
 
@@ -277,8 +292,12 @@ export default function App() {
           localStorage.setItem(SETUP_KEY, JSON.stringify(next));
         } catch { setStorageError(true); }
         setSettings(next); setSetupReady(true);
-      }} /> : <Draft settings={settings} onSettings={() => setSetupReady(false)} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts) : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} /> : <>
+      }} /> : <Draft settings={settings} onSettings={() => setSetupReady(false)} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts).beginPlacement() : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} /> : <>
       <div className="page-heading"><div><div className="eyebrow">THE FIRST AGE</div><h1>한 수로 시작하는 문명</h1></div><span className="rules-badge"><Shield size={15} /> {game instanceof AbilityGame ? '문명 능력 대전' : '기본 체스'}</span></div>
+      {placementOwner && game instanceof AbilityGame && <section className="placement-guide" aria-label="시작 지형 배치">
+        <div><strong>{colorNames[placementOwner]} · {game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드 배치' : '로마길 배치'}</strong><p>{!placementHuman ? 'AI가 시작 지형을 배치하고 있어요.' : game.loadouts[placementOwner].passive === 'pyramid' ? '중심 칸을 누르세요. 주변 8칸까지 보호합니다. 기물이 있는 칸도 선택할 수 있어요.' : '방향을 고르고 보드에서 인접한 두 줄을 선택하세요.'}</p></div>
+        {placementHuman && <><div className="placement-controls">{game.loadouts[placementOwner].passive === 'roads' && <>{(['row','column'] as const).map(axis => <button key={axis} aria-pressed={placementAxis === axis} onClick={() => setPlacementAxis(axis)}>{axis === 'row' ? '가로 2행' : '세로 2열'}</button>)}</>}<button className="primary-button" disabled={!placementSquare} onClick={() => {if (placementSquare) {game.placePassive(placementOwner,{square:placementSquare,axis:placementAxis});setRevision(value => value + 1);}}}>배치 확정</button></div><small>모든 배치가 끝나면 백부터 시작합니다.</small></>}
+      </section>}
       <div className="game-layout">
         <section className="board-section" aria-label="체스 대전">
           {playerBar(topColor)}
@@ -294,9 +313,9 @@ export default function App() {
                 const desertMask = game instanceof AbilityGame ? desertTerrainMask(square, game.state.zones.filter(zone => zone.kind === 'desert').flatMap(zone => zone.squares), flipped) : undefined;
                 const checked = piece?.type === 'k' && piece.color === game.turn() && game.isCheck();
                 return <button key={square} type="button" data-square={square}
-                  className={`square ${activeTarget.valid.has(square) ? 'active-target' : ''} ${activeTarget.area.includes(square) ? 'active-area' : ''} ${(file.charCodeAt(0) - 97 + rank) % 2 === 1 ? 'dark' : 'light'} ${selected === square ? 'selected' : ''} ${lastMove?.from === square || lastMove?.to === square ? 'last-move' : ''} ${checked ? 'in-check' : ''} ${piece?.color === game.turn() && humanTurn ? 'can-drag' : ''} ${dragVisual?.from === square ? 'drag-origin' : ''} ${dragVisual?.over === square ? 'drop-target' : ''}`}
+                  className={`square ${placementArea.includes(square) ? 'placement-preview' : ''} ${activeTarget.valid.has(square) ? 'active-target' : ''} ${activeTarget.area.includes(square) ? 'active-area' : ''} ${(file.charCodeAt(0) - 97 + rank) % 2 === 1 ? 'dark' : 'light'} ${selected === square ? 'selected' : ''} ${lastMove?.from === square || lastMove?.to === square ? 'last-move' : ''} ${checked ? 'in-check' : ''} ${piece?.color === game.turn() && humanTurn ? 'can-drag' : ''} ${dragVisual?.from === square ? 'drag-origin' : ''} ${dragVisual?.over === square ? 'drop-target' : ''}`}
                   title={abilityNote || undefined} aria-label={`${square}${fogged ? ' 시야 제한' : piece ? ` ${colorNames[piece.color]} ${pieceNames[piece.type]}` : ' 빈 칸'}${possible ? ' 이동 가능' : ''}${checked ? ' 체크' : ''}`}
-                  aria-pressed={selected === square} disabled={!humanTurn || (game instanceof AbilityGame && !!game.state.duel)}
+                  aria-pressed={selected === square} disabled={placementOwner ? !placementHuman : !humanTurn || (game instanceof AbilityGame && !!game.state.duel)}
                   onPointerDown={event => beginDrag(event, square)}
                   onPointerEnter={() => activeTarget.hover(square)}
                   onPointerLeave={() => activeTarget.hover(null)}
@@ -317,6 +336,8 @@ export default function App() {
                     const next = row * 8 + column + offsets[event.key];
                     if (next >= 0 && next < 64) boardRef.current?.querySelectorAll('button')[next]?.focus();
                   }}>
+                  {game instanceof AbilityGame && game.state.zones.some(z => z.kind === 'road' && z.squares.includes(square)) && <span className="passive-road" aria-hidden="true"/>}
+                  {game instanceof AbilityGame && game.state.zones.some(z => z.kind === 'pyramid' && z.center === square) && <span className="passive-pyramid" aria-hidden="true">△</span>}
                   {desertMask && <span className="desert-terrain" style={{ backgroundPosition: `${column / 7 * 100}% ${row / 7 * 100}%`, maskImage: desertMask, WebkitMaskImage: desertMask }} aria-hidden="true" />}
                   {(pieceTargets.has(square) || pieceArea.includes(square)) && <span className={`piece-target-mark ${pieceMode ? 'armed' : ''} ${pieceArea.includes(square) ? 'area' : ''}`} aria-label={pieceMode ? '스킬 적용 대상' : '스킬 가능 대상'} />}
                   {activeTarget.area.includes(square) && <span className="target-mark" />}{column === 0 && <span className="rank-label">{rank}</span>}
@@ -341,10 +362,10 @@ export default function App() {
 
         <aside className="side-panel">
           <>
-            <section className={`status-panel ${status.kind}`} aria-live="polite"><div className="panel-kicker">{status.over ? 'GAME OVER' : aiTurn ? 'AI TURN' : 'YOUR MOVE'}</div><div className="status-title">{status.over ? <Crown size={25} /> : <span className={`side-dot large ${game.turn()}`} />}<h2>{aiTurn ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : status.title}</h2></div><p>{aiTurn ? ai.error ?? `${difficultyNames[settings.difficulty]} AI가 다음 수를 고르고 있어요.` : status.detail}</p>{aiTurn && ai.error && <button className="secondary-button" onClick={ai.retry}>AI 다시 시도</button>}{status.over && <button className="primary-button" onClick={() => setConfirm('new')}>새로운 대전 <ArrowRight size={17} /></button>}</section>
+            <section className={`status-panel ${status.kind}`} aria-live="polite"><div className="panel-kicker">{placementOwner ? 'PLACEMENT' : status.over ? 'GAME OVER' : aiTurn ? 'AI TURN' : 'YOUR MOVE'}</div><div className="status-title">{status.over ? <Crown size={25} /> : <span className={`side-dot large ${game.turn()}`} />}<h2>{placementOwner ? `${colorNames[placementOwner]} 지형 배치` : aiTurn ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : status.title}</h2></div><p>{placementOwner ? '보드에서 위치를 선택하고 배치를 확정하세요.' : aiTurn ? ai.error ?? `${difficultyNames[settings.difficulty]} AI가 다음 수를 고르고 있어요.` : status.detail}</p>{aiTurn && ai.error && <button className="secondary-button" onClick={ai.retry}>AI 다시 시도</button>}{status.over && <button className="primary-button" onClick={() => setConfirm('new')}>새로운 대전 <ArrowRight size={17} /></button>}</section>
             <section className="history-panel"><div className="section-title"><h3><ScrollText size={18} /> 대전 기록</h3><span>{history.length}수</span></div><div className="history-labels"><span>#</span><span>백</span><span>흑</span></div>
               <div className="history-list" ref={historyRef} aria-label="기보">
-                {!history.length ? <div className="history-empty"><Swords size={29} strokeWidth={1.2} /><p>첫 수를 기다리고 있어요</p><span>{aiTurn ? 'AI의 첫 수를 기다리고 있어요.' : '체스판에서 내 기물을 선택하세요.'}</span></div> : game instanceof AbilityGame ? history.map((move, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{(['w','b'] as const).map(color => <span key={color} className={move === lastMove && move.color === color ? 'latest-san' : ''}>{move.color === color ? <b>{move.san}</b> : '—'}</span>)}</div>) : Array.from({ length: Math.ceil(history.length / 2) }, (_, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{[history[index * 2], history[index * 2 + 1]].map((move, side) => <span key={side} className={move && move === lastMove ? 'latest-san' : ''}>{move ? <><Piece type={move.piece} color={move.color} civilization={players[move.color]} small /><b>{move.san}</b></> : '—'}</span>)}</div>)}
+                {!history.length ? <div className="history-empty"><Swords size={29} strokeWidth={1.2} /><p>첫 수를 기다리고 있어요</p><span>{placementOwner ? '먼저 시작 지형을 배치하세요.' : aiTurn ? 'AI의 첫 수를 기다리고 있어요.' : '체스판에서 내 기물을 선택하세요.'}</span></div> : game instanceof AbilityGame ? history.map((move, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{(['w','b'] as const).map(color => <span key={color} className={move === lastMove && move.color === color ? 'latest-san' : ''}>{move.color === color ? <b>{move.san}</b> : '—'}</span>)}</div>) : Array.from({ length: Math.ceil(history.length / 2) }, (_, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{[history[index * 2], history[index * 2 + 1]].map((move, side) => <span key={side} className={move && move === lastMove ? 'latest-san' : ''}>{move ? <><Piece type={move.piece} color={move.color} civilization={players[move.color]} small /><b>{move.san}</b></> : '—'}</span>)}</div>)}
               </div>
             </section>
             <div className="match-actions"><button onClick={() => setConfirm('new')}><RotateCcw size={16} /> 새 대전</button><button onClick={() => setConfirm('resign')} disabled={status.over}><Flag size={16} /> 기권</button></div>

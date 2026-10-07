@@ -35,7 +35,7 @@ export const skills: Record<Civilization, Record<Category, Skill[]>> = {
     passive: [
       { id: 'nile', name: '나일강의 범람', subtitle: '강이 가져오는 기회', description: '4턴마다 아군 진영 일부가 범람해 폰의 추가 전진을 돕습니다.', detail: '범람은 1턴 지속됩니다. 해당 지역의 폰은 다음 이동에 직선으로 1칸 더 전진하며, 추가 이동으로 포획할 수 없습니다.', symbol: 'waves' },
       { id: 'sandstorm', name: '모래폭풍', subtitle: '모래에 가려진 전장', description: '아군 기물이 일정 수 이상 잡히면 상대의 시야와 이동을 제한합니다.', detail: '2턴 동안 상대는 아군 진영 절반의 시야가 제한되며 룩·비숍·퀸은 최대 3칸만 이동합니다. 발동 기준 수는 기획 중입니다.', symbol: 'wind' },
-      { id: 'pyramid', name: '피라미드의 축복', subtitle: '불멸의 수호 영역', description: '피라미드와 주변 8칸의 아군이 기절·감전·밀침에 면역을 얻습니다.', detail: '영역의 기물에서 감전 전이가 차단됩니다. 영역을 벗어나면 면역이 사라집니다.', symbol: 'pyramid' },
+      { id: 'pyramid', name: '피라미드의 축복', subtitle: '불멸의 수호 영역', description: '시작 전 위치를 고른 피라미드와 주변 8칸의 아군이 기절·감전·밀침에 면역을 얻습니다.', detail: '영역의 기물에서 감전 전이가 차단됩니다. 영역을 벗어나면 면역이 사라집니다.', symbol: 'pyramid' },
     ],
     active: [
       { id: 'osiris', name: '오시리스', subtitle: '다시 일어서는 영혼', description: '죽은 아군 하나를 아군 진영의 빈 칸에 부활시킵니다.', detail: '원래 능력을 유지하지만 그 턴에는 행동하지 못합니다. 부활 불가 기물은 제외됩니다.', symbol: 'sun' },
@@ -50,7 +50,7 @@ export const skills: Record<Civilization, Record<Category, Skill[]>> = {
   },
   rome: {
     passive: [
-      { id: 'roads', name: '로마의 도로', subtitle: '모든 길은 로마로', description: '룩·비숍·퀸이 아군 하나를 뛰어넘어 도로 위에 착지할 수 있습니다.', detail: '인접한 2개 행 또는 열을 도로로 지정합니다. 적은 뛰어넘을 수 없습니다.', symbol: 'route' },
+      { id: 'roads', name: '로마의 도로', subtitle: '모든 길은 로마로', description: '룩·비숍·퀸이 아군 하나를 뛰어넘어 도로 위에 착지할 수 있습니다.', detail: '게임 시작 전 인접한 2개 행 또는 열을 골라 도로로 지정합니다. 적은 뛰어넘을 수 없습니다.', symbol: 'route' },
       { id: 'legion', name: '군단', subtitle: '함께 서면 무너지지 않는다', description: '폰 3개 이상이 가로로 붙으면 각 기물이 기절·감전·밀침 중 한 번을 막습니다.', detail: '각 기물당 상태이상 한 번을 막습니다. 진형이 깨진 뒤 다시 형성되면 보호 효과를 다시 얻습니다.', symbol: 'shield' },
       { id: 'twelve-tables', name: '12표법', subtitle: '전장을 다스리는 법', description: '양쪽에 적용되는 법률 하나를 정하고 로마는 추가 혜택을 받습니다.', detail: '12개 법률의 세부 효과는 원안에서 아직 기획 중입니다. 이 카드의 선택은 저장할 수 있습니다.', symbol: 'scroll', pending: true },
     ],

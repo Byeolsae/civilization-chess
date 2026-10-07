@@ -56,7 +56,9 @@ type State = AbilityState & {
   clocks: Record<Color, number> | null;
   timedOut: Color | null;
 };
+export type PassivePlacement = { square: Square; axis: "row" | "column" };
 export type AbilitySave = {
+  placements?: Partial<Record<Color, PassivePlacement>>;
   version: 1;
   loadouts: Loadouts;
   actions: AbilityAction[];
@@ -107,6 +109,7 @@ export const abilityNames: Record<string, string> = {
 export class AbilityGame extends Chess {
   state: State;
   readonly loadouts: Loadouts;
+  private placements?: Partial<Record<Color, PassivePlacement>>;
   private journal: { before: State; action: AbilityAction; move: Move }[] = [];
   private actionCache: { key: string; actions: AbilityAction[] } | null = null;
   constructor(loadouts: Loadouts, initialFen?: string) {
@@ -147,6 +150,32 @@ export class AbilityGame extends Chess {
         });
       }
     this.updateLegion();
+  }
+  beginPlacement() {
+    if (this.journal.length || this.placements) throw Error("Placement already started");
+    this.placements = {};
+    this.state.zones = this.state.zones.filter(z => z.kind !== "pyramid" && z.kind !== "road");
+    this.actionCache = null;
+    return this;
+  }
+  placementOwner(): Color | undefined {
+    if (!this.placements) return undefined;
+    return (["w", "b"] as Color[]).find(c => ["pyramid", "roads"].includes(this.loadouts[c].passive) && !this.placements![c]);
+  }
+  placementSquares(owner: Color, choice: PassivePlacement): Square[] {
+    if (!SQUARES.includes(choice.square) || !["row", "column"].includes(choice.axis)) throw Error("Invalid placement");
+    if (this.has(owner, "pyramid")) return [choice.square, ...adjacentSquares(choice.square)];
+    if (!this.has(owner, "roads")) return [];
+    const index = choice.axis === "row" ? 1 : 0;
+    const start = Math.min(6, xy(choice.square)[index]);
+    return SQUARES.filter(s => xy(s)[index] === start || xy(s)[index] === start + 1);
+  }
+  placePassive(owner: Color, choice: PassivePlacement) {
+    if (this.placementOwner() !== owner) throw Error("Not placement turn");
+    const squares = this.placementSquares(owner, choice);
+    this.state.zones.push({ id: this.loadouts[owner].passive + "-" + owner, kind: this.has(owner, "pyramid") ? "pyramid" : "road", owner, center: choice.square, squares, expiresAfter: null, protectedPieces: [] });
+    this.placements![owner] = structuredClone(choice);
+    this.actionCache = null;
   }
   has(c: Color, skill: string) {
     return Object.values(this.loadouts[c]).includes(skill);
@@ -192,6 +221,7 @@ export class AbilityGame extends Chess {
   save(): AbilitySave {
     return {
       version: 1,
+      ...(this.placements ? { placements: structuredClone(this.placements) } : {}),
       loadouts: this.loadouts,
       actions: this.journal.map((j) => j.action),
       clocks: this.state.clocks,
@@ -206,6 +236,10 @@ export class AbilityGame extends Chess {
     )
       throw Error("Invalid ability save");
     const game = new AbilityGame(data.loadouts);
+    if (data.placements !== undefined) {
+      game.beginPlacement();
+      for (const c of ["w", "b"] as Color[]) if (data.placements[c]) game.placePassive(c, data.placements[c]!);
+    }
     for (const [index, action] of data.actions.entries()) {
       if (game.state.clocks) {
         const clock = data.clocksBefore?.[index];
@@ -236,7 +270,7 @@ export class AbilityGame extends Chess {
     return game;
   }
   tick(ms: number) {
-    if (!this.state.clocks || this.state.timedOut) return false;
+    if (this.placementOwner() || !this.state.clocks || this.state.timedOut) return false;
     const c = this.turn();
     this.state.clocks[c] = Math.max(0, this.state.clocks[c] - ms);
     if (this.state.clocks[c] === 0) {
@@ -286,6 +320,7 @@ export class AbilityGame extends Chess {
     );
   }
   private onRoad(c: Color, s: Square) {
+    if (this.placements) return this.state.zones.some(z => z.kind === "road" && z.owner === c && z.squares.includes(s));
     return (
       this.has(c, "roads") &&
       (c === "w" ? ["2", "3"].includes(s[1]) : ["6", "7"].includes(s[1]))
@@ -441,10 +476,10 @@ export class AbilityGame extends Chess {
     return false;
   }
   override isCheckmate() {
-    return !this.state.duel && this.isCheck() && !this.actions().length;
+    return !this.placementOwner() && !this.state.duel && this.isCheck() && !this.actions().length;
   }
   override isStalemate() {
-    return !this.state.duel && !this.isCheck() && !this.actions().length;
+    return !this.placementOwner() && !this.state.duel && !this.isCheck() && !this.actions().length;
   }
   override isDraw() {
     return this.isStalemate();
@@ -704,6 +739,7 @@ export class AbilityGame extends Chess {
     return result;
   }
   actions(): AbilityAction[] {
+    if (this.placementOwner()) return [];
     const cacheKey = JSON.stringify({ ...this.state, clocks: null });
     if (this.actionCache?.key === cacheKey)
       return this.actionCache.actions.slice();
@@ -1194,6 +1230,6 @@ export class AbilityGame extends Chess {
         );
     for (const c of ["w", "b"] as Color[])
       if (this.onRoad(c, s)) notes.push("도로");
-    return notes.join(" · ");
+    return [...new Set(notes)].join(" · ");
   }
 }
