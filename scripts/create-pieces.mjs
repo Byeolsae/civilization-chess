@@ -1,15 +1,17 @@
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 // Original, reference-inspired artwork. Shadows are clipped to the silhouette,
 // with the outline painted last to keep every contour crisp at small sizes.
 const palettes = JSON.parse(readFileSync(new URL('./piece-palettes.json', import.meta.url), 'utf8'));
+const selected = process.argv.slice(2);
 for (const [civilization, sides] of Object.entries(palettes)) {
+if (selected.length && !selected.includes(civilization)) continue;
 const directory = fileURLToPath(new URL(`../public/pieces/${civilization}/`, import.meta.url));
 mkdirSync(directory, { recursive: true });
 for (const color of ['w', 'b']) {
-  const { fill, shade, line, accent, ornament } = sides[color];
-  const trim = (left = 26, right = 74) => accent ? `<path d="M${left} 84.5 H${right}" fill="none" stroke="${accent}" stroke-width="2.8" stroke-linecap="round"/>` : '';
+  const { fill, shade, line, accent, ornament, trimColor } = sides[color];
+  const trim = (left = 26, right = 74) => accent ? `<path d="M${left} 84.5 H${right}" fill="none" stroke="${trimColor ?? accent}" stroke-width="2.8" stroke-linecap="round"/>` : '';
   let clipIndex = 0;
   const outline = d => `<path d="${d}" fill="none"/>`;
   const shape = (d, shadow = '') => {
@@ -30,8 +32,10 @@ for (const color of ['w', 'b']) {
     K: shape('M45 8 H55 V16 H63 V24 H55 V33 H45 V24 H37 V16 H45 Z') + shape('M31 77 C28 66 18 61 14 51 C7 34 24 27 38 32 L45 36 V31 H55 V36 L62 32 C76 27 93 34 86 51 C82 61 72 66 69 77 Z M29 43 C21 43 24 52 40 61 V48 C36 45 32 43 29 43 Z M71 43 C68 43 64 45 60 48 V61 C76 52 79 43 71 43 Z', 'M78 31 C89 35 91 43 86 51 C82 61 72 66 69 78 H59 C65 65 80 54 81 43 C81 38 80 34 78 31 Z') + base(),
   };
   for (const [type, body] of Object.entries(pieces)) {
-    writeFileSync(`${directory}${color}${type}.svg`, `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="${fill}" stroke="${line}" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round">${body}</g></svg>\n`);
+    const path = `${directory}${color}${type}.svg`;
+    const viewBox = existsSync(path) ? readFileSync(path, 'utf8').match(/viewBox="([^"]+)"/)?.[1] ?? '0 0 100 100' : '0 0 100 100';
+    writeFileSync(path, `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}"><g fill="${fill}" stroke="${line}" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round">${body}</g></svg>\n`);
   }
 }
 }
-console.log(`Created ${Object.keys(palettes).length * 12} piece assets.`);
+console.log(`Created ${Object.keys(palettes).filter(id => !selected.length || selected.includes(id)).length * 12} piece assets.`);

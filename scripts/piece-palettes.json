@@ -109,11 +109,11 @@
   },
   "joseon": {
     "w": {
-      "fill": "#FFFCF5",
-      "shade": "#E9D8C5",
+      "fill": "#F2AE70",
+      "shade": "#CF884E",
       "line": "#672237",
       "accent": "#BE0840",
-      "ornament": "#F2AE70"
+      "ornament": "#FFFCF5"
     },
     "b": {
       "fill": "#BE0840",
@@ -128,15 +128,17 @@
       "fill": "#FFA38D",
       "shade": "#DD846E",
       "line": "#691B1B",
-      "accent": "#155653",
-      "ornament": "#DEAA70"
+      "accent": "#3D85E3",
+      "ornament": "#691B1B",
+      "trimColor": "#DEAA70"
     },
     "b": {
       "fill": "#155653",
       "shade": "#0C3B39",
       "line": "#082E2E",
-      "accent": "#FFA38D",
-      "ornament": "#DEAA70"
+      "accent": "#3D85E3",
+      "ornament": "#691B1B",
+      "trimColor": "#DEAA70"
     }
   }
 }

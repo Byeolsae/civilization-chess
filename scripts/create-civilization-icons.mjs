@@ -18,9 +18,9 @@ mkdirSync(directory, { recursive: true });
 for (const [id, body] of Object.entries(motifs)) {
   for (const side of ['w','b']) {
     const palette = palettes[id][side];
-    const main = id === 'joseon' ? '#F2AE70' : id === 'korea' ? palettes.korea.b.shade : palette.accent;
+    const main = id === 'joseon' ? palette.ornament : id === 'korea' ? palettes.korea.b.shade : palette.accent;
     const detail = palette.ornament;
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="--main:${main};--detail:${detail};--base:${palette.fill};--blue:${id === 'joseon' ? '#FFFCF5' : palettes.korea.w.accent}"><circle cx="32" cy="32" r="30" fill="${palette.fill}" stroke="${detail}" stroke-width="1.4"/><circle cx="32" cy="32" r="27.5" fill="none" stroke="${main}" stroke-opacity=".18" stroke-width=".6"/><g transform="translate(6.4 6.4) scale(.8)">${body}</g></svg>\n`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="--main:${main};--detail:${detail};--base:${palette.fill};--blue:${id === 'joseon' ? (side === 'w' ? '#BE0840' : '#FFFCF5') : palettes.korea.w.accent}"><circle cx="32" cy="32" r="30" fill="${palette.fill}" stroke="${detail}" stroke-width="1.4"/><circle cx="32" cy="32" r="27.5" fill="none" stroke="${main}" stroke-opacity=".18" stroke-width=".6"/><g transform="translate(6.4 6.4) scale(.8)">${body}</g></svg>\n`;
     writeFileSync(new URL(`${id}-${side}.svg`,directory),svg);
     if (side === 'w') writeFileSync(new URL(`${id}.svg`,directory),svg);
   }
