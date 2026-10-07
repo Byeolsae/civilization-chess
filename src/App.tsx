@@ -290,6 +290,7 @@ export default function App() {
                 const piece = game.get(square);
                 const possible = moves.some(move => move.to === square); const abilityNote = game instanceof AbilityGame ? game.squareNote(square) : ''; const viewer = settings.mode === 'ai' ? settings.humanColor : game.turn(); const fogged = game instanceof AbilityGame && game.state.stormUntil[viewer] > 0 && game.state.stormUntil[viewer] >= game.state.turns[viewer] && (viewer === 'w' ? rank >= 5 : rank <= 4);
                 const markerNote = abilityNote.split(' · ').filter(note => !note.startsWith('영광 ') && !['행동불가', '무장해제', '매혹', '추가 목숨'].includes(note)).join(' · ');
+                const desert = game instanceof AbilityGame && game.state.zones.some(zone => zone.kind === 'desert' && zone.squares.includes(square));
                 const checked = piece?.type === 'k' && piece.color === game.turn() && game.isCheck();
                 return <button key={square} type="button" data-square={square}
                   className={`square ${activeTarget.valid.has(square) ? 'active-target' : ''} ${activeTarget.area.includes(square) ? 'active-area' : ''} ${(file.charCodeAt(0) - 97 + rank) % 2 === 1 ? 'dark' : 'light'} ${selected === square ? 'selected' : ''} ${lastMove?.from === square || lastMove?.to === square ? 'last-move' : ''} ${checked ? 'in-check' : ''} ${piece?.color === game.turn() && humanTurn ? 'can-drag' : ''} ${dragVisual?.from === square ? 'drag-origin' : ''} ${dragVisual?.over === square ? 'drop-target' : ''}`}
@@ -315,6 +316,7 @@ export default function App() {
                     const next = row * 8 + column + offsets[event.key];
                     if (next >= 0 && next < 64) boardRef.current?.querySelectorAll('button')[next]?.focus();
                   }}>
+                  {desert && <span className="desert-terrain" aria-hidden="true" />}
                   {(pieceTargets.has(square) || pieceArea.includes(square)) && <span className={`piece-target-mark ${pieceMode ? 'armed' : ''} ${pieceArea.includes(square) ? 'area' : ''}`} aria-label={pieceMode ? '스킬 적용 대상' : '스킬 가능 대상'} />}
                   {activeTarget.area.includes(square) && <span className="target-mark" />}{column === 0 && <span className="rank-label">{rank}</span>}
                   {row === 7 && <span className="file-label">{file}</span>}
