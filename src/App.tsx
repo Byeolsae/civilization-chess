@@ -329,7 +329,7 @@ export default function App() {
             </div>
           </div>
           </div>
-          {game instanceof AbilityGame && <ActiveGuide game={game} target={activeTarget} />}
+          {game instanceof AbilityGame && <ActiveGuide game={game} target={activeTarget} players={players} />}
           {game instanceof AbilityGame && selected && !activeTarget.armed && <PieceSkillGuide game={game} square={selected} players={players} mode={pieceMode} cargo={pieceCargo} enabled={humanTurn && !confirm && !promotion && !game.state.duel} onMode={mode => { setPieceMode(mode); setPieceCargo(mode === 'deploy' ? pieceInfo?.cargo[0] ?? '' : ''); }} onCargo={setPieceCargo} />}
           {playerBar(bottomColor)}
           <div className="board-toolbar"><span>{started ? game instanceof AbilityGame ? `백 ${game.state.turns.w}턴 · 흑 ${game.state.turns.b}턴 · ${history.length}행동` : `${Math.floor(history.length / 2) + 1} 라운드 · ${history.length}수 진행` : '백이 먼저 시작합니다'}</span><div>
