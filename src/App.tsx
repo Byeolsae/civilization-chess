@@ -353,7 +353,7 @@ export default function App() {
                 const square = `${file}${rank}` as Square;
                 const piece = game.get(square);
                 const possible = moves.some(move => move.to === square); const abilityNote = game instanceof AbilityGame ? game.squareNote(square) : ''; const viewer = settings.mode !== 'local' ? settings.humanColor : game.turn(); const fogged = game instanceof AbilityGame && game.state.stormUntil[viewer] > 0 && game.state.stormUntil[viewer] >= game.state.turns[viewer] && (viewer === 'w' ? rank >= 5 : rank <= 4);
-                const markerNote = abilityNote.split(' · ').filter(note => !note.startsWith('영광 ') && !['행동불가', '무장해제', '매혹', '추가 목숨', '사막'].includes(note)).join(' · ');
+                const markerNote = abilityNote.split(' · ').filter(note => !note.startsWith('영광 ') && !['행동불가', '무장해제', '매혹', '추가 목숨', '사막', '피라미드'].includes(note)).join(' · ');
                 const desertMask = game instanceof AbilityGame ? desertTerrainMask(square, game.state.zones.filter(zone => zone.kind === 'desert').flatMap(zone => zone.squares), flipped) : undefined;
                 const pyramidBlessed = game instanceof AbilityGame && game.state.zones.some(zone => zone.kind === 'pyramid' && zone.squares.includes(square));
                 const checked = piece?.type === 'k' && piece.color === game.turn() && game.isCheck();
@@ -383,7 +383,7 @@ export default function App() {
                   }}>
                   {game instanceof AbilityGame && game.state.zones.some(z => z.kind === 'road' && z.squares.includes(square)) && <span className="passive-road" aria-hidden="true"/>}
                   {pyramidBlessed && <span className="pyramid-blessing" style={{'--blessing-delay': `${-((row * 3 + column * 5) % 11) / 3}s`} as CSSProperties} aria-hidden="true"><i/><i/><i/></span>}
-                  {game instanceof AbilityGame && game.state.zones.some(z => z.kind === 'pyramid' && z.center === square) && <span className={`passive-pyramid ${piece && !fogged ? 'occupied' : ''}`} aria-hidden="true"><img src="/terrain/pyramid.svg" alt="" draggable={false}/></span>}
+                  {game instanceof AbilityGame && game.state.zones.some(z => z.kind === 'pyramid' && z.center === square) && <span className="passive-pyramid" aria-hidden="true"><img src="/terrain/pyramid.svg" alt="" draggable={false}/></span>}
                   {desertMask && <span className="desert-terrain" style={{ backgroundPosition: `${column / 7 * 100}% ${row / 7 * 100}%`, maskImage: desertMask, WebkitMaskImage: desertMask }} aria-hidden="true" />}
                   {(pieceTargets.has(square) || pieceArea.includes(square)) && <span className={`piece-target-mark ${pieceMode ? 'armed' : ''} ${pieceArea.includes(square) ? 'area' : ''}`} aria-label={pieceMode ? '스킬 적용 대상' : '스킬 가능 대상'} />}
                   {activeTarget.area.includes(square) && <span className="target-mark" />}{column === 0 && <span className="rank-label">{rank}</span>}
