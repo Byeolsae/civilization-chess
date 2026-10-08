@@ -9,7 +9,10 @@ export const defaultMedia: CivilizationMedia = { background: null, bgm: null };
 // Use exact civilization IDs; dynasties can have their own assets.
 // Example after adding files under public/media/greece/:
 // greece: { background: '/media/greece/background.webp', bgm: '/media/greece/bgm.mp3' },
-export const civilizationMedia: Partial<Record<Civilization, CivilizationMedia>> = {};
+export const civilizationMedia: Partial<Record<Civilization, CivilizationMedia>> = {
+  greece: { background: '/media/greece/background-v1.webp', bgm: null },
+  egypt: { background: '/media/egypt/background-v1.webp', bgm: null },
+};
 export function mediaForCivilization(id: Civilization): CivilizationMedia {
   return { ...defaultMedia, ...civilizationMedia[id] };
 }
