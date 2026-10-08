@@ -1,7 +1,7 @@
 .app-shell{position:relative;isolation:isolate}
 .civilization-backdrop{position:fixed;inset:0;z-index:-1;pointer-events:none;background:#121918}
-.civilization-backdrop img{width:100%;height:100%;object-fit:cover;opacity:.62;animation:atmosphere-appear .7s ease-out}
-.civilization-backdrop::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#12191855,#12191888 70%,#121918cc)}
+.civilization-backdrop img{width:100%;height:100%;object-fit:cover;opacity:.82;animation:atmosphere-appear .7s ease-out}
+.civilization-backdrop::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#12191833,#12191866 70%,#121918aa)}
 .match-atmosphere{margin:16px 0;padding:15px;border:1px solid var(--line);border-radius:8px;background:#19231fed}
 .atmosphere-title{display:flex;align-items:center;gap:8px;color:#a9baa4;font-size:11px;margin-bottom:12px}
 .atmosphere-title strong{color:#e0e9d9;font-weight:500;margin-left:7px}
@@ -12,5 +12,5 @@
 .atmosphere-controls input{width:70px;accent-color:#bdd79d;cursor:pointer}
 .media-volume-label{font-size:10px}
 .music-retry{margin-top:12px}.match-atmosphere p{font-size:11px;margin-top:12px;color:#b8c8b0}
-@keyframes atmosphere-appear{from{opacity:0}to{opacity:.62}}
+@keyframes atmosphere-appear{from{opacity:0}to{opacity:.82}}
 @media(prefers-reduced-motion:reduce){.civilization-backdrop img{animation:none}}
