@@ -1,3 +1,4 @@
+import VictoryScene from './VictoryScene';
 import EvaluationBar from './EvaluationBar';
 import { useOnlineRoom } from './useOnlineRoom';
 import { OnlineLobby, OnlineBanner, OnlineQuiz, OnlineWaitingRoom } from './OnlineLobby';
@@ -434,6 +435,7 @@ export default function App() {
       </>}
       <footer><span>문명체스</span><span>같은 체스판, 서로 다른 문명의 시작.</span><span>{(settings.mode === 'online' ? 'ONLINE PVP' : settings.mode === 'ai' ? 'VS AI' : 'LOCAL PLAY') + (game instanceof AbilityGame && game.state.clocks ? ' · TIMED' : ' · NO TIMER')}</span></footer>
     </main>
+    {started && status.over && <VictoryScene winner={status.kind === 'draw' ? null : resigned ? opposite(resigned) : game instanceof AbilityGame && game.winner() || opposite(game.turn())} players={players} detail={status.detail} onNew={() => setConfirm('new')} />}
     {dragVisual && <div className="drag-layer" aria-hidden="true"><div className="drag-piece" style={{ left: dragVisual.x, top: dragVisual.y, width: dragVisual.size, height: dragVisual.size }}><Piece type={dragVisual.type} color={dragVisual.color} civilization={players[dragVisual.color]} revived={game instanceof AbilityGame ? game.unit(dragVisual.from)?.revived : undefined} lives={game instanceof AbilityGame ? game.unit(dragVisual.from)?.lives : undefined} skill={game instanceof AbilityGame ? game.loadouts[dragVisual.color].piece : undefined} /></div></div>}
     {settings.mode === 'online' && <OnlineQuiz online={online}/>}
     {quiz && <SphinxChallenge onResolve={correct => performAbility({ ...quiz, quiz: correct })} />}{promotion && !quiz && <Modal title="폰을 승격하세요" onClose={() => setPromotion(null)}><p className="muted">마지막 줄에 도착했습니다. 새로운 기물을 선택하세요.</p><div className="promotion-options">{(['q', 'r', 'b', 'n'] as Promotion[]).map(type => <button key={type} onClick={() => commit(promotion.from, promotion.to, type)}><Piece type={type} color={game.turn()} civilization={players[game.turn()]} skill={game instanceof AbilityGame ? game.loadouts[game.turn()].piece : undefined} /><span>{pieceNames[type]}</span></button>)}</div></Modal>}
