@@ -1,3 +1,4 @@
+import EvaluationBar from './EvaluationBar';
 import { useOnlineRoom } from './useOnlineRoom';
 import { OnlineLobby, OnlineBanner, OnlineQuiz, OnlineWaitingRoom } from './OnlineLobby';
 import { completeDraft } from './draft';
@@ -346,7 +347,7 @@ export default function App() {
       <div className="game-layout">
         <section className="board-section" aria-label="체스 대전">
           {playerBar(topColor)}
-          <div className={game instanceof AbilityGame ? 'board-with-active' : ''}>
+          <div className={`board-with-evaluation ${game instanceof AbilityGame ? 'board-with-active' : ''}`}>
           {game instanceof AbilityGame && <ActiveButton game={game} target={activeTarget} owner={activeOwner} onToggle={() => { setSelected(null); activeTarget.toggle(); }} />}
           <div data-board-theme={opponentCivilization(players, settings, game.turn())} className={`board-frame ${!started ? 'awaiting-start' : ''}`}>
             <div className={`board ${dragVisual ? 'is-dragging' : ''} ${activeTarget.armed || pieceMode ? 'is-targeting' : ''}`} ref={boardRef} role="group" aria-label="체스판. 클릭 또는 드래그로 이동. 방향키로 칸 이동, Enter로 선택">
@@ -398,6 +399,7 @@ export default function App() {
               <SkillEffects game={game} flipped={flipped} />
             </div>
           </div>
+          <EvaluationBar game={game} revision={revision} resigned={resigned} flipped={flipped} viewer={settings.mode === 'local' ? game.turn() : settings.humanColor} />
           </div>
           {game instanceof AbilityGame && <ActiveGuide game={game} target={activeTarget} players={players} />}
           {game instanceof AbilityGame && selected && !activeTarget.armed && <PieceSkillGuide game={game} square={selected} players={players} mode={pieceMode} cargo={pieceCargo} enabled={humanTurn && !confirm && !promotion && !game.state.duel} onMode={mode => { setPieceMode(mode); setPieceCargo(mode === 'deploy' ? pieceInfo?.cargo[0] ?? '' : ''); }} onCargo={setPieceCargo} />}

@@ -11,7 +11,7 @@ const profiles = {
 };
 const MATE = 100000;
 
-function evaluate(game: Chess) {
+export function evaluate(game: Chess) {
   const board = game.board();
   let material = 0;
   for (const row of board) for (const p of row) if (p && p.type !== 'p') material += values[p.type];

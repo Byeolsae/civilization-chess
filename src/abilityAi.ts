@@ -2,7 +2,7 @@ import { AbilityGame, type AbilityAction } from "./AbilityGame";
 import type { Difficulty } from "./matchSettings";
 import type { Color } from "chess.js";
 const value = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 2000 };
-function score(game: AbilityGame, color: Color) {
+export function score(game: AbilityGame, color: Color) {
   const winner = game.winner();
   if (winner) return winner === color ? 100000 : -100000;
   if (game.isCheckmate()) return game.turn() === color ? -100000 : 100000;
