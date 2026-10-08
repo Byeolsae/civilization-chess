@@ -15,7 +15,7 @@ const icons: Record<string, LucideIcon> = { crown: Crown, hourglass: Hourglass, 
 const civilizationCopy: Partial<Record<string, { headline: string; detail: string; traits: string }>> = {
   joseon: { headline: '진홍과 금빛, 조선의 색', detail: '백은 흰색·진홍·황색, 흑은 진홍·흰색·황색 순서로 배색했습니다.', traits: '스킬 구현 중 · 기본 체스 대전' },
   aztec: { headline: '청록과 진홍, 선명한 황금빛', detail: '백은 황금 바탕·진홍 띠·청록 받침, 흑은 청록 바탕·황금 띠·진홍 받침으로 배색했습니다.', traits: '스킬 구현 중 · 기본 체스 대전' },
-  qing: { headline: '황룡기의 황색과 청색', detail: '백은 황색, 흑은 청색 바탕에 붉은 여의주를 닮은 장식을 더했습니다.', traits: '스킬 준비 중 · 기본 체스 대전' },
+  qing: { headline: '황룡기의 황색과 청색', detail: '백은 황색, 흑은 청색 바탕에 붉은 여의주를 닮은 장식을 더했습니다.', traits: '스킬 구현 중 · 기본 체스 대전' },
   china: { headline: '백옥과 비취, 은은한 금빛', detail: '백옥과 비취 바탕에 금색 장식을 더한 기물로 대전을 시작하세요.', traits: '스킬 준비 중 · 기본 체스 대전' },
   korea: { headline: '옥빛 하늘색, 고운 꽃분홍', detail: '옥빛 하늘색과 연한 꽃분홍을 교차 배색한 기물로 대전을 시작하세요.', traits: '스킬 준비 중 · 기본 체스 대전' },
   japan: { headline: '하얀 꽃잎, 벚꽃의 분홍', detail: '흰색과 벚꽃 분홍으로 물든 기물로 대전을 시작하세요.', traits: '스킬 준비 중 · 기본 체스 대전' },
@@ -131,7 +131,7 @@ export default function Draft({ onStart, settings, onSettings, network }: { netw
       <div className="draft-intro" aria-live="polite"><span className="draft-eyebrow">{currentCivilization ? `${currentCivilization.english} / ${category?.english}` : 'CHOOSE YOUR CIVILIZATION'}</span><h1 key={`title-${picks.length}`} ref={titleRef} tabIndex={-1}>{colorNames[step.color]}, {category ? `${category.name}${category.id === 'piece' ? '을' : '를'} 선택하세요` : '문명을 선택하세요'}</h1><p>{onlineWaiting ? '상대의 선택 또는 서버 연결을 기다리고 있어요.' : aiTurn ? 'AI가 문명과 스킬을 고르고 있어요.' : category?.description ?? '당신의 문명이 전투의 시작을 결정합니다.'}</p></div>
       {!category && <div className="civilization-browser">
         <div className="readiness-filter" role="group" aria-label="스킬 구현 여부"><button aria-pressed={readiness==='all'} onClick={()=>setReadiness('all')}>전체 {civilizations.length}</button>{(['ready','progress','pending'] as const).map(status=><button key={status} aria-pressed={readiness===status} onClick={()=>setReadiness(status)}>{readinessLabels[status]} {readinessCounts[status]}</button>)}</div>
-        <p className="readiness-help">로마·조선·아즈텍은 스킬 구현 중입니다. 로마는 12표법을 제외한 기존 스킬을 사용할 수 있고, 조선·아즈텍은 현재 기본 체스로 플레이합니다.{settings.mode==='ai'&&' AI는 90% 확률로 스킬이 구현된 문명을 선택합니다.'}</p>
+        <p className="readiness-help">로마·조선·아즈텍·청나라는 스킬 구현 중입니다. 로마는 12표법을 제외한 기존 스킬을 사용할 수 있고, 조선·아즈텍·청나라는 현재 기본 체스로 플레이합니다.{settings.mode==='ai'&&' AI는 90% 확률로 스킬이 구현된 문명을 선택합니다.'}</p>
         <div className="civilization-search"><label htmlFor="civilization-search">문명 검색</label><input id="civilization-search" type="search" placeholder="나라 또는 문명 이름으로 검색" value={search} disabled={locking || aiTurn || onlineWaiting} onChange={event => setSearch(event.target.value)} /><span aria-live="polite">{visibleCivilizations.length} / {civilizations.length}개 문명 · 중복 제외{chosenName ? ` · ${chosenName} 선택됨` : ''}</span></div>
         <div className="civilization-filter-panel">
           <div className="civilization-filter-row"><span className="filter-label">나라</span><div className="civilization-filters" role="group" aria-label="나라별 문명 필터">{(['전체', ...countries] as const).map(item => <button key={item} aria-pressed={country === item} disabled={locking || aiTurn || onlineWaiting} onClick={() => setCountry(item)}>{item}</button>)}</div></div>

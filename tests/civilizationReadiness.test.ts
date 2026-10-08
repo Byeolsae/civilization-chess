@@ -5,7 +5,7 @@ import { civilizations,type Civilization } from '../src/civilizations';
 import { confirmPick,completeDraft } from '../src/draft';
 test('readiness comes from implemented skills rather than shared piece palettes',()=>{
  assert.equal(civilizationReadiness('greece'),'ready');assert.equal(civilizationReadiness('egypt'),'ready');assert.equal(civilizationReadiness('rome'),'progress');
- assert.equal(civilizationReadiness('korea'),'progress');assert.equal(civilizationReadiness('aztec'),'progress');assert.equal(civilizationReadiness('goryeo'),'pending');assert.equal(civilizationReadiness('qing'),'pending');
+ assert.equal(civilizationReadiness('korea'),'progress');assert.equal(civilizationReadiness('aztec'),'progress');assert.equal(civilizationReadiness('goryeo'),'pending');assert.equal(civilizationReadiness('qing'),'progress');
  assert.equal(civilizations.filter(c=>civilizationReadiness(c.id)==='ready').length,2);
 });
 test('90 percent of the civilization probability mass is assigned to playable factions',()=>{
