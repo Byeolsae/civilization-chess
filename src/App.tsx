@@ -324,7 +324,7 @@ export default function App() {
     </div>;
   }
 
-  return <div className="app-shell">
+  return <div className="app-shell" data-ui-theme={started ? opponentCivilization(players, settings, game.turn()) : undefined}>
     <header className="site-header">
       <a href="/" className="brand" aria-label="문명체스 홈"><span className="brand-icon"><Crown size={25} /></span><span>문명체스<small>CIVILIZATION CHESS</small></span></a>
       <div className="header-right"><span className="mode-label"><Swords size={15} /> {setupReady || started ? modeLabel : '대전 준비'}</span><span className="version">ALPHA 0.3</span></div>

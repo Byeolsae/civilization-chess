@@ -8,3 +8,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode><App /></React.StrictMode>,
 );
 import './ai.css';
+
+import './civilizationUi.css';
