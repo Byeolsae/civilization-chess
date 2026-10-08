@@ -32,9 +32,9 @@ export default function MatchAtmosphere({ civilization }: { civilization: Civili
       <span>{media.credit.sourceOnly ? '음원 출처' : '아티스트'} · {media.credit.artist}</span>
     </div>}
     <div className="atmosphere-controls">
-      <button type="button" aria-pressed={preferences.music} disabled={!media.bgm}
+      <button type="button" className="music-toggle" aria-label={`BGM ${preferences.music ? '켜짐' : '꺼짐'}`} aria-pressed={preferences.music} disabled={!media.bgm}
         onClick={() => setPreferences(value => ({ ...value, music: !value.music }))}>
-        {media.bgm ? preferences.music ? 'BGM 끄기' : 'BGM 켜기' : 'BGM 준비 중'}
+        <span className="music-toggle-light" aria-hidden="true"/><strong>BGM {media.bgm ? preferences.music ? '켜짐' : '꺼짐' : '준비 중'}</strong><span className="music-toggle-action">{media.bgm ? preferences.music ? '눌러서 끄기' : '눌러서 켜기' : ''}</span>
       </button>
       <label><Volume2 size={15} /><span className="media-volume-label">음량</span>
         <input aria-label="BGM 음량" type="range" min="0" max="100" value={Math.round(preferences.volume * 100)}

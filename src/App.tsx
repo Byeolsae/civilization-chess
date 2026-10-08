@@ -22,7 +22,7 @@ import { AbilityGame, type AbilityAction } from './AbilityGame';
 import { AbilityPanel, SphinxChallenge } from './AbilityPanel';
 import { useActiveTargeting } from './useActiveTargeting';
 import { ActiveButton, ActiveGuide } from './ActiveToolbar';
-import { PieceSkillGuide } from './PieceSkillGuide';
+import { PieceSkillGuide, PieceSkillButtons } from './PieceSkillGuide';
 import { pieceSkillInfo } from './pieceSkills';
 import SkillEffects from './SkillEffects';
 import { PieceStatusEffects, Sandstorm } from './StatusEffects';
@@ -348,7 +348,11 @@ export default function App() {
         <section className="board-section" aria-label="체스 대전">
           {playerBar(topColor)}
           <div className={`board-with-evaluation ${game instanceof AbilityGame ? 'board-with-active' : ''}`}>
-          {game instanceof AbilityGame && <ActiveButton game={game} target={activeTarget} owner={activeOwner} onToggle={() => { setSelected(null); activeTarget.toggle(); }} />}
+          {game instanceof AbilityGame && <aside className="skill-rail" aria-label="문명과 기물 능력">
+            <span className="skill-rail-label">액티브</span>
+            <ActiveButton game={game} target={activeTarget} owner={activeOwner} onToggle={() => { setSelected(null); activeTarget.toggle(); }} />
+            <PieceSkillButtons game={game} square={selected} mode={pieceMode} enabled={humanTurn && !confirm && !promotion && !game.state.duel && !activeTarget.armed} onMode={mode => { setPieceMode(mode); setPieceCargo(mode === 'deploy' ? pieceInfo?.cargo[0] ?? '' : ''); }} />
+          </aside>}
           <EvaluationBar players={players} game={game} revision={revision} resigned={resigned} flipped={flipped} viewer={settings.mode === 'local' ? game.turn() : settings.humanColor} />
           <div data-board-theme={opponentCivilization(players, settings, game.turn())} className={`board-frame ${!started ? 'awaiting-start' : ''}`}>
             <div className={`board ${dragVisual ? 'is-dragging' : ''} ${activeTarget.armed || pieceMode ? 'is-targeting' : ''}`} ref={boardRef} role="group" aria-label="체스판. 클릭 또는 드래그로 이동. 방향키로 칸 이동, Enter로 선택">

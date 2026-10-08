@@ -25,3 +25,25 @@
 .app-shell[data-ui-theme] :is(.setup-panel,.status-panel,.history-panel,.ability-panel,.match-atmosphere,.active-guide,.piece-skill-guide,.placement-guide,.player-avatar,.history-labels,.history-row,.brand-icon,.turn-tag,.match-actions button,.primary-button,.active-skill-button,.piece-skill-controls button,.atmosphere-controls button){transition:background-color .4s ease,color .4s ease,border-color .4s ease}
 @media(prefers-reduced-motion:reduce){.app-shell[data-ui-theme] *{transition:none!important}}
 .app-shell[data-ui-theme] .active-skill-button.armed small{color:var(--ui-on-accent)}
+
+/* Explicit state and action text make music controls readable without relying on color. */
+.app-shell .music-toggle{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:44px;padding:10px 12px;border:2px solid var(--ui-line,#687765)}
+.app-shell .music-toggle[aria-pressed=true]{background:var(--accent,#c6dea8);color:var(--ui-on-accent,#18201e);border-color:var(--accent,#c6dea8)}
+.music-toggle strong{font-size:12px}.music-toggle-action{font-size:10px;opacity:.85}
+.music-toggle-light{width:9px;height:9px;border-radius:50%;border:2px solid currentColor;flex-shrink:0}
+.music-toggle[aria-pressed=true] .music-toggle-light{background:currentColor}
+.skill-rail{display:flex;flex-direction:column;gap:7px;padding-top:9px;min-width:0}
+.skill-rail .active-rail{padding:0}
+.skill-rail-label{display:block;text-align:center;font-size:11px;font-weight:700;color:var(--accent,#c6dea8);letter-spacing:.3px}
+.piece-skill-rail{display:grid;gap:7px;margin-top:12px}
+.app-shell .skill-rail .active-skill-button{width:100%;min-height:88px;border-width:2px;padding:10px 4px;box-shadow:0 4px 12px #0005}
+.app-shell .skill-rail .active-skill-button span{font-size:11px;font-weight:700;line-height:1.4}
+.app-shell .skill-rail .active-skill-button small{font-size:10px;line-height:1.4}
+.app-shell .skill-rail .active-skill-button:not(:disabled){border-color:var(--accent,#c6dea8)}
+.app-shell .skill-rail .active-skill-button.armed{outline:2px solid var(--accent,#c6dea8);outline-offset:2px}
+.app-shell .skill-rail .active-skill-button:disabled{opacity:.6;box-shadow:none}
+@media(max-width:600px){.app-shell .skill-rail .active-skill-button{min-height:76px;padding:7px 2px}.app-shell .skill-rail .active-skill-button span{font-size:10px}.app-shell .skill-rail .active-skill-button small{font-size:9px}.skill-rail-label{font-size:10px}}
+
+/* The board, rather than the number of skill actions, determines the row height. */
+.skill-rail{contain:size;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:9px 3px 6px;scrollbar-width:thin}
+.app-shell[data-ui-theme] .atmosphere-controls .music-toggle[aria-pressed=true]{background:var(--accent,#c6dea8);color:var(--ui-on-accent,#18201e);border-color:var(--accent,#c6dea8)}
