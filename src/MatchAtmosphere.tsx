@@ -40,7 +40,7 @@ export default function MatchAtmosphere({ civilization }: { civilization: Civili
         {!media.background ? '배경 준비 중' : preferences.background ? '배경 켜짐' : '배경 꺼짐'}
       </button>
     </div>
-    {!media.background && <p>상대 문명({name})의 배경은 준비 중입니다. 현재 그리스·이집트 배경을 사용할 수 있어요.</p>}
+    {!media.background && <p>상대 문명({name})의 배경은 준비 중입니다. 현재 그리스·이집트·로마·아즈텍·조선·청나라 배경을 사용할 수 있어요.</p>}
     {background && loadedBackground !== background && <p role="status">{name} 배경 불러오는 중…</p>}
     {media.background && preferences.background && failedBackground === media.background && <p role="status">배경을 불러오지 못했어요. <button onClick={() => { setFailedBackground(null); setBackgroundRetry(value => value + 1); }}>다시 불러오기</button></p>}
     {media.bgm && preferences.music && (music.status === 'loading' || music.status === 'playing') && <p role="status">{music.status === 'playing' ? '음악 재생 중' : '음악 불러오는 중…'}</p>}

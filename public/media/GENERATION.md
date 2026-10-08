@@ -1,5 +1,26 @@
 # Temporary civilization backgrounds
 
+## Additional backgrounds — built-in image_gen, 2026-10-08
+
+Saved as `rome/background-v1.webp`, `aztec/background-v1.webp`, `korea/background-v1.webp` (Joseon), and `qing/background-v1.webp`. Encoded as WebP quality 84. Atmospheric concept artwork, not literal historical reconstructions.
+
+### rome
+
+Use case: stylized-concept. Asset type: full-screen civilization chess game background, widescreen 16:9 landscape. Painterly premium strategy-game environment, detailed architectural textures and atmospheric depth. Calm open center with low detail and mid-dark values for an opaque chessboard UI; distinctive architecture at both outer edges. No people, chess pieces, board, text, logos, watermark or UI. Imperial Rome, ivory marble columns and a Roman triumphal arch framing a view toward the Colosseum and distant hills. Warm terracotta stone, restrained crimson banners without symbols, antique gold sunset, blue-gray atmospheric shadows. Majestic and tranquil.
+
+### aztec
+
+Use case: stylized-concept. Asset type: full-screen civilization chess game background, widescreen 16:9 landscape. Painterly premium strategy-game environment, detailed architectural textures and atmospheric depth. Calm open center with low detail and mid-dark values for an opaque chessboard UI; distinctive architecture at both outer edges. No people, chess pieces, board, text, logos, watermark or UI. Aztec Tenochtitlan-inspired lake city, stepped twin-shrine temple pyramids and stone terraces framing water, causeways and distant volcanic mountains. Turquoise water, deep crimson architectural accents, muted ochre gold stone under warm late afternoon light. Lush reeds near edges. Mesoamerican architecture, no European or Egyptian buildings.
+
+### korea
+
+Use case: stylized-concept. Asset type: full-screen civilization chess game background, widescreen 16:9 landscape. Painterly premium strategy-game environment, detailed architectural textures and atmospheric depth. Calm open center with low detail and mid-dark values for an opaque chessboard UI; distinctive architecture at both outer edges. No people, chess pieces, board, text, logos, watermark or UI. Joseon Korean royal palace garden, graceful dark gray tiled roofs with Korean dancheong painted eaves framing a calm pond, pale stone terraces and pine trees, layered Korean mountain silhouettes. Ivory, restrained royal crimson and peach gold highlights, soft blue-gray dawn mist. No Japanese torii or Chinese yellow-tiled roofs. Quiet elegant atmosphere.
+
+### qing
+
+Use case: stylized-concept. Asset type: full-screen civilization chess game background, widescreen 16:9 landscape. Painterly premium strategy-game environment, detailed architectural textures and atmospheric depth. Calm open center with low detail and mid-dark values for an opaque chessboard UI; distinctive architecture at both outer edges. No people, chess pieces, board, text, logos, watermark or UI. Qing Chinese imperial palace courtyard, golden yellow glazed roof tiles and deep red columns framing distant blue mountain silhouettes and tranquil mist. Ornate Chinese roof ridges and white marble balustrades along outer edges, restrained imperial gold, cobalt blue shadows, deep red accents. Dusk lighting, grand and peaceful.
+
+
 Generated with the built-in image_gen tool, then encoded as WebP (quality 84) for the game. Original generations remain in the Codex generated_images folder. These are atmospheric concept paintings, not archaeological reconstructions. No reference images used.
 
 ## Greece — greece/background-v1.webp

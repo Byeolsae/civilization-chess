@@ -12,6 +12,10 @@ export const defaultMedia: CivilizationMedia = { background: null, bgm: null };
 export const civilizationMedia: Partial<Record<Civilization, CivilizationMedia>> = {
   greece: { background: '/media/greece/background-v1.webp', bgm: null },
   egypt: { background: '/media/egypt/background-v1.webp', bgm: null },
+  rome: { background: '/media/rome/background-v1.webp', bgm: null },
+  aztec: { background: '/media/aztec/background-v1.webp', bgm: null },
+  korea: { background: '/media/korea/background-v1.webp', bgm: null },
+  qing: { background: '/media/qing/background-v1.webp', bgm: null },
 };
 export function mediaForCivilization(id: Civilization): CivilizationMedia {
   return { ...defaultMedia, ...civilizationMedia[id] };
