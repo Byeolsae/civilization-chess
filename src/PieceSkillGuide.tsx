@@ -1,3 +1,4 @@
+import CooldownBadge from './CooldownBadge';
 import { Swords } from 'lucide-react';
 import type { Square } from 'chess.js';
 import { AbilityGame, abilityNames } from './AbilityGame';
@@ -13,7 +14,7 @@ export function PieceSkillGuide({ game, square, players, mode, cargo, enabled, o
   if (!info || !p) return null;
   const card = skills[players[p.owner]].piece.find(s => s.id === info.skill);
   return <section className="piece-skill-guide" aria-label="선택한 기물 스킬">
-    <div className="piece-skill-heading"><strong>{square} {pieceNames[p.type]} · {card?.name ?? abilityNames[info.skill]}</strong><span role="status">{info.status}</span></div>
+    <div className="piece-skill-heading"><strong>{square} {pieceNames[p.type]} · {card?.name ?? abilityNames[info.skill]}</strong><span role="status">{info.cooldown > 0 ? <CooldownBadge turns={info.cooldown}/> : info.status}</span></div>
     <p>{info.timing}</p>
     {info.skill === 'trojan' && <p>탑승 {info.cargo.length}/4 · 상하좌우 한 칸</p>}
 
@@ -34,7 +35,7 @@ export function PieceSkillButtons({ game, square, mode, enabled, onMode }: {
     {info && modes.map(id => <button key={id} className={`active-skill-button piece-rail-button ${mode === id ? 'armed' : ''}`}
       aria-pressed={mode === id} disabled={!enabled || info.automatic || (!info.actions.some(a => a.skill === id) && mode !== id)}
       title={info.status} onClick={() => onMode(mode === id ? '' : id)}>
-      <Swords size={22}/><span>{abilityNames[id] ?? id}</span><small>{info.automatic ? '자동 적용' : mode === id ? '선택 중 · 취소' : info.actions.some(a => a.skill === id) ? '사용하기' : '사용 불가'}</small>
+      <>{info.cooldown > 0 ? <CooldownBadge turns={info.cooldown}/> : <Swords size={22}/>}</><span>{abilityNames[id] ?? id}</span><small>{info.cooldown > 0 ? '대기 중' : info.automatic ? '자동 적용' : mode === id ? '선택 중 · 취소' : info.actions.some(a => a.skill === id) ? '사용하기' : '사용 불가'}</small>
     </button>)}
   </div>;
 }

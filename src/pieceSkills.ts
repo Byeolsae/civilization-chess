@@ -25,5 +25,5 @@ export function pieceSkillInfo(game: AbilityGame, square: Square) {
   const cooldown = Math.max(0, p.cooldownUntil - game.state.turns[p.owner]);
   const blocked = ['stun', 'shock'].some(kind => effectActive(game.state, p, kind as 'stun' | 'shock'));
   const status = automatic ? skill === 'sparta' ? `자동 발동 · 목숨 ${p.lives}개` : skill === 'mummy' && p.revived ? '부활 사용 완료' : '자동 발동' : p.owner !== game.turn() ? '상대 차례' : blocked ? '기절·감전 중' : cooldown ? `재사용까지 내 ${cooldown}턴` : skill === 'gladiator' && (p.duelUses ?? 0) >= 2 ? '결투 2회 사용 완료' : skill === 'ballista' && effectActive(game.state, p, 'disarm') ? '무장 해제 중' : game.state.extraAction ? '추가 이동 중에는 사용 불가' : actions.length ? '지금 사용 가능 · 한 행동 소모' : '현재 합법적인 대상 없음';
-  return { skill, automatic, actions, status, timing: timing[skill] + (skill === 'gladiator' ? ` · 남은 ${2 - (p.duelUses ?? 0)}회` : ''), cargo: p.cargo, area: skill === 'minotaur' ? adjacentSquares(square) : actions.map(a => a.to) };
+  return { skill, automatic, actions, cooldown, status, timing: timing[skill] + (skill === 'gladiator' ? ` · 남은 ${2 - (p.duelUses ?? 0)}회` : ''), cargo: p.cargo, area: skill === 'minotaur' ? adjacentSquares(square) : actions.map(a => a.to) };
 }

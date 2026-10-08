@@ -1,3 +1,4 @@
+import CooldownBadge from './CooldownBadge';
 import VictoryScene from './VictoryScene';
 import EvaluationBar from './EvaluationBar';
 import { useOnlineRoom } from './useOnlineRoom';
@@ -361,8 +362,10 @@ export default function App() {
                 const square = `${file}${rank}` as Square;
                 const piece = game.get(square);
                 const possible = moves.some(move => move.to === square); const abilityNote = game instanceof AbilityGame ? game.squareNote(square) : ''; const viewer = settings.mode !== 'local' ? settings.humanColor : game.turn(); const fogged = game instanceof AbilityGame && game.state.stormUntil[viewer] > 0 && game.state.stormUntil[viewer] >= game.state.turns[viewer] && (viewer === 'w' ? rank >= 5 : rank <= 4);
-                const markerNote = abilityNote.split(' · ').filter(note => !note.startsWith('영광 ') && !['행동불가', '무장해제', '매혹', '추가 목숨', '사막', '피라미드'].includes(note)).join(' · ');
+                const markerNote = abilityNote.split(' · ').filter(note => !note.startsWith('영광 ') && !note.startsWith('재사용 ') && !['행동불가', '무장해제', '매혹', '추가 목숨', '사막', '피라미드'].includes(note)).join(' · ');
                 const desertMask = game instanceof AbilityGame ? desertTerrainMask(square, game.state.zones.filter(zone => zone.kind === 'desert').flatMap(zone => zone.squares), flipped) : undefined;
+                const cooldownUnit = game instanceof AbilityGame ? game.unit(square) : undefined;
+                const cooldownTurns = game instanceof AbilityGame && cooldownUnit ? Math.max(0, cooldownUnit.cooldownUntil - game.state.turns[cooldownUnit.owner]) : 0;
                 const pyramidBlessed = game instanceof AbilityGame && game.state.zones.some(zone => zone.kind === 'pyramid' && zone.squares.includes(square));
                 const checked = piece?.type === 'k' && piece.color === game.turn() && game.isCheck();
                 return <button key={square} type="button" data-square={square}
@@ -398,7 +401,7 @@ export default function App() {
                   {activeTarget.area.includes(square) && <span className="target-mark" />}{column === 0 && <span className="rank-label">{rank}</span>}
                   {row === 7 && <span className="file-label">{file}</span>}
                   {!fogged && piece && <Piece key={`${square}-${piece.type}-${piece.color}`} type={piece.type} color={piece.color} civilization={players[piece.color]} revived={game instanceof AbilityGame ? game.unit(square)?.revived : undefined} lives={game instanceof AbilityGame ? game.unit(square)?.lives : undefined} skill={game instanceof AbilityGame ? game.loadouts[piece.color].piece : undefined} />}
-                  {!fogged && game instanceof AbilityGame && <PieceStatusEffects game={game} square={square} />}{markerNote && !fogged && <span className="ability-marker">{markerNote}</span>}{possible && <span className={piece ? 'capture-ring' : 'move-dot'} />}
+                  {!fogged && game instanceof AbilityGame && <PieceStatusEffects game={game} square={square} />}{!fogged && cooldownTurns > 0 && <span className="board-cooldown"><CooldownBadge turns={cooldownTurns}/></span>}{markerNote && !fogged && <span className="ability-marker">{markerNote}</span>}{possible && <span className={piece ? 'capture-ring' : 'move-dot'} />}
                 </button>;
               }))}
               {game instanceof AbilityGame && <Sandstorm game={game} viewer={settings.mode !== 'local' ? settings.humanColor : game.turn()} flipped={flipped} />}
