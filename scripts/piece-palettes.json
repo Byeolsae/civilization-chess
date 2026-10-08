@@ -140,5 +140,21 @@
       "ornament": "#DFA13A",
       "trimColor": "#7C041D"
     }
+  },
+  "qing": {
+    "w": {
+      "fill": "#F5CF45",
+      "shade": "#D1A62B",
+      "line": "#283E64",
+      "accent": "#C53A35",
+      "ornament": "#22549A"
+    },
+    "b": {
+      "fill": "#22549A",
+      "shade": "#183B70",
+      "line": "#102747",
+      "accent": "#C53A35",
+      "ornament": "#F5CF45"
+    }
   }
 }

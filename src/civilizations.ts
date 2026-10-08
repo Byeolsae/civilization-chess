@@ -371,7 +371,7 @@ export const civilizationAppearance: Record<Civilization, string> = {
   wei: 'china', shu: 'china', wu: 'china', gojoseon: 'korea', kamakura: 'japan',
   'mongol-empire': 'classic', yuan: 'china', 'russian-empire': 'classic', prussia: 'classic',
   inca: 'classic', aztec: 'aztec', maya: 'classic', gaul: 'classic', babylon: 'classic',
-  tang: 'china', song: 'china', han: 'china', qing: 'china', qin: 'china',
+  tang: 'china', song: 'china', han: 'china', qing: 'qing', qin: 'china',
 };
 
 export const countries = [...new Set(civilizations.flatMap(civ => [...civ.countries]))].sort((a, b) => a.localeCompare(b, 'ko'));
