@@ -1,7 +1,6 @@
 .cooldown-badge{position:relative;display:inline-grid;place-items:center;width:30px;height:32px;flex-shrink:0;vertical-align:middle;color:#ffe4a2;filter:drop-shadow(0 1px 2px #0009)}
 .cooldown-badge svg{position:absolute;inset:0;width:100%;height:100%;fill:#18202bef;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.cooldown-badge b{position:relative;top:1px;font:800 14px/1 ui-sans-serif,system-ui;color:#fff6dd}
+.cooldown-badge text{font:800 14px ui-sans-serif,system-ui;fill:#fff6dd;stroke:none}
 .board-cooldown{position:absolute;right:3%;top:3%;z-index:4;pointer-events:none;line-height:0}
 .board-cooldown .cooldown-badge{width:clamp(17px,32cqw,26px);height:auto;aspect-ratio:1}
-.board-cooldown .cooldown-badge b{font-size:clamp(9px,17cqw,12px)}
 .app-shell .skill-rail .cooldown-badge{width:30px;height:32px}
