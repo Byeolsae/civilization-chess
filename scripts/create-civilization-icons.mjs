@@ -12,7 +12,8 @@ const motifs = {
   egypt: `<path d="M10 23C23 11 38 11 52 20" fill="none" stroke="var(--main)" stroke-width="3.3" stroke-linecap="round"/><path d="M8 30C20 18 35 18 47 29L56 27L48 34C33 42 19 38 8 30ZM14 30C24 36 34 37 44 30C35 23 24 23 14 30Z" fill="var(--main)" fill-rule="evenodd"/><ellipse cx="29" cy="29.5" rx="4.5" ry="6" fill="var(--main)"/><path d="M23 38L16 49L20 38Z" fill="var(--main)"/><path d="M32 38V46C32 53 43 54 45 47C46 43 41 41 39 45" fill="none" stroke="var(--main)" stroke-width="2.7" stroke-linecap="round"/><path d="M34 39L45 43" stroke="var(--detail)" stroke-width="2" stroke-linecap="round"/>`,
   rome: `<g fill="var(--main)">${leftLeaves}<g transform="translate(64 0) scale(-1 1)">${leftLeaves}</g></g><path d="M31 53C13 45 13 25 26 12M33 53C51 45 51 25 38 12" fill="none" stroke="var(--main)" stroke-width="1.6" stroke-linecap="round"/><path d="M26 50L38 55M38 50L26 55" stroke="var(--detail)" stroke-width="2.4" stroke-linecap="round"/>`,
 };
-motifs.joseon = motifs.korea;
+// Concentric, alternating halves from the royal standard supplied by the user.
+motifs.joseon = `<circle cx="32" cy="32" r="23" fill="#F0AD73"/><path d="M32 9A23 23 0 0 1 32 55Z" fill="#FFFFFF"/><circle cx="32" cy="32" r="17" fill="#FFFFFF"/><path d="M32 15A17 17 0 0 1 32 49Z" fill="#F0AD73"/><circle cx="32" cy="32" r="10.5" fill="#F0AD73"/><path d="M32 21.5A10.5 10.5 0 0 1 32 42.5Z" fill="#FFFFFF"/><circle cx="32" cy="32" r="5.2" fill="#FFFFFF"/><path d="M32 26.8A5.2 5.2 0 0 1 32 37.2Z" fill="#F0AD73"/>`;
 const directory = new URL('../public/civilizations/', import.meta.url);
 mkdirSync(directory, { recursive: true });
 for (const [id, body] of Object.entries(motifs)) {
@@ -20,10 +21,11 @@ for (const [id, body] of Object.entries(motifs)) {
     const palette = palettes[id][side];
     const main = id === 'joseon' ? palette.ornament : id === 'korea' ? palettes.korea.b.shade : palette.accent;
     const detail = palette.ornament;
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="--main:${main};--detail:${detail};--base:${palette.fill};--blue:${id === 'joseon' ? (side === 'w' ? '#BE0840' : '#FFFCF5') : palettes.korea.w.accent}"><circle cx="32" cy="32" r="30" fill="${palette.fill}" stroke="${detail}" stroke-width="1.4"/><circle cx="32" cy="32" r="27.5" fill="none" stroke="${main}" stroke-opacity=".18" stroke-width=".6"/><g transform="translate(6.4 6.4) scale(.8)">${body}</g></svg>\n`;
+    const motif = id === 'joseon' ? (side === 'b' ? body.replace(/#F0AD73|#FFFFFF/g, color => color === '#F0AD73' ? '#FFFFFF' : '#F0AD73') : body.replace(/#FFFFFF/g, '#C00D45')) + '<circle cx="32" cy="32" r="23" fill="none" stroke="#F0AD73" stroke-width="1.2"/>' : body;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="--main:${main};--detail:${detail};--base:${palette.fill};--blue:${id === 'joseon' ? (side === 'w' ? '#BE0840' : '#FFFCF5') : palettes.korea.w.accent}"><circle cx="32" cy="32" r="30" fill="${palette.fill}" stroke="${detail}" stroke-width="1.4"/><circle cx="32" cy="32" r="27.5" fill="none" stroke="${main}" stroke-opacity=".18" stroke-width=".6"/><g transform="translate(6.4 6.4) scale(.8)">${motif}</g></svg>\n`;
     writeFileSync(new URL(`${id}-${side}.svg`,directory),svg);
     if (side === 'w') writeFileSync(new URL(`${id}.svg`,directory),svg);
   }
 }
-writeFileSync(new URL('./civilization-emblems.json', import.meta.url), JSON.stringify({greece:'omega',egypt:'eye-of-horus',rome:'laurel-wreath',japan:'cherry-blossom',korea:'taegeuk',china:'dragon-head',joseon:'taegeuk'},null,2)+'\n');
+writeFileSync(new URL('./civilization-emblems.json', import.meta.url), JSON.stringify({greece:'omega',egypt:'eye-of-horus',rome:'laurel-wreath',japan:'cherry-blossom',korea:'taegeuk',china:'dragon-head',joseon:'royal-standard-concentric-taegeuk'},null,2)+'\n');
 console.log('Created civilization emblems with matching white and black piece palettes.');

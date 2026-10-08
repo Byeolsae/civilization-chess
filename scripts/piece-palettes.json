@@ -109,18 +109,18 @@
   },
   "joseon": {
     "w": {
-      "fill": "#F2AE70",
-      "shade": "#CF884E",
+      "fill": "#FFFFFF",
+      "shade": "#E5E0DA",
       "line": "#672237",
-      "accent": "#BE0840",
-      "ornament": "#FFFCF5"
+      "accent": "#F0AD73",
+      "ornament": "#C00D45"
     },
     "b": {
-      "fill": "#BE0840",
+      "fill": "#C00D45",
       "shade": "#8E1237",
       "line": "#421421",
-      "accent": "#FFFCF5",
-      "ornament": "#F2AE70"
+      "accent": "#F0AD73",
+      "ornament": "#FFFFFF"
     }
   },
   "aztec": {
