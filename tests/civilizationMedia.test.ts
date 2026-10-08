@@ -1,3 +1,4 @@
+import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { civilizations } from '../src/civilizations';
@@ -42,4 +43,21 @@ test('media preferences handle corrupted and old storage and clamp volume', () =
   assert.deepEqual(parseMediaPreferences('{"music":true,"volume":0.6,"background":false}'), { music: true, volume: 0.6, background: false });
   assert.equal(parseMediaPreferences('{"volume":100}').volume, 1);
   assert.equal(parseMediaPreferences('{"volume":-1}').volume, 0);
+});
+
+
+test('six civilization tracks exist and have matching measured loudness', () => {
+  const report = JSON.parse(readFileSync('public/media/audio-processing.json', 'utf8'));
+  const levels: number[] = [];
+  for (const id of ['greece', 'egypt', 'rome', 'aztec', 'korea', 'qing'] as const) {
+    const path = mediaForCivilization(id).bgm;
+    assert.ok(path && existsSync(`public${path}`), `${id} audio missing`);
+    const track = report[id];
+    assert.ok(track.loop_seconds > 30);
+    assert.equal(track.crossfade_seconds, 6);
+    assert.ok(Math.abs(track.integrated_lufs + 18) < 1, `${id} loudness out of range`);
+    assert.ok(track.true_peak_dbtp < -1, `${id} lacks peak headroom`);
+    levels.push(track.integrated_lufs);
+  }
+  assert.ok(Math.max(...levels) - Math.min(...levels) < 1);
 });

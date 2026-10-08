@@ -1,0 +1,80 @@
+{
+  "greece": {
+    "source": "Kallipolian Dance - Farya Faraji & World Musicians, SEIKILO Ancient World Music (그리스).mp3",
+    "original_seconds": 164.56,
+    "trim_start_seconds": 0.6,
+    "trim_end_seconds": 3.41,
+    "loop_seconds": 154.55,
+    "crossfade_seconds": 6.0,
+    "integrated_lufs": -18.34,
+    "true_peak_dbtp": -1.78,
+    "bytes": 3092419,
+    "loop_boundary_step": 0.011133,
+    "internal_step_p999": 0.043837
+  },
+  "korea": {
+    "source": "Once upon a time - eldlofi (조선).mp3",
+    "original_seconds": 82.013,
+    "trim_start_seconds": 0.0,
+    "trim_end_seconds": 1.163,
+    "loop_seconds": 74.85,
+    "crossfade_seconds": 6.0,
+    "integrated_lufs": -18.51,
+    "true_peak_dbtp": -2.57,
+    "bytes": 1498427,
+    "loop_boundary_step": 0.004214,
+    "internal_step_p999": 0.041185
+  },
+  "egypt": {
+    "source": "The Legend of Narmer - WombatNoisesAudio (이집트).mp3",
+    "original_seconds": 423.253,
+    "trim_start_seconds": 0.3,
+    "trim_end_seconds": 2.753,
+    "loop_seconds": 414.2,
+    "crossfade_seconds": 6.0,
+    "integrated_lufs": -18.46,
+    "true_peak_dbtp": -1.85,
+    "bytes": 8285562,
+    "loop_boundary_step": 0.007851,
+    "internal_step_p999": 0.047501
+  },
+  "qing": {
+    "source": "Cup of Solid Gold (청나라).mp3",
+    "original_seconds": 387.773,
+    "trim_start_seconds": 6.0,
+    "trim_end_seconds": 0.773,
+    "loop_seconds": 375.0,
+    "crossfade_seconds": 6.0,
+    "integrated_lufs": -18.45,
+    "true_peak_dbtp": -4.73,
+    "bytes": 7501366,
+    "loop_boundary_step": 0.008755,
+    "internal_step_p999": 0.074418
+  },
+  "aztec": {
+    "source": "Jimena Contreras - Aztec Empire (아즈텍).mp3",
+    "original_seconds": 171.027,
+    "trim_start_seconds": 0.0,
+    "trim_end_seconds": 3.577,
+    "loop_seconds": 161.45,
+    "crossfade_seconds": 6.0,
+    "integrated_lufs": -18.44,
+    "true_peak_dbtp": -4.79,
+    "bytes": 3230346,
+    "loop_boundary_step": 0.008391,
+    "internal_step_p999": 0.079445
+  },
+  "rome": {
+    "source": "National Anthem of the Roman Empire - S.P.Q.R. (로마)",
+    "original_seconds": 221.056,
+    "trim_start_seconds": 0.2,
+    "trim_end_seconds": 0.656,
+    "loop_seconds": 214.2,
+    "crossfade_seconds": 6.0,
+    "integrated_lufs": -18.43,
+    "true_peak_dbtp": -10.08,
+    "bytes": 4285170,
+    "loop_boundary_step": 0.022047,
+    "internal_step_p999": 0.080847
+  }
+}

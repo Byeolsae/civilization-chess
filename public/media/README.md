@@ -1,6 +1,6 @@
 # 문명별 배경과 BGM
 
-그리스·이집트·로마·아즈텍·조선(korea)·청나라 임시 배경(background-v1.webp)을 등록했습니다. 내장 image_gen으로 생성한 게임용 분위기 일러스트이며, 실제 유적을 재현한 자료는 아닙니다. 음원은 아직 등록하지 않았습니다. 파일이 없는 문명은 기존 배경과 무음으로 표시하며 요청하지 않습니다.
+그리스·이집트·로마·아즈텍·조선(korea)·청나라 임시 배경(background-v1.webp)을 등록했습니다. 내장 image_gen으로 생성한 게임용 분위기 일러스트이며, 실제 유적을 재현한 자료는 아닙니다. 6개 문명의 사용자 제공 음원을 bgm-loop-v1.mp3로 등록했습니다. 음악은 기본 꺼짐이며 게임의 음악 버튼으로 켤 수 있습니다. 파일이 없는 문명은 기존 배경과 무음으로 표시하며 요청하지 않습니다.
 
 ## 파일 등록
 
@@ -29,3 +29,15 @@ greece: {
 - 숨겨진 탭에서는 일시 정지합니다. 브라우저 자동 재생 제한이 있으면 재생 버튼을 표시합니다. 실패한 음원이 게임을 막지 않습니다.
 
 배경은 넓은 화면에서 잘리는 부분을 고려해 제작하고, 음원은 반복 지점을 맞춰 준비하세요. 이 폴더는 공개 배포되므로 사용할 수 있는 권리가 있는 파일만 넣으세요.
+
+
+## BGM processing
+
+Original user files are preserved. `scripts/prepare-bgm.py` decodes each source,
+trims only near-silent leading/trailing blocks, and constructs a circular loop
+with a 6-second equal-power tail/head crossfade. The cycle starts immediately after
+that overlap, so the overlap is not played twice. Two-pass FFmpeg loudness
+normalization targets -18 LUFS integrated and -1.5 dBTP, then exports stereo
+44.1 kHz / 160 kbps MP3 with gapless encoder metadata. Measurement of the encoded
+files is recorded in `audio-processing.json`. This smooths the audio seam but
+is not a beat-perfect musical rearrangement. See the report for source titles.

@@ -10,12 +10,12 @@ export const defaultMedia: CivilizationMedia = { background: null, bgm: null };
 // Example after adding files under public/media/greece/:
 // greece: { background: '/media/greece/background.webp', bgm: '/media/greece/bgm.mp3' },
 export const civilizationMedia: Partial<Record<Civilization, CivilizationMedia>> = {
-  greece: { background: '/media/greece/background-v1.webp', bgm: null },
-  egypt: { background: '/media/egypt/background-v1.webp', bgm: null },
-  rome: { background: '/media/rome/background-v1.webp', bgm: null },
-  aztec: { background: '/media/aztec/background-v1.webp', bgm: null },
-  korea: { background: '/media/korea/background-v1.webp', bgm: null },
-  qing: { background: '/media/qing/background-v1.webp', bgm: null },
+  greece: { background: '/media/greece/background-v1.webp', bgm: '/media/greece/bgm-loop-v1.mp3' },
+  egypt: { background: '/media/egypt/background-v1.webp', bgm: '/media/egypt/bgm-loop-v1.mp3' },
+  rome: { background: '/media/rome/background-v1.webp', bgm: '/media/rome/bgm-loop-v1.mp3' },
+  aztec: { background: '/media/aztec/background-v1.webp', bgm: '/media/aztec/bgm-loop-v1.mp3' },
+  korea: { background: '/media/korea/background-v1.webp', bgm: '/media/korea/bgm-loop-v1.mp3' },
+  qing: { background: '/media/qing/background-v1.webp', bgm: '/media/qing/bgm-loop-v1.mp3' },
 };
 export function mediaForCivilization(id: Civilization): CivilizationMedia {
   return { ...defaultMedia, ...civilizationMedia[id] };
