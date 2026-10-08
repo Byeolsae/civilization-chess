@@ -1,3 +1,4 @@
+import MatchReview from './MatchReview';
 import CooldownBadge from './CooldownBadge';
 import VictoryScene from './VictoryScene';
 import EvaluationBar from './EvaluationBar';
@@ -70,6 +71,7 @@ export default function App() {
   const [loadouts, setLoadouts] = useState<Loadouts | null>(restored?.loadouts ?? null);
   const [started, setStarted] = useState(!!restored);
   const [resigned, setResigned] = useState<Color | null>(restored?.resigned ?? null);
+  const [reviewPly, setReviewPly] = useState<number | null>(null);
   const [revision, setRevision] = useState(0);
   const [selected, setSelected] = useState<Square | null>(null);
   const [pieceMode, setPieceMode] = useState('');
@@ -341,16 +343,17 @@ export default function App() {
         } catch { setStorageError(true); }
         setSettings(next); setSetupReady(true);
       }} /> : settings.mode === 'online' ? !online.session ? <OnlineLobby online={online} onBack={()=>setSetupReady(false)}/> : !online.room?.joined || !online.room.colorsChosen ? <OnlineWaitingRoom online={online}/> : <Draft settings={settings} network={{picks:online.room.picks,color:online.session.color,busy:online.busy,connected:online.connected,onPick:choice=>online.send({kind:'pick',choice})}} onSettings={()=>void leaveOnline()} onStart={()=>{}}/> : <Draft settings={settings} onSettings={() => setSetupReady(false)} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts).beginPlacement() : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} /> : <>
+      {reviewPly !== null && <Modal title="대전 복기" onClose={() => setReviewPly(null)}><MatchReview game={game} players={players} initialPly={reviewPly} flipped={flipped} viewer={settings.mode === 'local' ? game.turn() : settings.humanColor} live={!status.over}/></Modal>}
       <div className="page-heading"><div><div className="eyebrow">THE FIRST AGE</div><h1>한 수로 시작하는 문명</h1></div><span className="rules-badge"><Shield size={15} /> {game instanceof AbilityGame ? '문명 능력 대전' : '기본 체스'}</span></div>
-      {placementOwner && game instanceof AbilityGame && <section className="placement-guide" aria-label="시작 지형 배치">
-        <div><strong>{colorNames[placementOwner]} · {game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드 배치' : '로마길 배치'}</strong><p>{!placementHuman ? settings.mode === 'online' ? '상대 배치 또는 서버 응답을 기다리고 있어요.' : 'AI가 시작 지형을 배치하고 있어요.' : game.loadouts[placementOwner].passive === 'pyramid' ? '중심 칸을 누르세요. 주변 8칸까지 보호합니다. 기물이 있는 칸도 선택할 수 있어요.' : '방향을 고르고 보드에서 인접한 두 줄을 선택하세요.'}</p></div>
-        {placementHuman && <><div className="placement-controls">{game.loadouts[placementOwner].passive === 'roads' && <>{(['row','column'] as const).map(axis => <button key={axis} aria-pressed={placementAxis === axis} onClick={() => setPlacementAxis(axis)}>{axis === 'row' ? '가로 2행' : '세로 2열'}</button>)}</>}<button className="primary-button" disabled={!placementSquare} onClick={confirmPlacement}>배치 확정</button></div><small>모든 배치가 끝나면 백부터 시작합니다.</small></>}
-      </section>}
       <div className="game-layout">
         <section className="board-section" aria-label="체스 대전">
           {playerBar(topColor)}
           <div className={`board-with-evaluation ${game instanceof AbilityGame ? 'board-with-active' : ''}`}>
           {game instanceof AbilityGame && <aside className="skill-rail" aria-label="문명과 기물 능력">
+                  {placementOwner && game instanceof AbilityGame && <section className="placement-guide" aria-label="시작 지형 배치">
+        <div><strong>{colorNames[placementOwner]} · {game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드 배치' : '로마길 배치'}</strong><p>{!placementHuman ? settings.mode === 'online' ? '상대 배치 또는 서버 응답을 기다리고 있어요.' : 'AI가 시작 지형을 배치하고 있어요.' : game.loadouts[placementOwner].passive === 'pyramid' ? '중심 칸을 누르세요. 주변 8칸까지 보호합니다. 기물이 있는 칸도 선택할 수 있어요.' : '방향을 고르고 보드에서 인접한 두 줄을 선택하세요.'}</p></div>
+        {placementHuman && <><div className="placement-controls">{game.loadouts[placementOwner].passive === 'roads' && <>{(['row','column'] as const).map(axis => <button key={axis} aria-pressed={placementAxis === axis} onClick={() => setPlacementAxis(axis)}>{axis === 'row' ? '가로 2행' : '세로 2열'}</button>)}</>}<button className="primary-button" disabled={!placementSquare} onClick={confirmPlacement}>배치 확정</button></div><small>모든 배치가 끝나면 백부터 시작합니다.</small></>}
+      </section>}
             <span className="skill-rail-label">액티브</span>
             <ActiveButton game={game} target={activeTarget} owner={activeOwner} onToggle={() => { setSelected(null); activeTarget.toggle(); }} />
             <PieceSkillButtons game={game} square={selected} mode={pieceMode} enabled={humanTurn && !confirm && !promotion && !game.state.duel && !activeTarget.armed} onMode={mode => { setPieceMode(mode); setPieceCargo(mode === 'deploy' ? pieceInfo?.cargo[0] ?? '' : ''); }} />
@@ -421,9 +424,9 @@ export default function App() {
         <aside className="side-panel">
           <>
             <section className={`status-panel ${status.kind}`} aria-live="polite"><div className="panel-kicker">{placementOwner ? 'PLACEMENT' : status.over ? 'GAME OVER' : aiTurn ? 'AI TURN' : 'YOUR MOVE'}</div><div className="status-title">{status.over ? <Crown size={25} /> : <span className={`side-dot large ${game.turn()}`} />}<h2>{placementOwner ? `${colorNames[placementOwner]} 지형 배치` : aiTurn ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : status.title}</h2></div><p>{placementOwner ? '보드에서 위치를 선택하고 배치를 확정하세요.' : aiTurn ? ai.error ?? `${difficultyNames[settings.difficulty]} AI가 다음 수를 고르고 있어요.` : status.detail}</p>{aiTurn && ai.error && <button className="secondary-button" onClick={ai.retry}>AI 다시 시도</button>}{status.over && <button className="primary-button" onClick={() => setConfirm('new')}>새로운 대전 <ArrowRight size={17} /></button>}</section>
-            <section className="history-panel"><div className="section-title"><h3><ScrollText size={18} /> 대전 기록</h3><span>{history.length}수</span></div><div className="history-labels"><span>#</span><span>백</span><span>흑</span></div>
+            <section className="history-panel"><div className="section-title"><h3><ScrollText size={18} /> 대전 기록</h3><span>{history.length}수</span></div>{history.length > 0 && <button className="review-open" onClick={() => setReviewPly(history.length)}>보드로 복기</button>}<div className="history-labels"><span>#</span><span>백</span><span>흑</span></div>
               <div className="history-list" ref={historyRef} aria-label="기보">
-                {!history.length ? <div className="history-empty"><Swords size={29} strokeWidth={1.2} /><p>첫 수를 기다리고 있어요</p><span>{placementOwner ? '먼저 시작 지형을 배치하세요.' : aiTurn ? 'AI의 첫 수를 기다리고 있어요.' : '체스판에서 내 기물을 선택하세요.'}</span></div> : game instanceof AbilityGame ? history.map((move, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{(['w','b'] as const).map(color => <span key={color} className={move === lastMove && move.color === color ? 'latest-san' : ''}>{move.color === color ? <b>{move.san}</b> : '—'}</span>)}</div>) : Array.from({ length: Math.ceil(history.length / 2) }, (_, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{[history[index * 2], history[index * 2 + 1]].map((move, side) => <span key={side} className={move && move === lastMove ? 'latest-san' : ''}>{move ? <><Piece type={move.piece} color={move.color} civilization={players[move.color]} small /><b>{move.san}</b></> : '—'}</span>)}</div>)}
+                {!history.length ? <div className="history-empty"><Swords size={29} strokeWidth={1.2} /><p>첫 수를 기다리고 있어요</p><span>{placementOwner ? '먼저 시작 지형을 배치하세요.' : aiTurn ? 'AI의 첫 수를 기다리고 있어요.' : '체스판에서 내 기물을 선택하세요.'}</span></div> : game instanceof AbilityGame ? history.map((move, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{(['w','b'] as const).map(color => <span key={color} className={move === lastMove && move.color === color ? 'latest-san' : ''}>{move.color === color ? <button className="history-move" onClick={() => setReviewPly(history.indexOf(move) + 1)} aria-label={`${history.indexOf(move) + 1}수 복기`}>{move.san}</button> : '—'}</span>)}</div>) : Array.from({ length: Math.ceil(history.length / 2) }, (_, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{[history[index * 2], history[index * 2 + 1]].map((move, side) => <span key={side} className={move && move === lastMove ? 'latest-san' : ''}>{move ? <><Piece type={move.piece} color={move.color} civilization={players[move.color]} small /><button className="history-move" onClick={() => setReviewPly(history.indexOf(move) + 1)} aria-label={`${history.indexOf(move) + 1}수 복기`}>{move.san}</button></> : '—'}</span>)}</div>)}
               </div>
             </section>
             <div className="match-actions"><button onClick={() => setConfirm('new')}><RotateCcw size={16} /> 새 대전</button><button onClick={() => setConfirm('resign')} disabled={status.over}><Flag size={16} /> 기권</button></div>

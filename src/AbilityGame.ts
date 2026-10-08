@@ -211,6 +211,12 @@ export class AbilityGame extends Chess {
       { skipValidation: true },
     );
   }
+  reviewPosition(ply: number) {
+    if (!Number.isInteger(ply) || ply < 0 || ply > this.journal.length) throw Error("Invalid review position");
+    const copy = new AbilityGame(this.loadouts);
+    copy.restore(ply === this.journal.length ? this.state : this.journal[ply].before);
+    return copy;
+  }
   snapshot() {
     return structuredClone(this.state);
   }

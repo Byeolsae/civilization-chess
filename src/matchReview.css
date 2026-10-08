@@ -1,0 +1,16 @@
+.modal:has(.match-review){width:min(620px,calc(100% - 24px));padding:18px}.match-review{width:100%}
+.review-board{display:grid;grid-template-columns:repeat(8,1fr);aspect-ratio:1;overflow:hidden;border-radius:6px}
+.review-square{position:relative;display:grid;place-items:center;min-width:0;aspect-ratio:1;isolation:isolate}
+.review-square.light{background:#dfddcf}.review-square.dark{background:#6a8584}
+.review-square .piece{width:88%;height:88%;z-index:2;position:relative}
+.review-square small{position:absolute;bottom:1px;left:3px;font-size:9px;color:#172b37;z-index:3}
+.review-last{box-shadow:inset 0 0 0 3px #f7d471}
+.review-sand,.review-fog{position:absolute;inset:0;background:#d4b47d url('/terrain-sand.svg') center/cover}
+.review-fog{z-index:4;opacity:.95}.review-flame{position:absolute;inset:0;color:#ff9c36;font-size:30px;z-index:1}
+.match-review nav{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:14px}
+.match-review button,.review-open,.history-move{padding:8px;border:1px solid #ffffff35;border-radius:5px;background:#ffffff12;color:inherit;cursor:pointer}
+.match-review button:disabled{opacity:.35;cursor:default}.match-review input{width:100%;margin-top:16px}.review-notice{font-size:12px;opacity:.75}
+.history-move{font-weight:700}.history-move:hover,.history-move:focus-visible{background:#b3ce8640;outline:2px solid #bdcc92}.review-open{margin-bottom:8px}
+.skill-rail .placement-guide{display:flex;flex-direction:column;gap:8px;margin:0 0 12px;padding:8px 3px;background:#cbaa4930;border:1px solid #dfbf66;border-radius:8px;text-align:center}
+.skill-rail .placement-guide strong{font-size:12px}.skill-rail .placement-guide p,.skill-rail .placement-guide small{font-size:10px;line-height:1.5;overflow-wrap:anywhere}
+.skill-rail .placement-controls{display:flex;flex-direction:column;gap:5px;width:100%}.skill-rail .placement-controls button{padding:8px 2px;font-size:11px;width:100%;min-width:0}
