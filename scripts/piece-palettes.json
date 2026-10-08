@@ -128,9 +128,9 @@
       "fill": "#DFA13A",
       "shade": "#BE8127",
       "line": "#69451E",
-      "accent": "#7C041D",
-      "ornament": "#309DA1",
-      "trimColor": "#7C041D"
+      "accent": "#309DA1",
+      "ornament": "#7C041D",
+      "trimColor": "#309DA1"
     },
     "b": {
       "fill": "#309DA1",
