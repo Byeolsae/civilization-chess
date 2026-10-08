@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
 import type { Color } from 'chess.js';
 import { Crown, Handshake, X } from 'lucide-react';
 import CivilizationIcon, { hasCivilizationIcon } from './CivilizationIcon';
@@ -7,16 +7,23 @@ import type { Players } from './game';
 import palettes from '../scripts/piece-palettes.json';
 import './victoryScene.css';
 
-function Wing() {
+function Wing({ metal }: { metal: string }) {
+  const tips = [[12,10],[14,45],[23,80],[40,113],[62,144],[89,170],[121,190],[155,201]];
   return <g className="victory-wing">
-    <path d="M248 140C181 145 95 107 17 28C28 84 80 145 151 167C184 180 222 178 248 160Z" fill="currentColor" opacity=".25"/>
-    {[0,1,2,3,4,5].map(i => <path key={i} d={`M${244-i*7} ${143+i*4} Q${108+i*12} ${120+i*9} ${22+i*16} ${35+i*22} Q${51+i*17} ${112+i*13} ${133+i*12} ${157+i*6} Q218 192 248 156Z`} fill="currentColor" fillOpacity={.9-i*.1} stroke="currentColor" strokeWidth="1"/>)}
-    <path d="M242 149Q123 141 30 44" fill="none" stroke="#fff6dc" strokeOpacity=".7" strokeWidth="2"/>
+    {tips.map(([x,y],i) => {
+      const rootX = 248-i*2, rootY = 115+i*6;
+      return <g key={i} className="victory-feather" style={{ '--feather-delay': `${.16+i*.055}s` } as CSSProperties}>
+        <path d={`M${rootX} ${rootY} C${rootX-58} ${rootY-35} ${x+45} ${y+36} ${x} ${y} Q${x+7} ${y+39} ${x+38} ${y+55} Q${rootX-39} ${rootY+34} ${rootX} ${rootY+11}Z`} fill={`url(#${metal})`} stroke="#231d2e" strokeWidth="2"/>
+        <path d={`M${rootX-6} ${rootY+5} Q${x+69} ${y+63} ${x+10} ${y+13}`} fill="none" stroke="#fff4d5" strokeOpacity=".66" strokeWidth="1.6"/>
+      </g>;
+    })}
+    <path d="M254 114Q222 85 185 87L201 115 175 118 208 142 189 147Q217 175 254 165Z" fill={`url(#${metal})`} stroke="#fff0c3" strokeOpacity=".65" strokeWidth="1.5"/>
   </g>;
 }
 export default function VictoryScene({ winner, players, detail, onNew }: {
   winner: Color | null; players: Players; detail: string; onNew: () => void;
 }) {
+  const metal = useId();
   const dialog = useRef<HTMLDialogElement>(null);
   const [dismissed, setDismissed] = useState(false);
   const civilization = winner ? players[winner] : null;
@@ -37,8 +44,8 @@ export default function VictoryScene({ winner, players, detail, onNew }: {
     <button className="victory-close" onClick={close} aria-label="승패 연출 닫고 보드 보기"><X size={24}/></button>
     <div className="victory-content">
       <div className="victory-crest" aria-hidden="true">
-        <div className="victory-halo"/>
-        {winner && <svg className="victory-wings" viewBox="0 0 600 260"><Wing/><g transform="translate(600 0) scale(-1 1)"><Wing/></g></svg>}
+        <div className="victory-halo"/>{winner && <><div className="victory-burst"/><div className="victory-shock-ring"/></>}
+        {winner && <svg className="victory-wings" viewBox="0 0 600 260"><defs><linearGradient id={metal} x1="0" y1="0" x2=".3" y2="1"><stop stopColor="#fff6da"/><stop offset=".28" stopColor="currentColor"/><stop offset=".52" stopColor="#fff0c4"/><stop offset=".67" stopColor="currentColor"/><stop offset="1" stopColor="#504052"/></linearGradient></defs><Wing metal={metal}/><g transform="translate(600 0) scale(-1 1)"><Wing metal={metal}/></g></svg>}
         <div className="victory-emblem">{civilization && winner && hasCivilizationIcon(civilization) ? <CivilizationIcon civilization={civilization} color={winner} size={120}/> : winner ? <Crown size={86}/> : <Handshake size={76}/>}</div>
         {winner && <div className="victory-particles">{Array.from({length:20},(_,i)=><i key={i} style={{ '--angle': `${i*18}deg`, '--delay': `${.3+(i%5)*.12}s`, '--distance': `${110+(i%4)*27}px` } as CSSProperties}/>)}</div>}
       </div>
