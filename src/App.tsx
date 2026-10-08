@@ -16,6 +16,7 @@ import { useAiTurn } from './useAiTurn';
 import { useMoveAnimation } from './useMoveAnimation';
 import MatchAtmosphere from './MatchAtmosphere';
 import { opponentCivilization } from './civilizationMedia';
+import './boardThemes.css';
 import { AbilityGame, type AbilityAction } from './AbilityGame';
 import { AbilityPanel, SphinxChallenge } from './AbilityPanel';
 import { useActiveTargeting } from './useActiveTargeting';
@@ -347,7 +348,7 @@ export default function App() {
           {playerBar(topColor)}
           <div className={game instanceof AbilityGame ? 'board-with-active' : ''}>
           {game instanceof AbilityGame && <ActiveButton game={game} target={activeTarget} owner={activeOwner} onToggle={() => { setSelected(null); activeTarget.toggle(); }} />}
-          <div className={`board-frame ${!started ? 'awaiting-start' : ''}`}>
+          <div data-board-theme={opponentCivilization(players, settings, game.turn())} className={`board-frame ${!started ? 'awaiting-start' : ''}`}>
             <div className={`board ${dragVisual ? 'is-dragging' : ''} ${activeTarget.armed || pieceMode ? 'is-targeting' : ''}`} ref={boardRef} role="group" aria-label="체스판. 클릭 또는 드래그로 이동. 방향키로 칸 이동, Enter로 선택">
               {ranks.flatMap((rank, row) => files.map((file, column) => {
                 const square = `${file}${rank}` as Square;
