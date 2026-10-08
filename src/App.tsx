@@ -386,6 +386,7 @@ export default function App() {
                   {pyramidBlessed && <span className="pyramid-blessing" style={{'--blessing-delay': `${-((row * 3 + column * 5) % 11) / 3}s`} as CSSProperties} aria-hidden="true"><i/><i/><i/></span>}
                   {game instanceof AbilityGame && game.state.zones.some(z => z.kind === 'pyramid' && z.center === square) && <span className="passive-pyramid" aria-hidden="true"><img src="/terrain/pyramid.svg" alt="" draggable={false}/></span>}
                   {desertMask && <span className="desert-terrain" style={{ backgroundPosition: `${column / 7 * 100}% ${row / 7 * 100}%`, maskImage: desertMask, WebkitMaskImage: desertMask }} aria-hidden="true" />}
+                  {(pyramidBlessed || desertMask) && <span className="terrain-square-state" aria-hidden="true" />}
                   {(pieceTargets.has(square) || pieceArea.includes(square)) && <span className={`piece-target-mark ${pieceMode ? 'armed' : ''} ${pieceArea.includes(square) ? 'area' : ''}`} aria-label={pieceMode ? '스킬 적용 대상' : '스킬 가능 대상'} />}
                   {activeTarget.area.includes(square) && <span className="target-mark" />}{column === 0 && <span className="rank-label">{rank}</span>}
                   {row === 7 && <span className="file-label">{file}</span>}
