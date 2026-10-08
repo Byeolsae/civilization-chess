@@ -17,3 +17,12 @@
  --board-selected:#a9d9df;--board-selection-edge:#305e72;
  --board-move-dot:#163d56b3;--board-capture:#163d56cc;
 }
+.board-frame[data-board-theme="rome"]{
+ --terrain-sand-tint:#c6ad90;--blessing-glow:#f1d18d;--blessing-core:#fff2ce;
+ --board-frame:#503b36;--board-border:#ae905a;
+ --board-light:#e7ddc9;--board-dark:#aa8276;
+ --board-label-dark:#67483c;--board-label-light:#fff0d6;
+ --board-last-light:#d1dcba;--board-last-dark:#a4b68e;
+ --board-selected:#f0d58b;--board-selection-edge:#775721;
+ --board-move-dot:#253c43b3;--board-capture:#253c43cc;
+}
