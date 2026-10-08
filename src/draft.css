@@ -44,4 +44,4 @@
 
 .readiness-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.readiness-filter button{padding:9px 14px;border-radius:7px;border:1px solid #65745e;background:#26332a;color:#b9c8af}.readiness-filter button[aria-pressed=true]{background:#c0d1a5;border-color:#c0d1a5;color:#22311e}.readiness-help{font-size:12px;color:#aebca4;line-height:1.7;margin:0 0 20px}.readiness-badge{display:inline-flex;align-self:start;justify-self:start;align-items:center;padding:4px 8px;margin:0 0 10px;border-radius:5px;font-size:11px;font-weight:600;background:#38423b;color:#b9c3b7;border:1px solid #68766655}.readiness-badge.ready{background:#304d3a;color:#c6ebad;border-color:#89b17477}.readiness-badge.progress{background:#534b2e;color:#f0d696;border-color:#b49c6877}
 
-.theme-joseon{--draft-accent:#f2ae70;--draft-rgb:242,174,112}.theme-aztec{--draft-accent:#deaa70;--draft-rgb:222,170,112}
+.theme-joseon{--draft-accent:#f2ae70;--draft-rgb:242,174,112}.theme-aztec{--draft-accent:#e6be1f;--draft-rgb:230,190,31}
