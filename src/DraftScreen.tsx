@@ -14,7 +14,7 @@ import { categories, completeDraft, confirmPick, DRAFT_KEY, draftSteps, previous
 const icons: Record<string, LucideIcon> = { crown: Crown, hourglass: Hourglass, trophy: Trophy, zap: Zap, waves: Waves, skull: Skull, shield: Shield, hammer: Hammer, wind: Wind, pyramid: Pyramid, sun: Sun, heart: Heart, question: HelpCircle, route: Route, scroll: ScrollText, fence: Fence, flame: Flame, swords: Swords, crosshair: Crosshair };
 const civilizationCopy: Partial<Record<string, { headline: string; detail: string; traits: string }>> = {
   joseon: { headline: '진홍과 금빛, 조선의 색', detail: '백은 흰색·진홍·황색, 흑은 진홍·흰색·황색 순서로 배색했습니다.', traits: '스킬 구현 중 · 기본 체스 대전' },
-  aztec: { headline: '청록과 진홍, 선명한 황금빛', detail: '백은 청록색, 흑은 진홍색을 바탕으로 서로의 색과 황금색 장식을 더했습니다.', traits: '스킬 구현 중 · 기본 체스 대전' },
+  aztec: { headline: '청록과 진홍, 선명한 황금빛', detail: '백은 황금색, 흑은 청록색 바탕에 진홍색 띠와 서로의 색으로 된 받침 장식을 더했습니다.', traits: '스킬 구현 중 · 기본 체스 대전' },
   china: { headline: '백옥과 비취, 은은한 금빛', detail: '백옥과 비취 바탕에 금색 장식을 더한 기물로 대전을 시작하세요.', traits: '스킬 준비 중 · 기본 체스 대전' },
   korea: { headline: '옥빛 하늘색, 고운 꽃분홍', detail: '옥빛 하늘색과 연한 꽃분홍을 교차 배색한 기물로 대전을 시작하세요.', traits: '스킬 준비 중 · 기본 체스 대전' },
   japan: { headline: '하얀 꽃잎, 벚꽃의 분홍', detail: '흰색과 벚꽃 분홍으로 물든 기물로 대전을 시작하세요.', traits: '스킬 준비 중 · 기본 체스 대전' },

@@ -125,19 +125,19 @@
   },
   "aztec": {
     "w": {
+      "fill": "#DFA13A",
+      "shade": "#BE8127",
+      "line": "#69451E",
+      "accent": "#309DA1",
+      "ornament": "#7C041D",
+      "trimColor": "#309DA1"
+    },
+    "b": {
       "fill": "#309DA1",
       "shade": "#267D81",
       "line": "#173F43",
       "accent": "#DFA13A",
       "ornament": "#7C041D",
-      "trimColor": "#DFA13A"
-    },
-    "b": {
-      "fill": "#7C041D",
-      "shade": "#590316",
-      "line": "#360611",
-      "accent": "#DFA13A",
-      "ornament": "#309DA1",
       "trimColor": "#DFA13A"
     }
   }
