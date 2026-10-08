@@ -4,7 +4,7 @@ import { civilizationReadiness,chooseAiDraftPick } from '../src/civilizationRead
 import { civilizations,type Civilization } from '../src/civilizations';
 import { confirmPick,completeDraft } from '../src/draft';
 test('readiness comes from implemented skills rather than shared piece palettes',()=>{
- assert.equal(civilizationReadiness('greece'),'ready');assert.equal(civilizationReadiness('egypt'),'ready');assert.equal(civilizationReadiness('rome'),'pending');
+ assert.equal(civilizationReadiness('greece'),'ready');assert.equal(civilizationReadiness('egypt'),'ready');assert.equal(civilizationReadiness('rome'),'progress');
  assert.equal(civilizationReadiness('korea'),'progress');assert.equal(civilizationReadiness('aztec'),'progress');assert.equal(civilizationReadiness('goryeo'),'pending');
  assert.equal(civilizations.filter(c=>civilizationReadiness(c.id)==='ready').length,2);
 });

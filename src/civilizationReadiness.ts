@@ -2,7 +2,7 @@ import { skills,optionsAt,draftSteps } from './draft';
 import type { Civilization } from './civilizations';
 export type CivilizationReadiness = 'ready' | 'progress' | 'pending';
 export function civilizationReadiness(id:Civilization):CivilizationReadiness {
-  if(id==='korea'||id==='aztec')return 'progress';
+  if(id==='korea'||id==='aztec'||id==='rome')return 'progress';
   const cards=Object.values(skills[id]).flat();
   const available=cards.filter(card=>!card.pending).length;
   return cards.length>0&&available===cards.length ? 'ready' : 'pending';
