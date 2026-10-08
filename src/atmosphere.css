@@ -1,6 +1,9 @@
 .app-shell{position:relative;isolation:isolate}
-.civilization-backdrop{position:fixed;inset:0;z-index:-1;pointer-events:none;background:#121918}
-.civilization-backdrop img{width:100%;height:100%;object-fit:cover;opacity:.82;animation:atmosphere-appear .7s ease-out}
+/* Portal keeps the fixed backdrop out of panel/animation containing blocks.
+   Large viewport height is stable while mobile browser chrome opens/closes. */
+#root{position:relative;z-index:1}
+.civilization-backdrop{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;z-index:0;overflow:hidden;pointer-events:none;background:#121918;transform:translateZ(0);user-select:none}
+.civilization-backdrop img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;opacity:.82;animation:atmosphere-appear .7s ease-out}
 .civilization-backdrop::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#12191833,#12191866 70%,#121918aa)}
 .match-atmosphere{margin:16px 0;padding:15px;border:1px solid var(--line);border-radius:8px;background:#19231fed}
 .atmosphere-title{display:flex;align-items:center;gap:8px;color:#a9baa4;font-size:11px;margin-bottom:12px}

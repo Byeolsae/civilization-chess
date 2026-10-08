@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { useEffect, useState } from 'react';
 import { Music2, Volume2 } from 'lucide-react';
 import { civilizations, type Civilization } from './civilizations';
@@ -22,9 +23,9 @@ export default function MatchAtmosphere({ civilization }: { civilization: Civili
   }, [preferences]);
   const background = preferences.background && media.background !== failedBackground ? media.background : null;
   return <section className="match-atmosphere" aria-label="상대 문명 배경과 음악" data-civilization={civilization}>
-    {background && <div className="civilization-backdrop" aria-hidden="true">
-      <img key={`${background}-${backgroundRetry}`} src={background} alt="" onLoad={() => setLoadedBackground(background)} onError={() => setFailedBackground(background)} />
-    </div>}
+    {background && createPortal(<div className="civilization-backdrop" aria-hidden="true">
+      <img key={`${background}-${backgroundRetry}`} src={background} alt="" draggable={false} onLoad={() => setLoadedBackground(background)} onError={() => setFailedBackground(background)} />
+    </div>, document.body)}
     <div className="atmosphere-title"><Music2 size={17} /><span>상대 문명 <strong>{name}</strong></span></div>
     <div className="atmosphere-controls">
       <button type="button" aria-pressed={preferences.music} disabled={!media.bgm}
