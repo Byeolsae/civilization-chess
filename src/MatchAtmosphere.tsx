@@ -27,6 +27,10 @@ export default function MatchAtmosphere({ civilization }: { civilization: Civili
       <img key={`${background}-${backgroundRetry}`} src={background} alt="" draggable={false} onLoad={() => setLoadedBackground(background)} onError={() => setFailedBackground(background)} />
     </div>, document.body)}
     <div className="atmosphere-title"><Music2 size={17} /><span>상대 문명 <strong>{name}</strong></span></div>
+    {media.bgm && media.credit && <div className="music-credit" aria-label="BGM 곡 정보">
+      <strong>{media.credit.title}</strong>
+      <span>{media.credit.sourceOnly ? '음원 출처' : '아티스트'} · {media.credit.artist}</span>
+    </div>}
     <div className="atmosphere-controls">
       <button type="button" aria-pressed={preferences.music} disabled={!media.bgm}
         onClick={() => setPreferences(value => ({ ...value, music: !value.music }))}>

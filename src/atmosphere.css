@@ -17,3 +17,7 @@
 .music-retry{margin-top:12px}.match-atmosphere p{font-size:11px;margin-top:12px;color:#b8c8b0}
 @keyframes atmosphere-appear{from{opacity:0}to{opacity:.82}}
 @media(prefers-reduced-motion:reduce){.civilization-backdrop img{animation:none}}
+
+.music-credit{display:grid;gap:5px;margin:0 0 13px;padding-bottom:12px;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.music-credit strong{font-size:12px;font-weight:600;line-height:1.5;color:var(--ui-text,#e6eae5)}
+.music-credit span{font-size:10px;line-height:1.6;color:var(--muted)}

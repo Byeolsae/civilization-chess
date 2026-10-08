@@ -3,19 +3,19 @@ import type { Civilization } from './civilizations';
 import type { Players } from './game';
 import type { MatchSettings } from './matchSettings';
 
-export type CivilizationMedia = { background: string | null; bgm: string | null };
+export type CivilizationMedia = { background: string | null; bgm: string | null; credit?: { title: string; artist: string; sourceOnly?: boolean } };
 export const defaultMedia: CivilizationMedia = { background: null, bgm: null };
 
 // Use exact civilization IDs; dynasties can have their own assets.
 // Example after adding files under public/media/greece/:
 // greece: { background: '/media/greece/background.webp', bgm: '/media/greece/bgm.mp3' },
 export const civilizationMedia: Partial<Record<Civilization, CivilizationMedia>> = {
-  greece: { background: '/media/greece/background-v1.webp', bgm: '/media/greece/bgm-loop-v1.mp3' },
-  egypt: { background: '/media/egypt/background-v1.webp', bgm: '/media/egypt/bgm-loop-v1.mp3' },
-  rome: { background: '/media/rome/background-v1.webp', bgm: '/media/rome/bgm-loop-v1.mp3' },
-  aztec: { background: '/media/aztec/background-v1.webp', bgm: '/media/aztec/bgm-loop-v1.mp3' },
-  korea: { background: '/media/korea/background-v1.webp', bgm: '/media/korea/bgm-loop-v1.mp3' },
-  qing: { background: '/media/qing/background-v1.webp', bgm: '/media/qing/bgm-loop-v1.mp3' },
+  greece: { background: '/media/greece/background-v1.webp', bgm: '/media/greece/bgm-loop-v1.mp3', credit: { title: 'Kallipolian Dance', artist: 'Farya Faraji & World Musicians · SEIKILO Ancient World Music' } },
+  egypt: { background: '/media/egypt/background-v1.webp', bgm: '/media/egypt/bgm-loop-v1.mp3', credit: { title: 'The Legend of Narmer', artist: 'WombatNoisesAudio' } },
+  rome: { background: '/media/rome/background-v1.webp', bgm: '/media/rome/bgm-loop-v1.mp3', credit: { title: 'National Anthem of the Roman Empire — S.P.Q.R.', artist: 'VidGames', sourceOnly: true } },
+  aztec: { background: '/media/aztec/background-v1.webp', bgm: '/media/aztec/bgm-loop-v1.mp3', credit: { title: 'Aztec Empire', artist: 'Jimena Contreras' } },
+  korea: { background: '/media/korea/background-v1.webp', bgm: '/media/korea/bgm-loop-v1.mp3', credit: { title: 'Once upon a time', artist: 'eldlofi' } },
+  qing: { background: '/media/qing/background-v1.webp', bgm: '/media/qing/bgm-loop-v1.mp3', credit: { title: 'Cup of Solid Gold (Medley)', artist: 'Norwegian Baron', sourceOnly: true } },
 };
 export function mediaForCivilization(id: Civilization): CivilizationMedia {
   return { ...defaultMedia, ...civilizationMedia[id] };

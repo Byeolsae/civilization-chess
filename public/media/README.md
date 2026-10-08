@@ -41,3 +41,10 @@ normalization targets -18 LUFS integrated and -1.5 dBTP, then exports stereo
 44.1 kHz / 160 kbps MP3 with gapless encoder metadata. Measurement of the encoded
 files is recorded in `audio-processing.json`. This smooths the audio seam but
 is not a beat-perfect musical rearrangement. See the report for source titles.
+
+## Display credits
+
+Track and artist names for Greece, Egypt, Aztec and Joseon follow the user-supplied filenames.
+Qing: Cup of Solid Gold (Medley), source tag Norwegian Baron.
+Rome: National Anthem of the Roman Empire — S.P.Q.R., source tag VidGames.
+The latter two are displayed as audio sources, not verified original composers.
