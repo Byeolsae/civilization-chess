@@ -1,11 +1,11 @@
-.board-with-evaluation{display:grid;grid-template-columns:minmax(0,1fr) 28px;gap:7px;align-items:stretch}
-.board-with-evaluation.board-with-active{grid-template-columns:52px minmax(0,1fr) 28px;align-items:stretch}
-.evaluation-bar{position:relative;margin:10px 0;min-height:0;overflow:hidden;background:#29302f;border:1px solid #737a73;border-radius:4px;isolation:isolate}
-.evaluation-white{position:absolute;bottom:0;left:0;right:0;background:#f0ede3;transition:height .45s ease}
+.board-with-evaluation{display:grid;grid-template-columns:28px minmax(0,1fr);gap:7px;align-items:stretch}
+.board-with-evaluation.board-with-active{grid-template-columns:52px 28px minmax(0,1fr);align-items:stretch}
+.evaluation-bar{position:relative;margin:10px 0;min-height:0;overflow:hidden;background:var(--evaluation-black,#29302f);border:1px solid #737a73;border-radius:4px;isolation:isolate}
+.evaluation-white{position:absolute;bottom:0;left:0;right:0;background:var(--evaluation-white,#f0ede3);box-shadow:0 0 0 1px #ffffffb3,0 0 0 2px #17201ecc;transition:height .45s ease}
 .evaluation-bar.flipped .evaluation-white{bottom:auto;top:0}
 .evaluation-midline{position:absolute;top:50%;left:0;right:0;border-top:1px solid #91988b99}
 .evaluation-label{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:10px;font-weight:800;line-height:1.15;color:#fff;background:#26302ce6;padding:5px 0;overflow-wrap:anywhere}
 .evaluation-bar.flipped .evaluation-label{bottom:auto;top:6px}
 .evaluation-bar.unavailable{opacity:.55}
-@media(max-width:600px){.board-with-evaluation{grid-template-columns:minmax(0,1fr) 23px;gap:4px}.board-with-evaluation.board-with-active{grid-template-columns:40px minmax(0,1fr) 23px;gap:4px}.evaluation-label{font-size:9px}}
+@media(max-width:600px){.board-with-evaluation{grid-template-columns:23px minmax(0,1fr);gap:4px}.board-with-evaluation.board-with-active{grid-template-columns:40px 23px minmax(0,1fr);gap:4px}.evaluation-label{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.evaluation-white{transition:none}}
