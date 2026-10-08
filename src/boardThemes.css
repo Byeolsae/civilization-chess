@@ -1,5 +1,6 @@
 /* Same opponent-civilization source as the atmosphere; other factions use defaults. */
 .board-frame[data-board-theme="greece"]{
+ --terrain-sand-tint:#a3b4b8;--blessing-glow:#c5e3ed;--blessing-core:#edf7ef;
  --board-frame:#354952;--board-border:#8b9c9f;
  --board-light:#e4e5df;--board-dark:#718894;
  --board-label-dark:#425866;--board-label-light:#f1eee4;
@@ -8,6 +9,7 @@
  --board-move-dot:#142b44a6;--board-capture:#142b44bf;
 }
 .board-frame[data-board-theme="egypt"]{
+ --terrain-sand-tint:#d8b982;--blessing-glow:#ffdd68;--blessing-core:#fff3b3;
  --board-frame:#59452f;--board-border:#b99660;
  --board-light:#e6cf9f;--board-dark:#a48259;
  --board-label-dark:#61472b;--board-label-light:#fff0cd;

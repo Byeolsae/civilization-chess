@@ -3,7 +3,7 @@
 .glory-trophies{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);display:flex;gap:2px;padding:2px 3px;border-radius:5px;background:#17241dcc}.piece-status-effects .glory-trophies svg{position:static;width:clamp(7px,1.2vw,13px);height:clamp(7px,1.2vw,13px);stroke-width:2;fill:none}.glory-trophies .filled{color:#ffdb75;fill:#ffdb7540!important}.glory-trophies .empty{color:#788273;opacity:.65}
 
 /* One board-sized texture keeps neighboring desert squares continuous. */
-.desert-terrain{position:absolute;inset:0;pointer-events:none;z-index:0;--sand-opacity:1;background-color:#d5c29a;background-image:url('/terrain-sand.svg');background-size:800% 800%;animation:desert-settle 1.15s cubic-bezier(.22,.61,.36,1) both}
+.desert-terrain{position:absolute;inset:0;pointer-events:none;z-index:0;--sand-opacity:.82;background-color:var(--terrain-sand-tint,#d5c29a);background-blend-mode:luminosity;transition:background-color .16s;background-image:url('/terrain-sand.svg');background-size:800% 800%;animation:desert-settle 1.15s cubic-bezier(.22,.61,.36,1) both}
 
 @keyframes desert-settle{from{opacity:0}to{opacity:var(--sand-opacity)}}
 .skill-fx-set{filter:none}.set-dust{fill:#e6d1a6;stroke:none;filter:blur(13px);transform-box:fill-box;transform-origin:center;animation:set-dust-settle 1.2s ease-out both}
