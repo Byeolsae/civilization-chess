@@ -128,17 +128,17 @@
       "fill": "#309DA1",
       "shade": "#267D81",
       "line": "#173F43",
-      "accent": "#E6BE1F",
+      "accent": "#DFA13A",
       "ornament": "#7C041D",
-      "trimColor": "#E6BE1F"
+      "trimColor": "#DFA13A"
     },
     "b": {
       "fill": "#7C041D",
       "shade": "#590316",
       "line": "#360611",
-      "accent": "#E6BE1F",
+      "accent": "#DFA13A",
       "ornament": "#309DA1",
-      "trimColor": "#E6BE1F"
+      "trimColor": "#DFA13A"
     }
   }
 }
