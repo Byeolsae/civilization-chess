@@ -26,3 +26,7 @@
 .square.active-area>.terrain-square-state{display:block;background:#8d994b;opacity:.85}
 .square.placement-preview>.terrain-square-state{display:block;background:#ffe1a0;opacity:.45}
 .square.drop-target>.terrain-square-state{display:block;box-shadow:inset 0 0 0 4px #f4eeb7}
+
+.pyramid-build-course{position:absolute;inset:0;pointer-events:none}.passive-pyramid .pyramid-build-course img{display:block;animation:pyramid-course-rise .44s cubic-bezier(.2,.65,.3,1) both}.pyramid-build-dust{position:absolute;inset:58% -12% -5%;pointer-events:none;background:radial-gradient(ellipse at 30% 55%,#e2c18590,transparent 58%),radial-gradient(ellipse at 75% 60%,#e8d1a580,transparent 60%);filter:blur(3px);transform-origin:center bottom;animation:pyramid-build-dust 1.4s ease-out both}
+@keyframes pyramid-course-rise{0%{opacity:0;transform:translateY(14%)}35%{opacity:.75}100%{opacity:1;transform:translateY(0)}}@keyframes pyramid-build-dust{0%{opacity:0;transform:scale(.55)}25%,55%{opacity:.65}100%{opacity:0;transform:translateY(-12%) scale(1.45)}}
+@media(prefers-reduced-motion:reduce){.passive-pyramid .pyramid-build-course img{animation:none}.pyramid-build-dust{display:none}}
