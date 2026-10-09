@@ -9,8 +9,8 @@ import { boardPoint, skillEffects, type SkillEffect } from './skillEffectEvents'
 import './skillEffects.css';
 
 type PlayingEffect = SkillEffect & { id: number };
-const POSEIDON_WAVE_MS = 1800;
-const POSEIDON_RETURN_MS = 1600;
+const POSEIDON_WAVE_MS = 900;
+const POSEIDON_RETURN_MS = 900;
 const colors: Record<string, string> = { zeus: '#c5eeff', poseidon: '#75d8ff', hades: '#be98ff', osiris: '#fbe3a0', set: '#e7bf7a', anubis: '#eac27b', judgment: '#f3c367', alesia: '#eeb98e', vesta: '#ffbc75', pilum: '#ffce9c', ballista: '#ffe1ac', minotaur: '#f3c98c', cleopatra: '#ffadd8', trojan: '#bcdfac', deploy: '#bcdfac', gladiator: '#efb2a3', shield: '#b7e8fc', revive: '#f5dfa7', sphinx: '#ceb9ff' };
 const labels: Record<string, string> = { judgment: '심장의 심판', shield: '방어 발동', revive: '미라 부활', sphinx: '수수께끼 방어' };
 export default function SkillEffects({ game, flipped, players }: { game: Chess; flipped: boolean; players: Players }) {
@@ -32,12 +32,23 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
       const x = direction === 0 ? distance : direction === 1 ? -distance : 0;
       const y = direction === 2 ? -distance : direction === 3 ? distance : 0;
       const duration = POSEIDON_WAVE_MS + POSEIDON_RETURN_MS;
+      const wave = layer.current?.querySelector('.fx-wave');
+      const dx = direction === 0 ? 800 : direction === 1 ? -800 : 0;
+      const dy = direction === 2 ? -800 : direction === 3 ? 800 : 0;
+      // Both tracks share one start time, travel duration, and easing.
       const motion = board.animate([
-        { transform: 'translate(0,0)', offset: 0, easing: 'cubic-bezier(.45,0,.55,1)' },
-        { transform: `translate(${x}px,${y}px)`, offset: POSEIDON_WAVE_MS / duration, easing: 'cubic-bezier(.45,0,.55,1)' },
+        { transform: 'translate(0,0)', offset: 0, easing: 'ease-out' },
+        { transform: `translate(${x}px,${y}px)`, offset: POSEIDON_WAVE_MS / duration, easing: 'ease-in-out' },
         { transform: 'translate(0,0)', offset: 1 },
       ], { duration, easing: 'linear' });
-      return () => motion.cancel();
+      const sweep = wave?.animate([
+        { transform: 'translate(0,0)' },
+        { transform: `translate(${dx}px,${dy}px)` },
+      ], { duration: POSEIDON_WAVE_MS, easing: 'ease-out', fill: 'forwards' });
+      const startTime = document.timeline.currentTime;
+      motion.startTime = startTime;
+      if (sweep) sweep.startTime = startTime;
+      return () => { motion.cancel(); sweep?.cancel(); };
     }
     const motion = board.animate([
       { transform: 'translate(0,0)' }, { transform: 'translate(-4px,3px)' },
