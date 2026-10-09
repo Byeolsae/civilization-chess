@@ -1,3 +1,4 @@
+import { translateUi } from './i18n';
 import { useMemo, type CSSProperties } from 'react';
 import type { Chess, Color } from 'chess.js';
 import { boardEvaluation } from './boardEvaluation';
@@ -15,9 +16,9 @@ export default function EvaluationBar({ game, revision, resigned, flipped, viewe
   const white = (piecePalettes[civilizationAppearance[players.w]] ?? palettes.classic).w;
   const black = (piecePalettes[civilizationAppearance[players.b]] ?? palettes.classic).b;
   return <div style={{ '--evaluation-white': white.fill, '--evaluation-black': black.fill } as CSSProperties} className={`evaluation-bar ${flipped ? 'flipped' : ''} ${!evaluation ? 'unavailable' : ''}`}
-    role="img" aria-label={`우세 평가: ${description}`} title={description}>
+    role="img" aria-label={translateUi(`우세 평가: ${description}`)} title={translateUi(description)}>
     <div className="evaluation-white" style={{ height: `${evaluation?.whiteShare ?? 50}%` }} />
     <span className="evaluation-midline" />
-    <span className="evaluation-label">{evaluation?.label ?? '—'}</span>
+    <span className="evaluation-label">{translateUi(evaluation?.label ?? '—')}</span>
   </div>;
 }

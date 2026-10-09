@@ -1,0 +1,10 @@
+.language-switch{display:inline-flex;flex-shrink:0;gap:2px;padding:3px;border:1px solid #a8b9a840;border-radius:8px;background:#101b20}
+.language-switch button{border:0;border-radius:5px;background:transparent;color:#aebbbd;font-size:12px;font-weight:600;padding:7px 9px;cursor:pointer;white-space:nowrap}
+.language-switch button[aria-pressed=true]{background:#dae3d8;color:#152021}
+.language-switch button:focus-visible{outline:2px solid #e7bf76;outline-offset:2px}
+html[lang=en] .draft-card h2{overflow-wrap:anywhere;font-size:clamp(19px,2vw,27px)}
+html[lang=en] .active-skill-button{overflow-wrap:anywhere;font-size:11px}
+html[lang=en] .brand>span:last-child{font-size:17px}
+@media(max-width:700px){.site-header{flex-wrap:wrap;gap:10px}.header-right{flex-wrap:wrap;justify-content:flex-end}.header-right .version{display:none}.language-switch button{padding:7px}.brand small{font-size:8px}}
+html[lang=en] .demo-chapters li{grid-template-columns:82px minmax(0,1fr)}
+html[lang=en] .demo-chapters li span{overflow-wrap:anywhere}

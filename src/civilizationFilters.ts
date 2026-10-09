@@ -1,3 +1,4 @@
+import { translate, getLocale } from './i18n';
 import { civilizations, regions, countries, belongsToCountry, type Civilization } from './civilizations';
 
 export const eras = ['고대', '중세', '근세', '근대'] as const;
@@ -24,6 +25,6 @@ export function filterCivilizations(search = '', region: RegionFilter = '전체'
     (country === '전체' || belongsToCountry(civ, country)) &&
     (region === '전체' || civ.region === region) &&
     (era === '전체' || civilizationEras[civ.id].includes(era)) &&
-    normalize(`${civ.name}${civ.english}${civ.countries.join(' ')}`).includes(query)
-  ).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+    normalize(`${civ.name}${civ.english}${civ.countries.join(' ')} ${translate(civ.name, 'en')} ${civ.countries.map(c => translate(c, 'en')).join(' ')}`).includes(query)
+  ).sort((a, b) => translate(a.name, getLocale()).localeCompare(translate(b.name, getLocale()), getLocale()));
 }

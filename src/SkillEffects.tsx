@@ -1,3 +1,4 @@
+import { translateUi } from './i18n';
 import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Chess } from 'chess.js';
 import { AbilityGame, abilityNames, type AbilityAction } from './AbilityGame';
@@ -43,11 +44,11 @@ export default function SkillEffects({ game, flipped }: { game: Chess; flipped: 
   }, [game, count, flipped]);
   useLayoutEffect(() => () => { timers.current.forEach(clearTimeout); timers.current.clear(); }, []);
   return <div ref={layer} className="skill-effects" aria-live="polite" aria-atomic="true">
-    <span className="sr-only">{announcement}</span>
+    <span className="sr-only">{translateUi(announcement)}</span>
     <svg viewBox="0 0 800 800" aria-hidden="true" className="skill-fx-svg">
-      {playing.map(effect => <Effect key={effect.id} effect={effect} flipped={flipped} />)}
+      {translateUi(playing.map(effect => <Effect key={effect.id} effect={effect} flipped={flipped} />))}
     </svg>
-    {playing.length > 0 && <div key={playing.at(-1)!.id} className="skill-fx-title" aria-hidden="true">{abilityNames[playing.at(-1)!.skill] ?? labels[playing.at(-1)!.skill] ?? '스킬 발동'}</div>}
+    {translateUi(playing.length > 0 && <div key={playing.at(-1)!.id} className="skill-fx-title" aria-hidden="true">{translateUi(abilityNames[playing.at(-1)!.skill] ?? labels[playing.at(-1)!.skill] ?? '스킬 발동')}</div>)}
   </div>;
 }
 function Effect({ effect: e, flipped }: { effect: SkillEffect; flipped: boolean }) {
@@ -60,19 +61,19 @@ function Effect({ effect: e, flipped }: { effect: SkillEffect; flipped: boolean 
   const direction = flipped ? (e.direction ?? 0) ^ 1 : e.direction ?? 0;
   const waveStyle = { '--wave-x': `${direction === 0 ? 800 : direction === 1 ? -800 : 0}px`, '--wave-y': `${direction === 2 ? -800 : direction === 3 ? 800 : 0}px` } as CSSProperties;
   return <g style={{ color }} className={`skill-fx skill-fx-${e.skill}`}>
-    {beam && <line className="fx-beam" x1={from.x} y1={from.y} x2={to.x} y2={to.y} pathLength="1" />}
-    {e.skill === 'poseidon' && <>
-      {e.squares.map(square => { const p = boardPoint(square, flipped); return <rect key={square} className="fx-water" x={p.x-49} y={p.y-49} width="98" height="98" />; })}
-      <g className="fx-wave" style={waveStyle}>{[0, 18, 36].map(offset => direction < 2 ? <path key={offset} d={`M ${direction === 0 ? -offset : 800+offset},${to.y-48} q 40,48 0,96`} /> : <path key={offset} d={`M ${to.x-48},${direction === 2 ? 800+offset : -offset} q 48,40 96,0`} />)}</g>
-    </>}
-    {e.skill === 'zeus' && e.squares.map((square, i) => { const p = boardPoint(square, flipped); const a = i ? boardPoint(e.squares[i-1], flipped) : { x: p.x-18, y: Math.max(0,p.y-140) }; return <path key={square} className="fx-lightning" style={{ animationDelay: `${i*85}ms` }} d={`M ${a.x},${a.y} L ${(a.x+p.x)/2-14},${(a.y+p.y)/2} l 28,-8 L ${p.x},${p.y}`} />; })}
-    {e.skill === 'minotaur' && [0, 1, 2].map(i => <circle key={i} className="fx-shockwave" style={{ animationDelay: `${i*140}ms` }} cx={from.x} cy={from.y} r="135" />)}
-    {e.squares.map((square, i) => { const p = boardPoint(square, flipped); return <g key={square} style={{ animationDelay: `${Math.min(i,5)*45}ms` }} className="fx-impact">
-      {zone ? <rect className="fx-zone" x={p.x-46} y={p.y-46} width="92" height="92" rx="8" /> : e.skill !== 'poseidon' && <circle className="fx-ring" cx={p.x} cy={p.y} r={portal ? 38 : 29} />}
-      {e.skill === 'cleopatra' && <path className="fx-heart" d={`M ${p.x},${p.y+20} C ${p.x-60},${p.y-16} ${p.x-18},${p.y-52} ${p.x},${p.y-22} C ${p.x+18},${p.y-52} ${p.x+60},${p.y-16} ${p.x},${p.y+20}`} />}
-      {portal && <path className="fx-rune" d={`M ${p.x},${p.y-40} L ${p.x+32},${p.y} ${p.x},${p.y+40} ${p.x-32},${p.y} Z`} />}
-      {['shield','sphinx'].includes(e.skill) && <path className="fx-shield" d={`M ${p.x},${p.y-36} l 30,12 v 25 q -4,25 -30,36 q -26,-11 -30,-36 v -25 Z`} />}
-      {['vesta','osiris','revive'].includes(e.skill) && <path className="fx-rays" d={`M ${p.x-20},${p.y+30} v -60 M ${p.x},${p.y+38} v -88 M ${p.x+20},${p.y+30} v -60`} />}
-    </g>; })}
+    {translateUi(beam && <line className="fx-beam" x1={from.x} y1={from.y} x2={to.x} y2={to.y} pathLength="1" />)}
+    {translateUi(e.skill === 'poseidon' && <>
+      {translateUi(e.squares.map(square => { const p = boardPoint(square, flipped); return <rect key={square} className="fx-water" x={p.x-49} y={p.y-49} width="98" height="98" />; }))}
+      <g className="fx-wave" style={waveStyle}>{translateUi([0, 18, 36].map(offset => direction < 2 ? <path key={offset} d={`M ${direction === 0 ? -offset : 800+offset},${to.y-48} q 40,48 0,96`} /> : <path key={offset} d={`M ${to.x-48},${direction === 2 ? 800+offset : -offset} q 48,40 96,0`} />))}</g>
+    </>)}
+    {translateUi(e.skill === 'zeus' && e.squares.map((square, i) => { const p = boardPoint(square, flipped); const a = i ? boardPoint(e.squares[i-1], flipped) : { x: p.x-18, y: Math.max(0,p.y-140) }; return <path key={square} className="fx-lightning" style={{ animationDelay: `${i*85}ms` }} d={`M ${a.x},${a.y} L ${(a.x+p.x)/2-14},${(a.y+p.y)/2} l 28,-8 L ${p.x},${p.y}`} />; }))}
+    {translateUi(e.skill === 'minotaur' && [0, 1, 2].map(i => <circle key={i} className="fx-shockwave" style={{ animationDelay: `${i*140}ms` }} cx={from.x} cy={from.y} r="135" />))}
+    {translateUi(e.squares.map((square, i) => { const p = boardPoint(square, flipped); return <g key={square} style={{ animationDelay: `${Math.min(i,5)*45}ms` }} className="fx-impact">
+      {translateUi(zone ? <rect className="fx-zone" x={p.x-46} y={p.y-46} width="92" height="92" rx="8" /> : e.skill !== 'poseidon' && <circle className="fx-ring" cx={p.x} cy={p.y} r={portal ? 38 : 29} />)}
+      {translateUi(e.skill === 'cleopatra' && <path className="fx-heart" d={`M ${p.x},${p.y+20} C ${p.x-60},${p.y-16} ${p.x-18},${p.y-52} ${p.x},${p.y-22} C ${p.x+18},${p.y-52} ${p.x+60},${p.y-16} ${p.x},${p.y+20}`} />)}
+      {translateUi(portal && <path className="fx-rune" d={`M ${p.x},${p.y-40} L ${p.x+32},${p.y} ${p.x},${p.y+40} ${p.x-32},${p.y} Z`} />)}
+      {translateUi(['shield','sphinx'].includes(e.skill) && <path className="fx-shield" d={`M ${p.x},${p.y-36} l 30,12 v 25 q -4,25 -30,36 q -26,-11 -30,-36 v -25 Z`} />)}
+      {translateUi(['vesta','osiris','revive'].includes(e.skill) && <path className="fx-rays" d={`M ${p.x-20},${p.y+30} v -60 M ${p.x},${p.y+38} v -88 M ${p.x+20},${p.y+30} v -60`} />)}
+    </g>; }))}
   </g>;
 }

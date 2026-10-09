@@ -1,3 +1,5 @@
+import { translateUi, useLocale } from './i18n';
+import LanguageSwitch from './LanguageSwitch';
 import MatchHistory from './MatchHistory';
 import BoardTerrain from './BoardTerrain';
 import MatchReview from './MatchReview';
@@ -47,12 +49,13 @@ function Modal({ title, children, onClose }: { title: string; children: ReactNod
     return () => dialog.close();
   }, []);
   return <dialog ref={ref} className="modal" onCancel={onClose} aria-labelledby="modal-title">
-    <div className="modal-heading"><h2 id="modal-title">{title}</h2><button className="icon-button" onClick={onClose} aria-label="닫기"><X size={20} /></button></div>
-    {children}
+    <div className="modal-heading"><h2 id="modal-title">{translateUi(title)}</h2><button className="icon-button" onClick={onClose} aria-label={translateUi("닫기")}><X size={20} /></button></div>
+    {translateUi(children)}
   </dialog>;
 }
 
 export default function App() {
+  useLocale();
   const online = useOnlineRoom();
   const [onlineRequested] = useState(() => !!online.session || new URL(location.href).searchParams.has('room'));
   const onlineApplied = useRef('');
@@ -321,52 +324,52 @@ export default function App() {
     const civ = getCivilization(players[color]);
     const captured = game instanceof AbilityGame ? game.graves(opposite(color)).map(piece => piece.type) : history.filter(move => move.color === color && move.captured).map(move => move.captured!);
     return <div className={`player-bar ${started && !status.over && (placementOwner ?? game.turn()) === color ? 'current-player' : ''}`}>
-      {hasCivilizationIcon(players[color]) && <div className={`player-avatar ${color}`}><CivilizationIcon civilization={players[color]} color={color} size={36} /></div>}
-      <div className="player-identity"><strong>{civ.name}{settings.mode !== 'local' && <small className="opponent-label">{color === settings.humanColor ? '나' : settings.mode === 'online' ? '상대' : 'AI'}</small>}<span className={`color-chip ${color}`}>{colorNames[color]}</span></strong><span>{placementOwner ? placementOwner === color ? '시작 지형 배치 중' : '상대 배치를 기다리는 중' : started ? (game.turn() === color && !status.over ? (settings.mode === 'online' && color !== settings.humanColor ? '상대의 차례' : settings.mode === 'ai' && color !== settings.humanColor ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : '당신의 차례') : status.over ? '대전 종료' : '상대의 수를 기다리는 중') : '문명 선택 중'}</span></div>
-      <div className="captured" aria-label={`${colorNames[color]}이 잡은 기물: ${captured.map(p => pieceNames[p]).join(', ') || '없음'}`}>
-        {captured.map((type, index) => <Piece key={index} type={type} color={opposite(color)} civilization={players[opposite(color)]} revived={game instanceof AbilityGame ? game.graves(opposite(color))[index]?.revived : undefined} lives={game instanceof AbilityGame ? game.graves(opposite(color))[index]?.lives : undefined} skill={game instanceof AbilityGame ? game.loadouts[opposite(color)].piece : undefined} small />)}
+      {translateUi(hasCivilizationIcon(players[color]) && <div className={`player-avatar ${color}`}><CivilizationIcon civilization={players[color]} color={color} size={36} /></div>)}
+      <div className="player-identity"><strong>{translateUi(civ.name)}{translateUi(settings.mode !== 'local' && <small className="opponent-label">{translateUi(color === settings.humanColor ? '나' : settings.mode === 'online' ? '상대' : 'AI')}</small>)}<span className={`color-chip ${color}`}>{translateUi(colorNames[color])}</span></strong><span>{translateUi(placementOwner ? placementOwner === color ? '시작 지형 배치 중' : '상대 배치를 기다리는 중' : started ? (game.turn() === color && !status.over ? (settings.mode === 'online' && color !== settings.humanColor ? '상대의 차례' : settings.mode === 'ai' && color !== settings.humanColor ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : '당신의 차례') : status.over ? '대전 종료' : '상대의 수를 기다리는 중') : '문명 선택 중')}</span></div>
+      <div className="captured" aria-label={translateUi(`${colorNames[color]}이 잡은 기물: ${captured.map(p => pieceNames[p]).join(', ') || '없음'}`)}>
+        {translateUi(captured.map((type, index) => <Piece key={index} type={type} color={opposite(color)} civilization={players[opposite(color)]} revived={game instanceof AbilityGame ? game.graves(opposite(color))[index]?.revived : undefined} lives={game instanceof AbilityGame ? game.graves(opposite(color))[index]?.lives : undefined} skill={game instanceof AbilityGame ? game.loadouts[opposite(color)].piece : undefined} small />))}
       </div>
-      {started && (placementOwner ?? game.turn()) === color && !status.over && <span className="turn-tag">{placementOwner ? '배치' : '차례'}</span>}
+      {translateUi(started && (placementOwner ?? game.turn()) === color && !status.over && <span className="turn-tag">{translateUi(placementOwner ? '배치' : '차례')}</span>)}
     </div>;
   }
 
   return <div className="app-shell" data-ui-theme={started ? opponentCivilization(players, settings, game.turn()) : undefined}>
     <header className="site-header">
-      <a href="/" className="brand" aria-label="문명체스 홈"><span className="brand-icon"><Crown size={25} /></span><span>문명체스<small>CIVILIZATION CHESS</small></span></a>
-      <div className="header-right"><span className="mode-label"><Swords size={15} /> {setupReady || started ? modeLabel : '대전 준비'}</span><span className="version">ALPHA 0.3</span></div>
+      <a href="/" className="brand" aria-label={translateUi("문명체스 홈")}><span className="brand-icon"><Crown size={25} /></span><span>{translateUi("문명체스")}<small>CIVILIZATION CHESS</small></span></a>
+      <div className="header-right"><LanguageSwitch /><span className="mode-label"><Swords size={15} /> {translateUi(setupReady || started ? modeLabel : '대전 준비')}</span><span className="version">ALPHA 0.3</span></div>
     </header>
 
     <main>
-      {settings.mode === 'online' && online.session && <OnlineBanner online={online} onLeave={()=>void leaveOnline()}/>}
-      {!started ? !setupReady ? <MatchSetup initial={settings} onContinue={next => {
+      {translateUi(settings.mode === 'online' && online.session && <OnlineBanner online={online} onLeave={()=>void leaveOnline()}/>)}
+      {translateUi(!started ? !setupReady ? <MatchSetup initial={settings} onContinue={next => {
         try {
           if (JSON.stringify(next) !== JSON.stringify(settings)) localStorage.removeItem(DRAFT_KEY);
           localStorage.setItem(SETUP_KEY, JSON.stringify(next));
         } catch { setStorageError(true); }
         setSettings(next); setSetupReady(true);
       }} /> : settings.mode === 'online' ? !online.session ? <OnlineLobby online={online} onBack={()=>setSetupReady(false)}/> : !online.room?.joined || !online.room.colorsChosen ? <OnlineWaitingRoom online={online}/> : <Draft settings={settings} network={{picks:online.room.picks,color:online.session.color,busy:online.busy,connected:online.connected,onPick:choice=>online.send({kind:'pick',choice})}} onSettings={()=>void leaveOnline()} onStart={()=>{}}/> : <Draft settings={settings} onSettings={() => setSetupReady(false)} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts).beginPlacement() : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} /> : <>
-      {reviewPly !== null && <Modal title="대전 복기" onClose={() => setReviewPly(null)}><MatchReview game={game} players={players} initialPly={reviewPly} flipped={flipped} viewer={settings.mode === 'local' ? game.turn() : settings.humanColor} live={!status.over}/></Modal>}
-      <div className="page-heading"><div><div className="eyebrow">THE FIRST AGE</div><h1>한 수로 시작하는 문명</h1></div><span className="rules-badge"><Shield size={15} /> {game instanceof AbilityGame ? '문명 능력 대전' : '기본 체스'}</span></div>
+      {translateUi(reviewPly !== null && <Modal title={translateUi("대전 복기")} onClose={() => setReviewPly(null)}><MatchReview game={game} players={players} initialPly={reviewPly} flipped={flipped} viewer={settings.mode === 'local' ? game.turn() : settings.humanColor} live={!status.over}/></Modal>)}
+      <div className="page-heading"><div><div className="eyebrow">THE FIRST AGE</div><h1>{translateUi("한 수로 시작하는 문명")}</h1></div><span className="rules-badge"><Shield size={15} /> {translateUi(game instanceof AbilityGame ? '문명 능력 대전' : '기본 체스')}</span></div>
       <div className="game-layout">
-        <section className="board-section" aria-label="체스 대전">
-          {playerBar(topColor)}
+        <section className="board-section" aria-label={translateUi("체스 대전")}>
+          {translateUi(playerBar(topColor))}
           <div className={`board-with-evaluation ${game instanceof AbilityGame ? 'board-with-active' : ''}`}>
-          {game instanceof AbilityGame && <aside className="skill-rail" aria-label="문명과 기물 능력">
-            {placementOwner && <>
-              <span className="skill-rail-label">시작 배치</span>
-              <button className={`active-skill-button passive-placement-button ${placementArmed ? 'armed' : ''}`} aria-label={`${game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드' : '로마길'} 배치 모드`} aria-pressed={placementArmed} disabled={!placementHuman || !!confirm} onClick={() => { setPlacementArmed(value => !value); setPlacementSquare(null); setSelected(null); }}>
-                {game.loadouts[placementOwner].passive === 'pyramid' ? <Pyramid size={24}/> : <Route size={24}/>}
-                <span>{game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드' : '로마길'}</span><small>{!placementHuman ? '상대 배치 중' : placementArmed ? '배치 중 · 취소' : '눌러서 배치'}</small>
+          {translateUi(game instanceof AbilityGame && <aside className="skill-rail" aria-label={translateUi("문명과 기물 능력")}>
+            {translateUi(placementOwner && <>
+              <span className="skill-rail-label">{translateUi("시작 배치")}</span>
+              <button className={`active-skill-button passive-placement-button ${placementArmed ? 'armed' : ''}`} aria-label={translateUi(`${game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드' : '로마길'} 배치 모드`)} aria-pressed={placementArmed} disabled={!placementHuman || !!confirm} onClick={() => { setPlacementArmed(value => !value); setPlacementSquare(null); setSelected(null); }}>
+                {translateUi(game.loadouts[placementOwner].passive === 'pyramid' ? <Pyramid size={24}/> : <Route size={24}/>)}
+                <span>{translateUi(game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드' : '로마길')}</span><small>{translateUi(!placementHuman ? '상대 배치 중' : placementArmed ? '배치 중 · 취소' : '눌러서 배치')}</small>
               </button>
-            </>}
-            <span className="skill-rail-label">액티브</span>
+            </>)}
+            <span className="skill-rail-label">{translateUi("액티브")}</span>
             <ActiveButton game={game} target={activeTarget} owner={activeOwner} onToggle={() => { setSelected(null); activeTarget.toggle(); }} />
             <PieceSkillButtons game={game} square={selected} mode={pieceMode} enabled={humanTurn && !confirm && !promotion && !game.state.duel && !activeTarget.armed} onMode={mode => { setPieceMode(mode); setPieceCargo(mode === 'deploy' ? pieceInfo?.cargo[0] ?? '' : ''); }} />
-          </aside>}
+          </aside>)}
           <EvaluationBar players={players} game={game} revision={revision} resigned={resigned} flipped={flipped} viewer={settings.mode === 'local' ? game.turn() : settings.humanColor} />
           <div data-board-theme={opponentCivilization(players, settings, game.turn())} className={`board-frame ${!started ? 'awaiting-start' : ''}`}>
-            <div className={`board ${dragVisual ? 'is-dragging' : ''} ${activeTarget.armed || pieceMode ? 'is-targeting' : ''}`} ref={boardRef} role="group" aria-label="체스판. 클릭 또는 드래그로 이동. 방향키로 칸 이동, Enter로 선택">
-              {ranks.flatMap((rank, row) => files.map((file, column) => {
+            <div className={`board ${dragVisual ? 'is-dragging' : ''} ${activeTarget.armed || pieceMode ? 'is-targeting' : ''}`} ref={boardRef} role="group" aria-label={translateUi("체스판. 클릭 또는 드래그로 이동. 방향키로 칸 이동, Enter로 선택")}>
+              {translateUi(ranks.flatMap((rank, row) => files.map((file, column) => {
                 const square = `${file}${rank}` as Square;
                 const piece = game.get(square);
                 const possible = moves.some(move => move.to === square); const abilityNote = game instanceof AbilityGame ? game.squareNote(square) : ''; const viewer = settings.mode !== 'local' ? settings.humanColor : game.turn(); const fogged = game instanceof AbilityGame && game.state.stormUntil[viewer] > 0 && game.state.stormUntil[viewer] >= game.state.turns[viewer] && (viewer === 'w' ? rank >= 5 : rank <= 4);
@@ -376,7 +379,7 @@ export default function App() {
                 const checked = piece?.type === 'k' && piece.color === game.turn() && game.isCheck();
                 return <button key={square} type="button" data-square={square}
                   className={`square ${placementArea.includes(square) ? 'placement-preview' : ''} ${activeTarget.valid.has(square) ? 'active-target' : ''} ${activeTarget.area.includes(square) ? 'active-area' : ''} ${(file.charCodeAt(0) - 97 + rank) % 2 === 1 ? 'dark' : 'light'} ${selected === square ? 'selected' : ''} ${lastMove?.from === square || lastMove?.to === square ? 'last-move' : ''} ${checked ? 'in-check' : ''} ${piece?.color === game.turn() && humanTurn ? 'can-drag' : ''} ${dragVisual?.from === square ? 'drag-origin' : ''} ${dragVisual?.over === square ? 'drop-target' : ''}`}
-                  title={abilityNote || undefined} aria-label={`${square}${fogged ? ' 시야 제한' : piece ? ` ${colorNames[piece.color]} ${pieceNames[piece.type]}` : ' 빈 칸'}${possible ? ' 이동 가능' : ''}${checked ? ' 체크' : ''}`}
+                  title={translateUi(abilityNote || undefined)} aria-label={translateUi(`${square}${fogged ? ' 시야 제한' : piece ? ` ${colorNames[piece.color]} ${pieceNames[piece.type]}` : ' 빈 칸'}${possible ? ' 이동 가능' : ''}${checked ? ' 체크' : ''}`)}
                   aria-pressed={selected === square} disabled={placementOwner ? !placementHuman || !placementArmed : !humanTurn || (game instanceof AbilityGame && !!game.state.duel)}
                   onPointerDown={event => beginDrag(event, square)}
                   onPointerEnter={() => activeTarget.hover(square)}
@@ -398,52 +401,52 @@ export default function App() {
                     const next = row * 8 + column + offsets[event.key];
                     if (next >= 0 && next < 64) boardRef.current?.querySelectorAll('button')[next]?.focus();
                   }}>
-                  {game instanceof AbilityGame && <BoardTerrain game={game} square={square} row={row} column={column} flipped={flipped}/>}
-                  {(pieceTargets.has(square) || pieceArea.includes(square)) && <span className={`piece-target-mark ${pieceMode ? 'armed' : ''} ${pieceArea.includes(square) ? 'area' : ''}`} aria-label={pieceMode ? '스킬 적용 대상' : '스킬 가능 대상'} />}
-                  {activeTarget.area.includes(square) && <span className="target-mark" />}{column === 0 && <span className="rank-label">{rank}</span>}
-                  {row === 7 && <span className="file-label">{file}</span>}
-                  {!fogged && piece && <Piece key={`${square}-${piece.type}-${piece.color}`} type={piece.type} color={piece.color} civilization={players[piece.color]} revived={game instanceof AbilityGame ? game.unit(square)?.revived : undefined} lives={game instanceof AbilityGame ? game.unit(square)?.lives : undefined} skill={game instanceof AbilityGame ? game.loadouts[piece.color].piece : undefined} />}
-                  {!fogged && game instanceof AbilityGame && <PieceStatusEffects game={game} square={square} />}{!fogged && cooldownTurns > 0 && <span className="board-cooldown"><CooldownBadge turns={cooldownTurns}/></span>}{markerNote && !fogged && <span className="ability-marker">{markerNote}</span>}{possible && <span className={piece ? 'capture-ring' : 'move-dot'} />}
+                  {translateUi(game instanceof AbilityGame && <BoardTerrain game={game} square={square} row={row} column={column} flipped={flipped}/>)}
+                  {translateUi((pieceTargets.has(square) || pieceArea.includes(square)) && <span className={`piece-target-mark ${pieceMode ? 'armed' : ''} ${pieceArea.includes(square) ? 'area' : ''}`} aria-label={translateUi(pieceMode ? '스킬 적용 대상' : '스킬 가능 대상')} />)}
+                  {translateUi(activeTarget.area.includes(square) && <span className="target-mark" />)}{translateUi(column === 0 && <span className="rank-label">{translateUi(rank)}</span>)}
+                  {translateUi(row === 7 && <span className="file-label">{translateUi(file)}</span>)}
+                  {translateUi(!fogged && piece && <Piece key={`${square}-${piece.type}-${piece.color}`} type={piece.type} color={piece.color} civilization={players[piece.color]} revived={game instanceof AbilityGame ? game.unit(square)?.revived : undefined} lives={game instanceof AbilityGame ? game.unit(square)?.lives : undefined} skill={game instanceof AbilityGame ? game.loadouts[piece.color].piece : undefined} />)}
+                  {translateUi(!fogged && game instanceof AbilityGame && <PieceStatusEffects game={game} square={square} />)}{translateUi(!fogged && cooldownTurns > 0 && <span className="board-cooldown"><CooldownBadge turns={cooldownTurns}/></span>)}{translateUi(markerNote && !fogged && <span className="ability-marker">{translateUi(markerNote)}</span>)}{translateUi(possible && <span className={piece ? 'capture-ring' : 'move-dot'} />)}
                 </button>;
-              }))}
-              {game instanceof AbilityGame && <Sandstorm game={game} viewer={settings.mode !== 'local' ? settings.humanColor : game.turn()} flipped={flipped} />}
+              })))}
+              {translateUi(game instanceof AbilityGame && <Sandstorm game={game} viewer={settings.mode !== 'local' ? settings.humanColor : game.turn()} flipped={flipped} />)}
               <SkillEffects game={game} flipped={flipped} />
             </div>
           </div>
           </div>
-          {placementOwner && game instanceof AbilityGame && <section className="placement-guide placement-toolbar" aria-label="시작 지형 배치">
-            <div role="status"><strong>{colorNames[placementOwner]} · {game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드' : '로마길'}</strong><p>{!placementHuman ? '상대의 시작 배치를 기다리고 있어요.' : !placementArmed ? '왼쪽 시작 배치 버튼을 눌러주세요.' : placementSquare ? `${placementSquare} 선택됨 · 강조된 영역을 확인하고 확정하세요.` : '보드에서 배치할 칸을 누르세요. 기물이 있는 칸도 선택할 수 있어요.'}</p></div>
-            {placementHuman && placementArmed && <div className="placement-controls">{game.loadouts[placementOwner].passive === 'roads' && (['row','column'] as const).map(axis => <button key={axis} aria-pressed={placementAxis === axis} onClick={() => setPlacementAxis(axis)}>{axis === 'row' ? '가로 2행' : '세로 2열'}</button>)}<button className="primary-button" disabled={!placementSquare || !!confirm} onClick={confirmPlacement}>배치 확정</button><button onClick={() => {setPlacementArmed(false);setPlacementSquare(null);}}>취소</button></div>}
-          </section>}
-          {game instanceof AbilityGame && <ActiveGuide game={game} target={activeTarget} players={players} />}
-          {game instanceof AbilityGame && selected && !activeTarget.armed && <PieceSkillGuide game={game} square={selected} players={players} mode={pieceMode} cargo={pieceCargo} enabled={humanTurn && !confirm && !promotion && !game.state.duel} onMode={mode => { setPieceMode(mode); setPieceCargo(mode === 'deploy' ? pieceInfo?.cargo[0] ?? '' : ''); }} onCargo={setPieceCargo} />}
-          {playerBar(bottomColor)}
-          <div className="board-toolbar"><span>{started ? game instanceof AbilityGame ? `백 ${game.state.turns.w}턴 · 흑 ${game.state.turns.b}턴 · ${history.length}행동` : `${Math.floor(history.length / 2) + 1} 라운드 · ${history.length}수 진행` : '백이 먼저 시작합니다'}</span><div>
-            <button onClick={undo} disabled={settings.mode === 'online' || !started || (!canUndoTurn(game, settings) && !resigned)}><RotateCcw size={16} /> {settings.mode === 'ai' ? '내 차례로 무르기' : '한 수 무르기'}</button>
-            <button onClick={() => setFlipped(value => !value)}><ArrowLeftRight size={16} /> 보드 뒤집기</button>
+          {translateUi(placementOwner && game instanceof AbilityGame && <section className="placement-guide placement-toolbar" aria-label={translateUi("시작 지형 배치")}>
+            <div role="status"><strong>{translateUi(colorNames[placementOwner])} · {translateUi(game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드' : '로마길')}</strong><p>{translateUi(!placementHuman ? '상대의 시작 배치를 기다리고 있어요.' : !placementArmed ? '왼쪽 시작 배치 버튼을 눌러주세요.' : placementSquare ? `${placementSquare} 선택됨 · 강조된 영역을 확인하고 확정하세요.` : '보드에서 배치할 칸을 누르세요. 기물이 있는 칸도 선택할 수 있어요.')}</p></div>
+            {translateUi(placementHuman && placementArmed && <div className="placement-controls">{translateUi(game.loadouts[placementOwner].passive === 'roads' && (['row','column'] as const).map(axis => <button key={axis} aria-pressed={placementAxis === axis} onClick={() => setPlacementAxis(axis)}>{translateUi(axis === 'row' ? '가로 2행' : '세로 2열')}</button>))}<button className="primary-button" disabled={!placementSquare || !!confirm} onClick={confirmPlacement}>{translateUi("배치 확정")}</button><button onClick={() => {setPlacementArmed(false);setPlacementSquare(null);}}>{translateUi("취소")}</button></div>)}
+          </section>)}
+          {translateUi(game instanceof AbilityGame && <ActiveGuide game={game} target={activeTarget} players={players} />)}
+          {translateUi(game instanceof AbilityGame && selected && !activeTarget.armed && <PieceSkillGuide game={game} square={selected} players={players} mode={pieceMode} cargo={pieceCargo} enabled={humanTurn && !confirm && !promotion && !game.state.duel} onMode={mode => { setPieceMode(mode); setPieceCargo(mode === 'deploy' ? pieceInfo?.cargo[0] ?? '' : ''); }} onCargo={setPieceCargo} />)}
+          {translateUi(playerBar(bottomColor))}
+          <div className="board-toolbar"><span>{translateUi(started ? game instanceof AbilityGame ? `백 ${game.state.turns.w}턴 · 흑 ${game.state.turns.b}턴 · ${history.length}행동` : `${Math.floor(history.length / 2) + 1} 라운드 · ${history.length}수 진행` : '백이 먼저 시작합니다')}</span><div>
+            <button onClick={undo} disabled={settings.mode === 'online' || !started || (!canUndoTurn(game, settings) && !resigned)}><RotateCcw size={16} /> {translateUi(settings.mode === 'ai' ? '내 차례로 무르기' : '한 수 무르기')}</button>
+            <button onClick={() => setFlipped(value => !value)}><ArrowLeftRight size={16} />{translateUi(" 보드 뒤집기")}</button>
           </div></div>
         </section>
 
         <aside className="side-panel">
           <>
-            <section className={`status-panel ${status.kind}`} aria-live="polite"><div className="panel-kicker">{placementOwner ? 'PLACEMENT' : status.over ? 'GAME OVER' : aiTurn ? 'AI TURN' : 'YOUR MOVE'}</div><div className="status-title">{status.over ? <Crown size={25} /> : <span className={`side-dot large ${game.turn()}`} />}<h2>{placementOwner ? `${colorNames[placementOwner]} 지형 배치` : aiTurn ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : status.title}</h2></div><p>{placementOwner ? placementArmed ? '보드에서 위치를 선택하고 보드 아래에서 배치를 확정하세요.' : '보드 왼쪽의 시작 배치 버튼을 눌러주세요.' : aiTurn ? ai.error ?? `${difficultyNames[settings.difficulty]} AI가 다음 수를 고르고 있어요.` : status.detail}</p>{aiTurn && ai.error && <button className="secondary-button" onClick={ai.retry}>AI 다시 시도</button>}{status.over && <button className="primary-button" onClick={() => setConfirm('new')}>새로운 대전 <ArrowRight size={17} /></button>}</section>
+            <section className={`status-panel ${status.kind}`} aria-live="polite"><div className="panel-kicker">{translateUi(placementOwner ? 'PLACEMENT' : status.over ? 'GAME OVER' : aiTurn ? 'AI TURN' : 'YOUR MOVE')}</div><div className="status-title">{translateUi(status.over ? <Crown size={25} /> : <span className={`side-dot large ${game.turn()}`} />)}<h2>{translateUi(placementOwner ? `${colorNames[placementOwner]} 지형 배치` : aiTurn ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : status.title)}</h2></div><p>{translateUi(placementOwner ? placementArmed ? '보드에서 위치를 선택하고 보드 아래에서 배치를 확정하세요.' : '보드 왼쪽의 시작 배치 버튼을 눌러주세요.' : aiTurn ? ai.error ?? `${difficultyNames[settings.difficulty]} AI가 다음 수를 고르고 있어요.` : status.detail)}</p>{translateUi(aiTurn && ai.error && <button className="secondary-button" onClick={ai.retry}>{translateUi("AI 다시 시도")}</button>)}{translateUi(status.over && <button className="primary-button" onClick={() => setConfirm('new')}>{translateUi("새로운 대전 ")}<ArrowRight size={17} /></button>)}</section>
             <MatchHistory moves={history} players={players} listRef={historyRef} onReview={setReviewPly} waiting={placementOwner ? '먼저 시작 지형을 배치하세요.' : aiTurn ? 'AI가 첫 수를 고르고 있어요.' : '체스판에서 기물을 움직여 보세요.'}/>
-            <div className="match-actions"><button onClick={() => setConfirm('new')}><RotateCcw size={16} /> 새 대전</button><button onClick={() => setConfirm('resign')} disabled={status.over}><Flag size={16} /> 기권</button></div>
-            {game instanceof AbilityGame && <AbilityPanel game={game} players={players} enabled={humanTurn && !confirm} onAction={performAbility} />}<MatchAtmosphere civilization={opponentCivilization(players, settings, game.turn())} />
-            <details className="match-loadouts"><summary>선택한 스킬 보기</summary><LoadoutList players={players} loadouts={loadouts} /><p>{game instanceof AbilityGame ? '능력 적용 중 · 12표법 준비 중' : '기본 체스 · 기존 저장 대전'}</p></details>
-            <div className="match-civilizations"><span>{getCivilization(players.w).name}</span><span>VS</span><span>{getCivilization(players.b).name}</span><small>{game instanceof AbilityGame ? '문명 능력 적용 · 실험 규칙 v1' : '기본 체스'}</small></div>
+            <div className="match-actions"><button onClick={() => setConfirm('new')}><RotateCcw size={16} />{translateUi(" 새 대전")}</button><button onClick={() => setConfirm('resign')} disabled={status.over}><Flag size={16} />{translateUi(" 기권")}</button></div>
+            {translateUi(game instanceof AbilityGame && <AbilityPanel game={game} players={players} enabled={humanTurn && !confirm} onAction={performAbility} />)}<MatchAtmosphere civilization={opponentCivilization(players, settings, game.turn())} />
+            <details className="match-loadouts"><summary>{translateUi("선택한 스킬 보기")}</summary><LoadoutList players={players} loadouts={loadouts} /><p>{translateUi(game instanceof AbilityGame ? '능력 적용 중 · 12표법 준비 중' : '기본 체스 · 기존 저장 대전')}</p></details>
+            <div className="match-civilizations"><span>{translateUi(getCivilization(players.w).name)}</span><span>VS</span><span>{translateUi(getCivilization(players.b).name)}</span><small>{translateUi(game instanceof AbilityGame ? '문명 능력 적용 · 실험 규칙 v1' : '기본 체스')}</small></div>
           </>
-          <details className="rules-details"><summary>플레이 안내 <ChevronRight size={16} /></summary><div><p>기물을 클릭한 뒤 목적지를 누르거나, 마우스·터치로 기물을 끌어서 놓으세요. 둘 수 없는 칸이나 보드 밖에 놓으면 원래 자리로 돌아옵니다. Esc로 드래그를 취소할 수 있습니다.</p><p>캐슬링, 앙파상, 폰 승격을 지원합니다. 체크 상태에서는 킹을 보호해야 하며 체크메이트로 승패가 결정됩니다.</p><p>{game instanceof AbilityGame ? '능력 대전은 특수 행동까지 포함해 합법적 행동이 없을 때 스테일메이트를 판정합니다. 반복·50수·기물 부족 자동 무승부는 사용하지 않습니다.' : '스테일메이트, 기물 부족, 3회 동형 반복, 50수 규칙은 자동 무승부입니다.'}</p><p>{settings.mode === 'online' ? '온라인 방은 서버에 저장되며 같은 탭에서 새로고침하면 복원됩니다. 온라인 대전에서는 무르기를 지원하지 않습니다.' : '대전은 이 브라우저에 자동 저장됩니다.'} {settings.mode === 'online' ? '' : settings.mode === 'ai' ? '무르기를 누르면 AI의 응수와 내 수를 되돌려 내 이전 차례로 돌아갑니다.' : '한 수 무르기는 두 플레이어가 합의하고 사용하세요.'}</p></div></details>
-          {storageError && <p role="alert" className="storage-warning">자동 저장을 사용할 수 없습니다. 새로고침하면 대전이 사라질 수 있습니다.</p>}
+          <details className="rules-details"><summary>{translateUi("플레이 안내 ")}<ChevronRight size={16} /></summary><div><p>{translateUi("기물을 클릭한 뒤 목적지를 누르거나, 마우스·터치로 기물을 끌어서 놓으세요. 둘 수 없는 칸이나 보드 밖에 놓으면 원래 자리로 돌아옵니다. Esc로 드래그를 취소할 수 있습니다.")}</p><p>{translateUi("캐슬링, 앙파상, 폰 승격을 지원합니다. 체크 상태에서는 킹을 보호해야 하며 체크메이트로 승패가 결정됩니다.")}</p><p>{translateUi(game instanceof AbilityGame ? '능력 대전은 특수 행동까지 포함해 합법적 행동이 없을 때 스테일메이트를 판정합니다. 반복·50수·기물 부족 자동 무승부는 사용하지 않습니다.' : '스테일메이트, 기물 부족, 3회 동형 반복, 50수 규칙은 자동 무승부입니다.')}</p><p>{translateUi(settings.mode === 'online' ? '온라인 방은 서버에 저장되며 같은 탭에서 새로고침하면 복원됩니다. 온라인 대전에서는 무르기를 지원하지 않습니다.' : '대전은 이 브라우저에 자동 저장됩니다.')} {translateUi(settings.mode === 'online' ? '' : settings.mode === 'ai' ? '무르기를 누르면 AI의 응수와 내 수를 되돌려 내 이전 차례로 돌아갑니다.' : '한 수 무르기는 두 플레이어가 합의하고 사용하세요.')}</p></div></details>
+          {translateUi(storageError && <p role="alert" className="storage-warning">{translateUi("자동 저장을 사용할 수 없습니다. 새로고침하면 대전이 사라질 수 있습니다.")}</p>)}
         </aside>
       </div>
-      </>}
-      <footer><span>문명체스</span><span>같은 체스판, 서로 다른 문명의 시작.</span><span>{(settings.mode === 'online' ? 'ONLINE PVP' : settings.mode === 'ai' ? 'VS AI' : 'LOCAL PLAY') + (game instanceof AbilityGame && game.state.clocks ? ' · TIMED' : ' · NO TIMER')}</span></footer>
+      </>)}
+      <footer><span>{translateUi("문명체스")}</span><span>{translateUi("같은 체스판, 서로 다른 문명의 시작.")}</span><span>{translateUi((settings.mode === 'online' ? 'ONLINE PVP' : settings.mode === 'ai' ? 'VS AI' : 'LOCAL PLAY') + (game instanceof AbilityGame && game.state.clocks ? ' · TIMED' : ' · NO TIMER'))}</span></footer>
     </main>
-    {started && status.over && <VictoryScene winner={status.kind === 'draw' ? null : resigned ? opposite(resigned) : game instanceof AbilityGame && game.winner() || opposite(game.turn())} players={players} detail={status.detail} onNew={() => setConfirm('new')} />}
-    {dragVisual && <div className="drag-layer" aria-hidden="true"><div className="drag-piece" style={{ left: dragVisual.x, top: dragVisual.y, width: dragVisual.size, height: dragVisual.size }}><Piece type={dragVisual.type} color={dragVisual.color} civilization={players[dragVisual.color]} revived={game instanceof AbilityGame ? game.unit(dragVisual.from)?.revived : undefined} lives={game instanceof AbilityGame ? game.unit(dragVisual.from)?.lives : undefined} skill={game instanceof AbilityGame ? game.loadouts[dragVisual.color].piece : undefined} /></div></div>}
-    {settings.mode === 'online' && <OnlineQuiz online={online}/>}
-    {quiz && <SphinxChallenge onResolve={correct => performAbility({ ...quiz, quiz: correct })} />}{promotion && !quiz && <Modal title="폰을 승격하세요" onClose={() => setPromotion(null)}><p className="muted">마지막 줄에 도착했습니다. 새로운 기물을 선택하세요.</p><div className="promotion-options">{(['q', 'r', 'b', 'n'] as Promotion[]).map(type => <button key={type} onClick={() => commit(promotion.from, promotion.to, type)}><Piece type={type} color={game.turn()} civilization={players[game.turn()]} skill={game instanceof AbilityGame ? game.loadouts[game.turn()].piece : undefined} /><span>{pieceNames[type]}</span></button>)}</div></Modal>}
-    {confirm && <Modal title={confirm === 'new' ? '새로운 대전을 시작할까요?' : `${colorNames[resigningColor]}이 기권할까요?`} onClose={() => setConfirm(null)}><p className="muted">{confirm === 'new' ? '현재 기록을 지우고 대전 설정 화면으로 돌아갑니다.' : `${colorNames[opposite(resigningColor)]}의 승리로 대전이 종료됩니다.`}</p><div className="modal-actions"><button className="secondary-button" onClick={() => setConfirm(null)}>계속 두기</button><button className="primary-button" onClick={() => { if (confirm === 'new') { if(settings.mode==='online')void leaveOnline();else reset(); } else if(settings.mode==='online'){void online.send({kind:'resign'});setConfirm(null);} else { ai.cancel(); setResigned(resigningColor); setSelected(null); setConfirm(null); } }}>{confirm === 'new' ? '대전 다시 설정' : '기권하기'}</button></div></Modal>}
+    {translateUi(started && status.over && <VictoryScene winner={status.kind === 'draw' ? null : resigned ? opposite(resigned) : game instanceof AbilityGame && game.winner() || opposite(game.turn())} players={players} detail={status.detail} onNew={() => setConfirm('new')} />)}
+    {translateUi(dragVisual && <div className="drag-layer" aria-hidden="true"><div className="drag-piece" style={{ left: dragVisual.x, top: dragVisual.y, width: dragVisual.size, height: dragVisual.size }}><Piece type={dragVisual.type} color={dragVisual.color} civilization={players[dragVisual.color]} revived={game instanceof AbilityGame ? game.unit(dragVisual.from)?.revived : undefined} lives={game instanceof AbilityGame ? game.unit(dragVisual.from)?.lives : undefined} skill={game instanceof AbilityGame ? game.loadouts[dragVisual.color].piece : undefined} /></div></div>)}
+    {translateUi(settings.mode === 'online' && <OnlineQuiz online={online}/>)}
+    {translateUi(quiz && <SphinxChallenge onResolve={correct => performAbility({ ...quiz, quiz: correct })} />)}{translateUi(promotion && !quiz && <Modal title={translateUi("폰을 승격하세요")} onClose={() => setPromotion(null)}><p className="muted">{translateUi("마지막 줄에 도착했습니다. 새로운 기물을 선택하세요.")}</p><div className="promotion-options">{translateUi((['q', 'r', 'b', 'n'] as Promotion[]).map(type => <button key={type} onClick={() => commit(promotion.from, promotion.to, type)}><Piece type={type} color={game.turn()} civilization={players[game.turn()]} skill={game instanceof AbilityGame ? game.loadouts[game.turn()].piece : undefined} /><span>{translateUi(pieceNames[type])}</span></button>))}</div></Modal>)}
+    {translateUi(confirm && <Modal title={translateUi(confirm === 'new' ? '새로운 대전을 시작할까요?' : `${colorNames[resigningColor]}이 기권할까요?`)} onClose={() => setConfirm(null)}><p className="muted">{translateUi(confirm === 'new' ? '현재 기록을 지우고 대전 설정 화면으로 돌아갑니다.' : `${colorNames[opposite(resigningColor)]}의 승리로 대전이 종료됩니다.`)}</p><div className="modal-actions"><button className="secondary-button" onClick={() => setConfirm(null)}>{translateUi("계속 두기")}</button><button className="primary-button" onClick={() => { if (confirm === 'new') { if(settings.mode==='online')void leaveOnline();else reset(); } else if(settings.mode==='online'){void online.send({kind:'resign'});setConfirm(null);} else { ai.cancel(); setResigned(resigningColor); setSelected(null); setConfirm(null); } }}>{translateUi(confirm === 'new' ? '대전 다시 설정' : '기권하기')}</button></div></Modal>)}
   </div>;
 }
