@@ -9,6 +9,8 @@ import { boardPoint, skillEffects, type SkillEffect } from './skillEffectEvents'
 import './skillEffects.css';
 
 type PlayingEffect = SkillEffect & { id: number };
+const POSEIDON_WAVE_MS = 900;
+const POSEIDON_RETURN_MS = 650;
 const colors: Record<string, string> = { zeus: '#c5eeff', poseidon: '#75d8ff', hades: '#be98ff', osiris: '#fbe3a0', set: '#e7bf7a', anubis: '#eac27b', judgment: '#f3c367', alesia: '#eeb98e', vesta: '#ffbc75', pilum: '#ffce9c', ballista: '#ffe1ac', minotaur: '#f3c98c', cleopatra: '#ffadd8', trojan: '#bcdfac', deploy: '#bcdfac', gladiator: '#efb2a3', shield: '#b7e8fc', revive: '#f5dfa7', sphinx: '#ceb9ff' };
 const labels: Record<string, string> = { judgment: '심장의 심판', shield: '방어 발동', revive: '미라 부활', sphinx: '수수께끼 방어' };
 export default function SkillEffects({ game, flipped, players }: { game: Chess; flipped: boolean; players: Players }) {
@@ -29,12 +31,13 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
       const distance = Math.min(18, board.getBoundingClientRect().width * .025);
       const x = direction === 0 ? distance : direction === 1 ? -distance : 0;
       const y = direction === 2 ? -distance : direction === 3 ? distance : 0;
+      const duration = POSEIDON_WAVE_MS + POSEIDON_RETURN_MS;
       const motion = board.animate([
-        { transform: 'translate(0,0)', offset: 0 },
-        { transform: `translate(${x}px,${y}px)`, offset: .35 },
-        { transform: `translate(${-x * .16}px,${-y * .16}px)`, offset: .76 },
+        { transform: 'translate(0,0)', offset: 0, easing: 'ease-out' },
+        { transform: `translate(${x}px,${y}px)`, offset: POSEIDON_WAVE_MS / duration, easing: 'ease-in-out' },
+        { transform: `translate(${-x * .08}px,${-y * .08}px)`, offset: .9, easing: 'ease-out' },
         { transform: 'translate(0,0)', offset: 1 },
-      ], { duration: 900, easing: 'cubic-bezier(.22,.61,.36,1)' });
+      ], { duration, easing: 'linear' });
       return () => motion.cancel();
     }
     const motion = board.animate([
@@ -56,7 +59,7 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
     if (!effects.length) return;
     setPlaying(current => [...current, ...effects].slice(-8));
     setAnnouncement(effects.map(e => `${abilityNames[e.skill] ?? labels[e.skill] ?? '스킬'} 발동`).join(' · '));
-    const timer = setTimeout(() => { setPlaying(current => current.filter(e => !effects.some(next => next.id === e.id))); timers.current.delete(timer); }, effects.some(e => e.skill === 'judgment') ? 3600 : effects.some(e => ['osiris', 'revive', 'judgment', 'anubis'].includes(e.skill)) ? 2600 : 1250);
+    const timer = setTimeout(() => { setPlaying(current => current.filter(e => !effects.some(next => next.id === e.id))); timers.current.delete(timer); }, effects.some(e => e.skill === 'judgment') ? 3600 : effects.some(e => ['osiris', 'revive', 'judgment', 'anubis'].includes(e.skill)) ? 2600 : effects.some(e => e.skill === 'poseidon') ? POSEIDON_WAVE_MS + POSEIDON_RETURN_MS + 100 : 1250);
     timers.current.add(timer);
   }, [game, count, flipped]);
   useLayoutEffect(() => () => { timers.current.forEach(clearTimeout); timers.current.clear(); }, []);
@@ -83,7 +86,7 @@ function Effect({ effect: e, flipped, ghostSrc }: { effect: SkillEffect; flipped
   const portal = ['osiris', 'hades', 'anubis', 'trojan', 'deploy', 'gladiator', 'revive'].includes(e.skill);
   const zone = ['set', 'vesta', 'alesia'].includes(e.skill);
   const direction = screenDirection(e.direction, flipped);
-  const waveStyle = { '--wave-x': `${direction === 0 ? 800 : direction === 1 ? -800 : 0}px`, '--wave-y': `${direction === 2 ? -800 : direction === 3 ? 800 : 0}px` } as CSSProperties;
+  const waveStyle = { '--wave-duration': `${POSEIDON_WAVE_MS}ms`, '--wave-x': `${direction === 0 ? 800 : direction === 1 ? -800 : 0}px`, '--wave-y': `${direction === 2 ? -800 : direction === 3 ? 800 : 0}px` } as CSSProperties;
   return <g style={{ color }} className={`skill-fx skill-fx-${e.skill}`}>
     {translateUi(beam && <line className="fx-beam" x1={from.x} y1={from.y} x2={to.x} y2={to.y} pathLength="1" />)}
     {translateUi(e.skill === 'poseidon' && <>
