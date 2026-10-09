@@ -33,7 +33,7 @@ export default function SkillDemoBoard({game,civilization,storm}:{game:AbilityGa
           {translateUi(!fog&&note&&<span className="ability-marker">{translateUi(note)}</span>)}
         </div>;
       })))}
-      <Sandstorm game={game} viewer={viewer} flipped={flipped}/><SkillEffects game={game} flipped={flipped}/>
+      <Sandstorm game={game} viewer={viewer} flipped={flipped}/><SkillEffects game={game} flipped={flipped} players={{w:civilization,b:civilization}}/>
     </div></div>
     {translateUi(game.state.duel&&<AbilityPanel game={game} players={{w:civilization,b:civilization}} enabled={false} onAction={()=>{}}/>)}
     {translateUi(game.state.clocks&&<div className="demo-engine-info">{translateUi("백 ")}{translateUi(Math.floor(game.state.clocks.w/60000))}{translateUi("분 · 흑 ")}{translateUi(Math.floor(game.state.clocks.b/60000))}{translateUi("분")}</div>)}

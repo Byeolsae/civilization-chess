@@ -1,10 +1,10 @@
-import type { Square } from 'chess.js';
+import type { Color, PieceSymbol, Square } from 'chess.js';
 import type { AbilityAction } from './AbilityGame';
 import type { AbilityState } from './abilityState';
 import { activeArea } from './activeTargeting';
 import { adjacentSquares } from './abilityState';
 
-export type SkillEffect = { skill: string; from: Square; to: Square; squares: Square[]; direction?: number };
+export type SkillEffect = { skill: string; from: Square; to: Square; squares: Square[]; direction?: number; victim?: { type: PieceSymbol; owner: Color; lives: number; revived: boolean } };
 export function boardPoint(square: Square, flipped: boolean) {
   const x = square.charCodeAt(0) - 97, y = 8 - Number(square[1]);
   return { x: ((flipped ? 7 - x : x) + .5) * 100, y: ((flipped ? 7 - y : y) + .5) * 100 };
@@ -23,7 +23,7 @@ export function skillEffects(action: AbilityAction, before: AbilityState, after:
     const old = before.pieces[p.id];
     if (!old) continue;
     const sentence = p.judgment?.executedAt;
-    if (sentence && sentence !== old.judgment?.executedAt) result.push({ skill: 'judgment', from: sentence, to: sentence, squares: [sentence] });
+    if (sentence && sentence !== old.judgment?.executedAt) result.push({ skill: 'judgment', from: sentence, to: sentence, squares: [sentence], victim: { type: p.type, owner: p.owner, lives: p.lives, revived: p.revived } });
     if (old.lives > p.lives && p.square) result.push({ skill: 'shield', from: p.square, to: p.square, squares: [p.square] });
     if (!old.square && p.square && p.revived && !old.revived && action.skill !== 'osiris') result.push({ skill: 'revive', from: p.square, to: p.square, squares: [p.square] });
   }

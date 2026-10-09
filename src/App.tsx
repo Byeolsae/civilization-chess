@@ -410,7 +410,7 @@ export default function App() {
                 </button>;
               })))}
               {translateUi(game instanceof AbilityGame && <Sandstorm game={game} viewer={settings.mode !== 'local' ? settings.humanColor : game.turn()} flipped={flipped} />)}
-              <SkillEffects game={game} flipped={flipped} />
+              <SkillEffects game={game} flipped={flipped} players={players} />
             </div>
           </div>
           </div>

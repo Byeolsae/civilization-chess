@@ -26,7 +26,8 @@ test('two kills are counted independently, the second capture completes before j
  assert.equal(g.get('d3'),undefined);assert.equal(g.state.pieces['b-d6'].judgment?.executedAt,'d3');
  assert.equal(g.state.pieces['w-d3'].square,null);assert.equal(g.unit('g6')!.judgment?.kills,0);
  const action=JSON.parse(g.history().at(-1)!);
- assert.ok(skillEffects(action,before,g.state).some(e=>e.skill==='judgment'&&e.to==='d3'));
+ const death=skillEffects(action,before,g.state).find(e=>e.skill==='judgment'&&e.to==='d3');
+ assert.deepEqual(death?.victim,{type:'r',owner:'b',lives:1,revived:false});
  g.undo();assert.deepEqual(g.snapshot(),before);
 });
 test('Sparta shield loss and a failed Sphinx attack do not count as kills',()=>{

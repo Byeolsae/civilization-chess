@@ -1,3 +1,6 @@
+import { civilizationAppearance } from './civilizations';
+import type { Players } from './game';
+import { specialPieceVariant } from './specialPieces';
 import { translateUi } from './i18n';
 import { useId, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Chess } from 'chess.js';
@@ -8,7 +11,7 @@ import './skillEffects.css';
 type PlayingEffect = SkillEffect & { id: number };
 const colors: Record<string, string> = { zeus: '#c5eeff', poseidon: '#75d8ff', hades: '#be98ff', osiris: '#fbe3a0', set: '#e7bf7a', anubis: '#eac27b', judgment: '#f3c367', alesia: '#eeb98e', vesta: '#ffbc75', pilum: '#ffce9c', ballista: '#ffe1ac', minotaur: '#f3c98c', cleopatra: '#ffadd8', trojan: '#bcdfac', deploy: '#bcdfac', gladiator: '#efb2a3', shield: '#b7e8fc', revive: '#f5dfa7', sphinx: '#ceb9ff' };
 const labels: Record<string, string> = { judgment: '심장의 심판', shield: '방어 발동', revive: '미라 부활', sphinx: '수수께끼 방어' };
-export default function SkillEffects({ game, flipped }: { game: Chess; flipped: boolean }) {
+export default function SkillEffects({ game, flipped, players }: { game: Chess; flipped: boolean; players: Players }) {
   const count = game.history().length;
   const previous = useRef({ game, count, flipped, state: game instanceof AbilityGame ? structuredClone(game.state) : null });
   const serial = useRef(0);
@@ -39,23 +42,23 @@ export default function SkillEffects({ game, flipped }: { game: Chess; flipped: 
     if (!effects.length) return;
     setPlaying(current => [...current, ...effects].slice(-8));
     setAnnouncement(effects.map(e => `${abilityNames[e.skill] ?? labels[e.skill] ?? '스킬'} 발동`).join(' · '));
-    const timer = setTimeout(() => { setPlaying(current => current.filter(e => !effects.some(next => next.id === e.id))); timers.current.delete(timer); }, effects.some(e => ['osiris', 'revive', 'judgment', 'anubis'].includes(e.skill)) ? 2600 : 1250);
+    const timer = setTimeout(() => { setPlaying(current => current.filter(e => !effects.some(next => next.id === e.id))); timers.current.delete(timer); }, effects.some(e => e.skill === 'judgment') ? 3600 : effects.some(e => ['osiris', 'revive', 'judgment', 'anubis'].includes(e.skill)) ? 2600 : 1250);
     timers.current.add(timer);
   }, [game, count, flipped]);
   useLayoutEffect(() => () => { timers.current.forEach(clearTimeout); timers.current.clear(); }, []);
   return <div ref={layer} className="skill-effects" aria-live="polite" aria-atomic="true">
     <span className="sr-only">{translateUi(announcement)}</span>
     <svg viewBox="0 0 800 800" aria-hidden="true" className="skill-fx-svg">
-      {translateUi(playing.map(effect => <Effect key={effect.id} effect={effect} flipped={flipped} />))}
+      {translateUi(playing.map(effect => <Effect key={effect.id} effect={effect} flipped={flipped} ghostSrc={effect.victim ? (() => { const p=effect.victim; const special=specialPieceVariant(p.type,game instanceof AbilityGame ? game.loadouts[p.owner].piece : undefined,p.lives,p.revived); return special ? `/pieces/special/${p.owner}-${special}.svg` : `/pieces/${civilizationAppearance[players[p.owner]]}/${p.owner}${p.type.toUpperCase()}.svg`; })() : undefined} />))}
     </svg>
     {translateUi(playing.length > 0 && <div key={playing.at(-1)!.id} className="skill-fx-title" aria-hidden="true">{translateUi(abilityNames[playing.at(-1)!.skill] ?? labels[playing.at(-1)!.skill] ?? '스킬 발동')}</div>)}
   </div>;
 }
-function Effect({ effect: e, flipped }: { effect: SkillEffect; flipped: boolean }) {
+function Effect({ effect: e, flipped, ghostSrc }: { effect: SkillEffect; flipped: boolean; ghostSrc?: string }) {
   const from = boardPoint(e.from, flipped), to = boardPoint(e.to, flipped);
   const color = colors[e.skill] ?? '#f6d58d';
   if (e.skill === 'osiris' || e.skill === 'revive') return <ResurrectionBurst x={to.x} y={to.y}/>;
-  if (e.skill === 'anubis' || e.skill === 'judgment') return <g>{e.squares.map(square => { const point = boardPoint(square, flipped); return <JudgmentScales key={square} x={point.x} y={point.y} sentence={e.skill === 'judgment'}/>; })}</g>;
+  if (e.skill === 'anubis' || e.skill === 'judgment') return <g>{e.squares.map(square => { const point = boardPoint(square, flipped); return <g key={square}>{e.skill === 'judgment'&&<JudgmentDeath x={point.x} y={point.y} src={ghostSrc}/>}<JudgmentScales x={point.x} y={point.y} sentence={e.skill === 'judgment'}/></g>; })}</g>;
   if (e.skill === 'set') return <g className="skill-fx skill-fx-set"><ellipse className="set-dust" cx={to.x} cy={to.y} rx="138" ry="118" /></g>;
   const beam = ['ballista', 'pilum', 'cleopatra', 'trojan', 'deploy', 'gladiator'].includes(e.skill);
   const portal = ['osiris', 'hades', 'anubis', 'trojan', 'deploy', 'gladiator', 'revive'].includes(e.skill);
@@ -102,5 +105,16 @@ function JudgmentScales({x,y,sentence}:{x:number;y:number;sentence:boolean}) {
       </g>
     </g>
     {sentence&&<>{[0,1,2].map(i=><circle key={i} className="judgment-verdict" r="78" style={{animationDelay:`${900+i*120}ms`}}/>)}<path className="judgment-fall" d="M-24 -76L0 -47 24 -76 M0 -47V55"/></>}
+  </g>;
+}
+
+function JudgmentDeath({x,y,src}:{x:number;y:number;src?:string}) {
+  return <g transform={`translate(${x} ${y})`} className="judgment-death">
+    <circle className="judgment-death-shadow" r="48"/>
+    {src&&<image className="judgment-victim" href={src} x="-43" y="-43" width="86" height="86"/>}
+    <circle className="judgment-death-flash" r="57"/>
+    <path className="judgment-fracture" d="M-12 -45L8 -18 -10 -1 13 16 2 44 M-10 -1L-34 14 M8 -18L30 -30"/>
+    {Array.from({length:16},(_,i)=>{const angle=i*Math.PI/8;return <path key={i} className="judgment-ash" d="M-4 -5L5 -2 2 6-4 2Z" style={{'--ash-x':`${Math.cos(angle)*(50+i%3*18)}px`,'--ash-y':`${Math.sin(angle)*55+35}px`,'--ash-rotate':`${i*47}deg`,animationDelay:`${1050+i%4*65}ms`} as CSSProperties}/>;})}
+    <g className="judgment-final-stack"><rect x="-27" y="-62" width="54" height="25" rx="8"/><text x="0" y="-44" textAnchor="middle">2 / 2</text></g>
   </g>;
 }
