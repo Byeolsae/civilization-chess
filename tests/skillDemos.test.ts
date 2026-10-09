@@ -1,17 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { skills } from '../src/draft';
-import { skillDemos } from '../src/skillDemos';
-
-test('every implemented selectable skill has a complete visual demonstration', () => {
-  for (const categories of Object.values(skills)) for (const list of Object.values(categories)) for (const skill of list) {
-    if (skill.pending) { assert.equal(skillDemos[skill.id], undefined); continue; }
-    const frames = skillDemos[skill.id];
-    assert.ok(frames?.length >= 3, skill.id);
-    for (const frame of frames) {
-      assert.ok(frame.text.length > 0);
-      assert.equal(new Set(frame.pieces.map(p => p.id)).size, frame.pieces.length);
-      for (const at of [...frame.pieces.map(p => p.at), ...(frame.area ?? [])]) assert.ok(Number.isInteger(at) && at >= 0 && at < 25, skill.id);
-    }
-  }
-});
+import { createSkillScenario } from '../src/skillScenarios';
+for (const categories of Object.values(skills)) for (const list of Object.values(categories)) for (const skill of list) {
+  test(`live engine demo: ${skill.id}`, () => {
+    const scenario=createSkillScenario(skill.id);
+    if(skill.pending){assert.equal(scenario,null);return;}
+    assert.ok(scenario);assert.ok(scenario.steps.length);
+    for(const step of scenario.steps)step.run(scenario.game);
+    const g=scenario.game;
+    if(skill.id==='zeus')assert.ok(g.units().some(p=>p.effects.shock));
+    if(skill.id==='minotaur')assert.ok(g.units().some(p=>p.effects.stun));
+    if(skill.id==='cleopatra')assert.ok(g.units().some(p=>p.charmed));
+    if(skill.id==='mummy')assert.equal(g.unit('d4')?.revived,true);
+    if(skill.id==='pyramid')assert.equal(g.unit('d4')?.effects.shock,undefined);
+    if(skill.id==='sandstorm')assert.ok(g.state.stormUntil.b>0);
+    if(skill.id==='ballista')assert.ok(g.unit('d3')!.cooldownUntil>g.state.turns.w);
+  });
+}
