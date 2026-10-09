@@ -16,6 +16,10 @@
 
 @keyframes fx-water-opacity{0%{opacity:0}15%,70%{opacity:1}100%{opacity:0}}
 
-.charm-cast{fill:#fa7fbe;stroke:#ffe0f4;stroke-width:2;filter:drop-shadow(0 0 7px #f254aa)}.charm-projectile{animation:charm-flight .72s cubic-bezier(.25,.55,.45,1) both}.charm-heart{fill:#ff91ce;stroke-width:3}.charm-echo{fill:#d980ed;stroke:none}.charm-bloom{animation:charm-bloom .8s .62s both;transform-origin:0 0}.charm-petal{animation:charm-petals 1s ease-out both}.charm-petal path{transform:scale(.24)}
+.charm-cast{fill:#fa7fbe;stroke:#ffe0f4;stroke-width:2;filter:drop-shadow(0 0 7px #f254aa)}.charm-projectile{animation:charm-flight var(--charm-hit) cubic-bezier(.25,.55,.45,1) both}.charm-heart{fill:#ff91ce;stroke-width:3}.charm-echo{fill:#d980ed;stroke:none}.charm-bloom{animation:charm-bloom .8s var(--charm-hit) both;transform-origin:0 0}.charm-petal{animation:charm-petals 1s ease-out both}.charm-petal path{transform:scale(.24)}
 @keyframes charm-flight{0%{opacity:0;transform:translate(0,0) scale(.4)}15%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translate(var(--charm-x),var(--charm-y)) scale(1.1)}}@keyframes charm-bloom{0%{opacity:0;transform:scale(.5)}25%{opacity:1;transform:scale(1.65)}100%{opacity:0;transform:scale(2.2)}}@keyframes charm-petals{0%{opacity:0;transform:translate(0,0)}20%{opacity:1}100%{opacity:0;transform:translate(var(--petal-x),var(--petal-y)) rotate(15deg)}}
 @media(prefers-reduced-motion:reduce){.charm-projectile,.charm-petal{display:none}.charm-bloom{opacity:.8;transform:scale(1)}}
+
+.charm-original{filter:none;animation:charm-original var(--charm-hit) steps(1,end) both}@keyframes charm-original{from{opacity:1}to{opacity:0}}@media(prefers-reduced-motion:reduce){.charm-original{display:none}}
+
+.charm-cast{filter:none}.charm-projectile,.charm-bloom,.charm-petal{filter:drop-shadow(0 0 7px #f254aa)}

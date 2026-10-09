@@ -9,6 +9,7 @@ import { boardPoint, skillEffects, type SkillEffect } from './skillEffectEvents'
 import './skillEffects.css';
 
 type PlayingEffect = SkillEffect & { id: number };
+const CHARM_HIT_MS = 720;
 const POSEIDON_WAVE_MS = 900;
 const POSEIDON_RETURN_MS = 900;
 const colors: Record<string, string> = { zeus: '#c5eeff', poseidon: '#75d8ff', hades: '#be98ff', osiris: '#fbe3a0', set: '#e7bf7a', anubis: '#eac27b', judgment: '#f3c367', alesia: '#eeb98e', vesta: '#ffbc75', pilum: '#ffce9c', ballista: '#ffe1ac', minotaur: '#f3c98c', cleopatra: '#ffadd8', trojan: '#bcdfac', deploy: '#bcdfac', gladiator: '#efb2a3', shield: '#b7e8fc', revive: '#f5dfa7', sphinx: '#ceb9ff' };
@@ -57,6 +58,15 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
     ], { duration: 420, easing: 'ease-out' });
     return () => motion?.cancel();
   }, [impact, flipped]);
+  const charm = [...playing].reverse().find(e => e.skill === 'cleopatra');
+  useLayoutEffect(() => {
+    if (!charm || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // The engine commits immediately; only delay the new appearance until impact.
+    const square = layer.current?.closest('.board')?.querySelector(`[data-square="${charm.to}"]`);
+    const motions = [...(square?.querySelectorAll('.piece, .status-hearts') ?? [])].map(element =>
+      element.animate([{ opacity: 0 }, { opacity: 0 }], { duration: CHARM_HIT_MS }));
+    return () => motions.forEach(motion => motion.cancel());
+  }, [charm]);
   useLayoutEffect(() => {
     const old = previous.current;
     previous.current = { game, count, flipped, state: game instanceof AbilityGame ? structuredClone(game.state) : null };
@@ -90,7 +100,7 @@ function Effect({ effect: e, flipped, ghostSrc }: { effect: SkillEffect; flipped
   const color = colors[e.skill] ?? '#f6d58d';
   if (e.skill === 'osiris' || e.skill === 'revive') return <ResurrectionBurst x={to.x} y={to.y}/>;
   if (e.skill === 'anubis' || e.skill === 'judgment') return <g>{e.squares.map(square => { const point = boardPoint(square, flipped); return <g key={square}>{e.skill === 'judgment'&&<JudgmentDeath x={point.x} y={point.y} src={ghostSrc}/>}<JudgmentScales x={point.x} y={point.y} sentence={e.skill === 'judgment'}/></g>; })}</g>;
-  if (e.skill === 'cleopatra') return <CharmFlight from={from} to={to}/>;
+  if (e.skill === 'cleopatra') return <CharmFlight from={from} to={to} originalSrc={ghostSrc}/>;
   if (e.skill === 'minotaur') return <GroundFracture x={from.x} y={from.y}/>;
   if (e.skill === 'set') return <g className="skill-fx skill-fx-set"><ellipse className="set-dust" cx={to.x} cy={to.y} rx="138" ry="118" /></g>;
   const beam = ['ballista', 'pilum', 'cleopatra', 'trojan', 'deploy', 'gladiator'].includes(e.skill);
@@ -164,15 +174,16 @@ function GroundFracture({x,y}:{x:number;y:number}) {
   </g>;
 }
 
-function CharmFlight({from,to}:{from:{x:number;y:number};to:{x:number;y:number}}) {
+function CharmFlight({from,to,originalSrc}:{from:{x:number;y:number};to:{x:number;y:number};originalSrc?:string}) {
   const heart='M0 17C-36 -5 -23 -31 0 -13C23 -31 36 -5 0 17Z';
-  return <g className="charm-cast" style={{'--charm-x':`${to.x-from.x}px`,'--charm-y':`${to.y-from.y}px`} as CSSProperties}>
+  return <g className="charm-cast" style={{'--charm-hit':`${CHARM_HIT_MS}ms`,'--charm-x':`${to.x-from.x}px`,'--charm-y':`${to.y-from.y}px`} as CSSProperties}>
     <g transform={`translate(${from.x} ${from.y})`}>
       {[3,2,1,0].map(i=><g key={i} className="charm-projectile" style={{animationDelay:`${i*65}ms`}}><path d={heart} className={i?'charm-echo':'charm-heart'} style={{opacity:i? .38-i*.07:1}}/></g>)}
     </g>
     <g transform={`translate(${to.x} ${to.y})`}>
+      {originalSrc&&<image className="charm-original" href={originalSrc} x="-43" y="-43" width="86" height="86"/>}
       <path className="charm-bloom" d={heart}/>
-      {Array.from({length:9},(_,i)=><g key={i} className="charm-petal" style={{'--petal-x':`${Math.cos(i*2.4)*55}px`,'--petal-y':`${-40-Math.sin(i*2.4)*30}px`,animationDelay:`${600+i*40}ms`} as CSSProperties}><path d={heart}/></g>)}
+      {Array.from({length:9},(_,i)=><g key={i} className="charm-petal" style={{'--petal-x':`${Math.cos(i*2.4)*55}px`,'--petal-y':`${-40-Math.sin(i*2.4)*30}px`,animationDelay:`${CHARM_HIT_MS+i*40}ms`} as CSSProperties}><path d={heart}/></g>)}
     </g>
   </g>;
 }

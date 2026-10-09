@@ -17,7 +17,8 @@ export function skillEffects(action: AbilityAction, before: AbilityState, after:
     if (action.skill === 'anubis' && action.id) squares = action.id.split(',').flatMap(id => after.pieces[id]?.square ? [after.pieces[id].square!] : []);
     if (action.skill === 'minotaur') squares = [action.from, ...adjacentSquares(action.from)];
     if (action.skill === 'zeus') squares = [action.to, ...Object.values(after.pieces).filter(p => p.square && p.effects.shock !== before.pieces[p.id]?.effects.shock).map(p => p.square!)];
-    result.push({ skill: action.skill, from: action.from, to: action.to, direction: action.direction, squares: [...new Set(squares)] });
+    const original = action.skill === 'cleopatra' ? Object.values(before.pieces).find(p => p.square === action.to) : undefined;
+    result.push({ skill: action.skill, from: action.from, to: action.to, direction: action.direction, squares: [...new Set(squares)], ...(original ? { victim: { type: original.type, owner: original.owner, lives: original.lives, revived: original.revived } } : {}) });
   }
   for (const p of Object.values(after.pieces)) {
     const old = before.pieces[p.id];
