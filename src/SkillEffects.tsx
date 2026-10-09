@@ -19,7 +19,7 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
   const [playing, setPlaying] = useState<PlayingEffect[]>([]);
   const [announcement, setAnnouncement] = useState('');
   const layer = useRef<HTMLDivElement>(null);
-  const impactId = [...playing].reverse().find(e => e.skill === 'minotaur')?.id;
+  const impactId = [...playing].reverse().find(e => e.skill === 'minotaur' || e.skill === 'zeus')?.id;
   useLayoutEffect(() => {
     if (!impactId || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const board = layer.current?.closest('.board-section');
@@ -59,6 +59,7 @@ function Effect({ effect: e, flipped, ghostSrc }: { effect: SkillEffect; flipped
   const color = colors[e.skill] ?? '#f6d58d';
   if (e.skill === 'osiris' || e.skill === 'revive') return <ResurrectionBurst x={to.x} y={to.y}/>;
   if (e.skill === 'anubis' || e.skill === 'judgment') return <g>{e.squares.map(square => { const point = boardPoint(square, flipped); return <g key={square}>{e.skill === 'judgment'&&<JudgmentDeath x={point.x} y={point.y} src={ghostSrc}/>}<JudgmentScales x={point.x} y={point.y} sentence={e.skill === 'judgment'}/></g>; })}</g>;
+  if (e.skill === 'minotaur') return <GroundFracture x={from.x} y={from.y}/>;
   if (e.skill === 'set') return <g className="skill-fx skill-fx-set"><ellipse className="set-dust" cx={to.x} cy={to.y} rx="138" ry="118" /></g>;
   const beam = ['ballista', 'pilum', 'cleopatra', 'trojan', 'deploy', 'gladiator'].includes(e.skill);
   const portal = ['osiris', 'hades', 'anubis', 'trojan', 'deploy', 'gladiator', 'revive'].includes(e.skill);
@@ -72,7 +73,6 @@ function Effect({ effect: e, flipped, ghostSrc }: { effect: SkillEffect; flipped
       <g className="fx-wave" style={waveStyle}>{translateUi([0, 18, 36].map(offset => direction < 2 ? <path key={offset} d={`M ${direction === 0 ? -offset : 800+offset},${to.y-48} q 40,48 0,96`} /> : <path key={offset} d={`M ${to.x-48},${direction === 2 ? 800+offset : -offset} q 48,40 96,0`} />))}</g>
     </>)}
     {translateUi(e.skill === 'zeus' && e.squares.map((square, i) => { const p = boardPoint(square, flipped); const a = i ? boardPoint(e.squares[i-1], flipped) : { x: p.x-18, y: Math.max(0,p.y-140) }; return <path key={square} className="fx-lightning" style={{ animationDelay: `${i*85}ms` }} d={`M ${a.x},${a.y} L ${(a.x+p.x)/2-14},${(a.y+p.y)/2} l 28,-8 L ${p.x},${p.y}`} />; }))}
-    {translateUi(e.skill === 'minotaur' && [0, 1, 2].map(i => <circle key={i} className="fx-shockwave" style={{ animationDelay: `${i*140}ms` }} cx={from.x} cy={from.y} r="135" />))}
     {translateUi(e.squares.map((square, i) => { const p = boardPoint(square, flipped); return <g key={square} style={{ animationDelay: `${Math.min(i,5)*45}ms` }} className="fx-impact">
       {translateUi(zone ? <rect className="fx-zone" x={p.x-46} y={p.y-46} width="92" height="92" rx="8" /> : e.skill !== 'poseidon' && <circle className="fx-ring" cx={p.x} cy={p.y} r={portal ? 38 : 29} />)}
       {translateUi(e.skill === 'cleopatra' && <path className="fx-heart" d={`M ${p.x},${p.y+20} C ${p.x-60},${p.y-16} ${p.x-18},${p.y-52} ${p.x},${p.y-22} C ${p.x+18},${p.y-52} ${p.x+60},${p.y-16} ${p.x},${p.y+20}`} />)}
@@ -110,11 +110,24 @@ function JudgmentScales({x,y,sentence}:{x:number;y:number;sentence:boolean}) {
 
 function JudgmentDeath({x,y,src}:{x:number;y:number;src?:string}) {
   return <g transform={`translate(${x} ${y})`} className="judgment-death">
-    <circle className="judgment-death-shadow" r="48"/>
     {src&&<image className="judgment-victim" href={src} x="-43" y="-43" width="86" height="86"/>}
     <circle className="judgment-death-flash" r="57"/>
     <path className="judgment-fracture" d="M-12 -45L8 -18 -10 -1 13 16 2 44 M-10 -1L-34 14 M8 -18L30 -30"/>
     {Array.from({length:16},(_,i)=>{const angle=i*Math.PI/8;return <path key={i} className="judgment-ash" d="M-4 -5L5 -2 2 6-4 2Z" style={{'--ash-x':`${Math.cos(angle)*(50+i%3*18)}px`,'--ash-y':`${Math.sin(angle)*55+35}px`,'--ash-rotate':`${i*47}deg`,animationDelay:`${1050+i%4*65}ms`} as CSSProperties}/>;})}
     <g className="judgment-final-stack"><rect x="-27" y="-62" width="54" height="25" rx="8"/><text x="0" y="-44" textAnchor="middle">2 / 2</text></g>
+  </g>;
+}
+
+function GroundFracture({x,y}:{x:number;y:number}) {
+  const cracks = [
+    'M0 12L-23 -7 -39 -3 -55 -31 -79 -40 -98 -76 -132 -100 M-55 -31L-50 -64 -63 -89 M-98 -76L-126 -68',
+    'M0 12L20 -12 17 -36 49 -57 53 -84 84 -111 97 -142 M49 -57L80 -50 104 -68',
+    'M0 12L32 21 50 5 81 17 98 0 144 8 M81 17L98 43 132 52',
+    'M0 12L12 44 39 58 30 85 59 115 51 143 M30 85L3 96 -7 125',
+    'M0 12L-28 34 -49 29 -68 57 -101 62 -135 90 M-68 57L-61 89 -84 119',
+  ];
+  return <g transform={`translate(${x} ${y})`} className="ground-fracture">
+    {cracks.map((d,i)=><g key={d} style={{animationDelay:`${i*35}ms`}} className="ground-crack"><path className="ground-crack-edge" d={d} pathLength="1"/><path className="ground-crack-core" d={d} pathLength="1"/></g>)}
+    {Array.from({length:14},(_,i)=>{const a=i*2.399;return <path key={i} className="ground-debris" d="M-5 -3L2 -6 6 1 1 5Z" style={{'--debris-x':`${Math.cos(a)*(42+i%4*22)}px`,'--debris-y':`${Math.sin(a)*85+14}px`,'--debris-turn':`${i*39}deg`,animationDelay:`${80+i%4*35}ms`} as CSSProperties}/>;})}
   </g>;
 }
