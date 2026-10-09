@@ -8,7 +8,7 @@ import { OnlineLobby, OnlineBanner, OnlineQuiz, OnlineWaitingRoom } from './Onli
 import { completeDraft } from './draft';
 import { useEffect, useRef, useState, type ReactNode, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 import { Chess, type Color, type PieceSymbol, type Square } from 'chess.js';
-import { ArrowRight, ArrowLeftRight, ChevronRight, Crown, Flag, RotateCcw, ScrollText, Shield, Swords, X } from 'lucide-react';
+import { Pyramid, Route, ArrowRight, ArrowLeftRight, ChevronRight, Crown, Flag, RotateCcw, ScrollText, Shield, Swords, X } from 'lucide-react';
 import { civilizations, colorNames, decodeMatch, encodeMatch, gameStatus, legalMoves, opposite, pieceNames, playMove, STORAGE_KEY, type Civilization, type Players, type Promotion } from './game';
 
 import Draft, { LoadoutList } from './DraftScreen';
@@ -90,11 +90,12 @@ export default function App() {
   const suppressClick = useRef(false);
   const [dragVisual, setDragVisual] = useState<DragVisual | null>(null);
   const placementOwner = game instanceof AbilityGame ? game.placementOwner() : undefined;
+  const [placementArmed, setPlacementArmed] = useState(false);
   const [placementSquare, setPlacementSquare] = useState<Square | null>(null);
   const [placementAxis, setPlacementAxis] = useState<'row' | 'column'>('row');
   const placementHuman = !!placementOwner && (settings.mode === 'local' || placementOwner === settings.humanColor) && (settings.mode !== 'online' || (online.connected && !online.busy));
-  const placementArea = game instanceof AbilityGame && placementOwner && placementSquare ? game.placementSquares(placementOwner, {square:placementSquare,axis:placementAxis}) : [];
-  useEffect(() => { setPlacementSquare(null); setPlacementAxis('row'); }, [game, placementOwner]);
+  const placementArea = game instanceof AbilityGame && placementOwner && placementArmed && placementSquare ? game.placementSquares(placementOwner, {square:placementSquare,axis:placementAxis}) : [];
+  useEffect(() => { setPlacementArmed(false); setPlacementSquare(null); setPlacementAxis('row'); }, [game, placementOwner]);
   useEffect(() => {
     if (!(game instanceof AbilityGame) || !placementOwner || settings.mode !== 'ai' || placementOwner === settings.humanColor) return;
     const timer = setTimeout(() => {
@@ -232,7 +233,7 @@ export default function App() {
   }
 
   function selectSquare(square: Square) {
-    if (placementOwner) { if (placementHuman && !confirm) setPlacementSquare(square); return; }
+    if (placementOwner) { if (placementHuman && placementArmed && !confirm) setPlacementSquare(square); return; }
     if (!humanTurn || promotion || confirm) return;
     if (activeTarget.armed) { activeTarget.select(square); return; }
     if (pieceMode) {
@@ -306,7 +307,7 @@ export default function App() {
   }
 
   function confirmPlacement() {
-    if (!(game instanceof AbilityGame) || !placementOwner || !placementSquare) return;
+    if (!(game instanceof AbilityGame) || !placementOwner || !placementSquare || !placementHuman || !placementArmed || confirm) return;
     const placement={square:placementSquare,axis:placementAxis};
     if(settings.mode==='online')void online.send({kind:'place',placement});
     else {game.placePassive(placementOwner,placement);setRevision(value=>value+1);}
@@ -350,10 +351,13 @@ export default function App() {
           {playerBar(topColor)}
           <div className={`board-with-evaluation ${game instanceof AbilityGame ? 'board-with-active' : ''}`}>
           {game instanceof AbilityGame && <aside className="skill-rail" aria-label="문명과 기물 능력">
-                  {placementOwner && game instanceof AbilityGame && <section className="placement-guide" aria-label="시작 지형 배치">
-        <div><strong>{colorNames[placementOwner]} · {game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드 배치' : '로마길 배치'}</strong><p>{!placementHuman ? settings.mode === 'online' ? '상대 배치 또는 서버 응답을 기다리고 있어요.' : 'AI가 시작 지형을 배치하고 있어요.' : game.loadouts[placementOwner].passive === 'pyramid' ? '중심 칸을 누르세요. 주변 8칸까지 보호합니다. 기물이 있는 칸도 선택할 수 있어요.' : '방향을 고르고 보드에서 인접한 두 줄을 선택하세요.'}</p></div>
-        {placementHuman && <><div className="placement-controls">{game.loadouts[placementOwner].passive === 'roads' && <>{(['row','column'] as const).map(axis => <button key={axis} aria-pressed={placementAxis === axis} onClick={() => setPlacementAxis(axis)}>{axis === 'row' ? '가로 2행' : '세로 2열'}</button>)}</>}<button className="primary-button" disabled={!placementSquare} onClick={confirmPlacement}>배치 확정</button></div><small>모든 배치가 끝나면 백부터 시작합니다.</small></>}
-      </section>}
+            {placementOwner && <>
+              <span className="skill-rail-label">시작 배치</span>
+              <button className={`active-skill-button passive-placement-button ${placementArmed ? 'armed' : ''}`} aria-label={`${game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드' : '로마길'} 배치 모드`} aria-pressed={placementArmed} disabled={!placementHuman || !!confirm} onClick={() => { setPlacementArmed(value => !value); setPlacementSquare(null); setSelected(null); }}>
+                {game.loadouts[placementOwner].passive === 'pyramid' ? <Pyramid size={24}/> : <Route size={24}/>}
+                <span>{game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드' : '로마길'}</span><small>{!placementHuman ? '상대 배치 중' : placementArmed ? '배치 중 · 취소' : '눌러서 배치'}</small>
+              </button>
+            </>}
             <span className="skill-rail-label">액티브</span>
             <ActiveButton game={game} target={activeTarget} owner={activeOwner} onToggle={() => { setSelected(null); activeTarget.toggle(); }} />
             <PieceSkillButtons game={game} square={selected} mode={pieceMode} enabled={humanTurn && !confirm && !promotion && !game.state.duel && !activeTarget.armed} onMode={mode => { setPieceMode(mode); setPieceCargo(mode === 'deploy' ? pieceInfo?.cargo[0] ?? '' : ''); }} />
@@ -372,7 +376,7 @@ export default function App() {
                 return <button key={square} type="button" data-square={square}
                   className={`square ${placementArea.includes(square) ? 'placement-preview' : ''} ${activeTarget.valid.has(square) ? 'active-target' : ''} ${activeTarget.area.includes(square) ? 'active-area' : ''} ${(file.charCodeAt(0) - 97 + rank) % 2 === 1 ? 'dark' : 'light'} ${selected === square ? 'selected' : ''} ${lastMove?.from === square || lastMove?.to === square ? 'last-move' : ''} ${checked ? 'in-check' : ''} ${piece?.color === game.turn() && humanTurn ? 'can-drag' : ''} ${dragVisual?.from === square ? 'drag-origin' : ''} ${dragVisual?.over === square ? 'drop-target' : ''}`}
                   title={abilityNote || undefined} aria-label={`${square}${fogged ? ' 시야 제한' : piece ? ` ${colorNames[piece.color]} ${pieceNames[piece.type]}` : ' 빈 칸'}${possible ? ' 이동 가능' : ''}${checked ? ' 체크' : ''}`}
-                  aria-pressed={selected === square} disabled={placementOwner ? !placementHuman : !humanTurn || (game instanceof AbilityGame && !!game.state.duel)}
+                  aria-pressed={selected === square} disabled={placementOwner ? !placementHuman || !placementArmed : !humanTurn || (game instanceof AbilityGame && !!game.state.duel)}
                   onPointerDown={event => beginDrag(event, square)}
                   onPointerEnter={() => activeTarget.hover(square)}
                   onPointerLeave={() => activeTarget.hover(null)}
@@ -406,6 +410,10 @@ export default function App() {
             </div>
           </div>
           </div>
+          {placementOwner && game instanceof AbilityGame && <section className="placement-guide placement-toolbar" aria-label="시작 지형 배치">
+            <div role="status"><strong>{colorNames[placementOwner]} · {game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드' : '로마길'}</strong><p>{!placementHuman ? '상대의 시작 배치를 기다리고 있어요.' : !placementArmed ? '왼쪽 시작 배치 버튼을 눌러주세요.' : placementSquare ? `${placementSquare} 선택됨 · 강조된 영역을 확인하고 확정하세요.` : '보드에서 배치할 칸을 누르세요. 기물이 있는 칸도 선택할 수 있어요.'}</p></div>
+            {placementHuman && placementArmed && <div className="placement-controls">{game.loadouts[placementOwner].passive === 'roads' && (['row','column'] as const).map(axis => <button key={axis} aria-pressed={placementAxis === axis} onClick={() => setPlacementAxis(axis)}>{axis === 'row' ? '가로 2행' : '세로 2열'}</button>)}<button className="primary-button" disabled={!placementSquare || !!confirm} onClick={confirmPlacement}>배치 확정</button><button onClick={() => {setPlacementArmed(false);setPlacementSquare(null);}}>취소</button></div>}
+          </section>}
           {game instanceof AbilityGame && <ActiveGuide game={game} target={activeTarget} players={players} />}
           {game instanceof AbilityGame && selected && !activeTarget.armed && <PieceSkillGuide game={game} square={selected} players={players} mode={pieceMode} cargo={pieceCargo} enabled={humanTurn && !confirm && !promotion && !game.state.duel} onMode={mode => { setPieceMode(mode); setPieceCargo(mode === 'deploy' ? pieceInfo?.cargo[0] ?? '' : ''); }} onCargo={setPieceCargo} />}
           {playerBar(bottomColor)}
@@ -417,7 +425,7 @@ export default function App() {
 
         <aside className="side-panel">
           <>
-            <section className={`status-panel ${status.kind}`} aria-live="polite"><div className="panel-kicker">{placementOwner ? 'PLACEMENT' : status.over ? 'GAME OVER' : aiTurn ? 'AI TURN' : 'YOUR MOVE'}</div><div className="status-title">{status.over ? <Crown size={25} /> : <span className={`side-dot large ${game.turn()}`} />}<h2>{placementOwner ? `${colorNames[placementOwner]} 지형 배치` : aiTurn ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : status.title}</h2></div><p>{placementOwner ? '보드에서 위치를 선택하고 배치를 확정하세요.' : aiTurn ? ai.error ?? `${difficultyNames[settings.difficulty]} AI가 다음 수를 고르고 있어요.` : status.detail}</p>{aiTurn && ai.error && <button className="secondary-button" onClick={ai.retry}>AI 다시 시도</button>}{status.over && <button className="primary-button" onClick={() => setConfirm('new')}>새로운 대전 <ArrowRight size={17} /></button>}</section>
+            <section className={`status-panel ${status.kind}`} aria-live="polite"><div className="panel-kicker">{placementOwner ? 'PLACEMENT' : status.over ? 'GAME OVER' : aiTurn ? 'AI TURN' : 'YOUR MOVE'}</div><div className="status-title">{status.over ? <Crown size={25} /> : <span className={`side-dot large ${game.turn()}`} />}<h2>{placementOwner ? `${colorNames[placementOwner]} 지형 배치` : aiTurn ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : status.title}</h2></div><p>{placementOwner ? placementArmed ? '보드에서 위치를 선택하고 보드 아래에서 배치를 확정하세요.' : '보드 왼쪽의 시작 배치 버튼을 눌러주세요.' : aiTurn ? ai.error ?? `${difficultyNames[settings.difficulty]} AI가 다음 수를 고르고 있어요.` : status.detail}</p>{aiTurn && ai.error && <button className="secondary-button" onClick={ai.retry}>AI 다시 시도</button>}{status.over && <button className="primary-button" onClick={() => setConfirm('new')}>새로운 대전 <ArrowRight size={17} /></button>}</section>
             <section className="history-panel"><div className="section-title"><h3><ScrollText size={18} /> 대전 기록</h3><span>{history.length}수</span></div>{history.length > 0 && <button className="review-open" onClick={() => setReviewPly(history.length)}>보드로 복기</button>}<div className="history-labels"><span>#</span><span>백</span><span>흑</span></div>
               <div className="history-list" ref={historyRef} aria-label="기보">
                 {!history.length ? <div className="history-empty"><Swords size={29} strokeWidth={1.2} /><p>첫 수를 기다리고 있어요</p><span>{placementOwner ? '먼저 시작 지형을 배치하세요.' : aiTurn ? 'AI의 첫 수를 기다리고 있어요.' : '체스판에서 내 기물을 선택하세요.'}</span></div> : game instanceof AbilityGame ? history.map((move, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{(['w','b'] as const).map(color => <span key={color} className={move === lastMove && move.color === color ? 'latest-san' : ''}>{move.color === color ? <button className="history-move" onClick={() => setReviewPly(history.indexOf(move) + 1)} aria-label={`${history.indexOf(move) + 1}수 복기`}>{move.san}</button> : '—'}</span>)}</div>) : Array.from({ length: Math.ceil(history.length / 2) }, (_, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{[history[index * 2], history[index * 2 + 1]].map((move, side) => <span key={side} className={move && move === lastMove ? 'latest-san' : ''}>{move ? <><Piece type={move.piece} color={move.color} civilization={players[move.color]} small /><button className="history-move" onClick={() => setReviewPly(history.indexOf(move) + 1)} aria-label={`${history.indexOf(move) + 1}수 복기`}>{move.san}</button></> : '—'}</span>)}</div>)}

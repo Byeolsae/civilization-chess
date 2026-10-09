@@ -17,6 +17,5 @@
 .history-move{padding:8px;border:1px solid #ffffff35;border-radius:5px;background:#ffffff12;color:inherit;cursor:pointer}
 .match-review button:disabled{opacity:.35;cursor:default}.match-review input{width:100%;margin-top:16px}.review-notice{font-size:12px;opacity:.75}
 .history-move{font-weight:700}.history-move:hover,.history-move:focus-visible{background:#b3ce8640;outline:2px solid #bdcc92}.review-open{margin-bottom:8px}
-.skill-rail .placement-guide{display:flex;flex-direction:column;gap:8px;margin:0 0 12px;padding:8px 3px;background:#cbaa4930;border:1px solid #dfbf66;border-radius:8px;text-align:center}
-.skill-rail .placement-guide strong{font-size:12px}.skill-rail .placement-guide p,.skill-rail .placement-guide small{font-size:10px;line-height:1.5;overflow-wrap:anywhere}
-.skill-rail .placement-controls{display:flex;flex-direction:column;gap:5px;width:100%}.skill-rail .placement-controls button{padding:8px 2px;font-size:11px;width:100%;min-width:0}
+.placement-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin:12px 0;padding:14px;border:1px solid var(--accent,#c6dea8);border-radius:9px;background:var(--panel,#243329)}
+.placement-toolbar p{margin:5px 0 0;font-size:12px;line-height:1.6}.placement-toolbar .placement-controls{display:flex;gap:8px;flex-wrap:wrap}.placement-toolbar .placement-controls button{min-height:42px;padding:10px 14px}.placement-toolbar .placement-controls button[aria-pressed=true]{outline:2px solid var(--accent,#c6dea8);outline-offset:1px}.passive-placement-button{flex-shrink:0}
