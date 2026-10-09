@@ -1,3 +1,4 @@
+import MatchHistory from './MatchHistory';
 import BoardTerrain from './BoardTerrain';
 import MatchReview from './MatchReview';
 import CooldownBadge from './CooldownBadge';
@@ -8,7 +9,7 @@ import { OnlineLobby, OnlineBanner, OnlineQuiz, OnlineWaitingRoom } from './Onli
 import { completeDraft } from './draft';
 import { useEffect, useRef, useState, type ReactNode, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 import { Chess, type Color, type PieceSymbol, type Square } from 'chess.js';
-import { Pyramid, Route, ArrowRight, ArrowLeftRight, ChevronRight, Crown, Flag, RotateCcw, ScrollText, Shield, Swords, X } from 'lucide-react';
+import { Pyramid, Route, ArrowRight, ArrowLeftRight, ChevronRight, Crown, Flag, RotateCcw, Shield, Swords, X } from 'lucide-react';
 import { civilizations, colorNames, decodeMatch, encodeMatch, gameStatus, legalMoves, opposite, pieceNames, playMove, STORAGE_KEY, type Civilization, type Players, type Promotion } from './game';
 
 import Draft, { LoadoutList } from './DraftScreen';
@@ -426,11 +427,7 @@ export default function App() {
         <aside className="side-panel">
           <>
             <section className={`status-panel ${status.kind}`} aria-live="polite"><div className="panel-kicker">{placementOwner ? 'PLACEMENT' : status.over ? 'GAME OVER' : aiTurn ? 'AI TURN' : 'YOUR MOVE'}</div><div className="status-title">{status.over ? <Crown size={25} /> : <span className={`side-dot large ${game.turn()}`} />}<h2>{placementOwner ? `${colorNames[placementOwner]} 지형 배치` : aiTurn ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : status.title}</h2></div><p>{placementOwner ? placementArmed ? '보드에서 위치를 선택하고 보드 아래에서 배치를 확정하세요.' : '보드 왼쪽의 시작 배치 버튼을 눌러주세요.' : aiTurn ? ai.error ?? `${difficultyNames[settings.difficulty]} AI가 다음 수를 고르고 있어요.` : status.detail}</p>{aiTurn && ai.error && <button className="secondary-button" onClick={ai.retry}>AI 다시 시도</button>}{status.over && <button className="primary-button" onClick={() => setConfirm('new')}>새로운 대전 <ArrowRight size={17} /></button>}</section>
-            <section className="history-panel"><div className="section-title"><h3><ScrollText size={18} /> 대전 기록</h3><span>{history.length}수</span></div>{history.length > 0 && <button className="review-open" onClick={() => setReviewPly(history.length)}>보드로 복기</button>}<div className="history-labels"><span>#</span><span>백</span><span>흑</span></div>
-              <div className="history-list" ref={historyRef} aria-label="기보">
-                {!history.length ? <div className="history-empty"><Swords size={29} strokeWidth={1.2} /><p>첫 수를 기다리고 있어요</p><span>{placementOwner ? '먼저 시작 지형을 배치하세요.' : aiTurn ? 'AI의 첫 수를 기다리고 있어요.' : '체스판에서 내 기물을 선택하세요.'}</span></div> : game instanceof AbilityGame ? history.map((move, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{(['w','b'] as const).map(color => <span key={color} className={move === lastMove && move.color === color ? 'latest-san' : ''}>{move.color === color ? <button className="history-move" onClick={() => setReviewPly(history.indexOf(move) + 1)} aria-label={`${history.indexOf(move) + 1}수 복기`}>{move.san}</button> : '—'}</span>)}</div>) : Array.from({ length: Math.ceil(history.length / 2) }, (_, index) => <div className="history-row" key={index}><span>{index + 1}.</span>{[history[index * 2], history[index * 2 + 1]].map((move, side) => <span key={side} className={move && move === lastMove ? 'latest-san' : ''}>{move ? <><Piece type={move.piece} color={move.color} civilization={players[move.color]} small /><button className="history-move" onClick={() => setReviewPly(history.indexOf(move) + 1)} aria-label={`${history.indexOf(move) + 1}수 복기`}>{move.san}</button></> : '—'}</span>)}</div>)}
-              </div>
-            </section>
+            <MatchHistory moves={history} players={players} listRef={historyRef} onReview={setReviewPly} waiting={placementOwner ? '먼저 시작 지형을 배치하세요.' : aiTurn ? 'AI가 첫 수를 고르고 있어요.' : '체스판에서 기물을 움직여 보세요.'}/>
             <div className="match-actions"><button onClick={() => setConfirm('new')}><RotateCcw size={16} /> 새 대전</button><button onClick={() => setConfirm('resign')} disabled={status.over}><Flag size={16} /> 기권</button></div>
             {game instanceof AbilityGame && <AbilityPanel game={game} players={players} enabled={humanTurn && !confirm} onAction={performAbility} />}<MatchAtmosphere civilization={opponentCivilization(players, settings, game.turn())} />
             <details className="match-loadouts"><summary>선택한 스킬 보기</summary><LoadoutList players={players} loadouts={loadouts} /><p>{game instanceof AbilityGame ? '능력 적용 중 · 12표법 준비 중' : '기본 체스 · 기존 저장 대전'}</p></details>
