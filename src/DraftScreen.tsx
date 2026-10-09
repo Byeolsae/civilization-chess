@@ -125,7 +125,6 @@ export default function Draft({ onStart, settings, onSettings, network }: { netw
       </div>;
     })}</div>
 
-    {preview && civilization && <SkillDemo key={preview.id} skill={preview} civilization={civilization} color={step.color} onClose={() => setPreview(null)}/>}
     {complete ? <div className="draft-complete">
       <div className="draft-intro"><span className="draft-eyebrow">READY TO PLAY</span><h1 ref={titleRef} tabIndex={-1}>두 문명, 하나의 전장</h1><p>선택이 끝났습니다. 서로의 조합을 확인하세요.</p></div>
       <LoadoutList players={complete.players} loadouts={complete.loadouts} />
@@ -146,6 +145,7 @@ export default function Draft({ onStart, settings, onSettings, network }: { netw
           <p className="civilization-era-note">위·촉·오는 삼국시대, 진은 진시황의 진나라(秦), 송은 송나라(宋)입니다. 시대는 게임 탐색용 구분이며 여러 시대에 걸친 왕조는 중복 표시합니다.</p>
         </div>
       </div>}
+      <div className={category ? "skill-selection-layout" : undefined}>
       <div className={`draft-card-grid ${!category ? 'civilization-grid' : ''} ${locking ? 'is-locking' : ''}`} key={`cards-${picks.length}`} role="group" aria-label={`${colorNames[step.color]} ${category?.name ?? '문명'} 카드 ${currentCards?.length ?? visibleCivilizations.length}장`}>
         {currentCards ? currentCards.map((skill, index) => <div className="skill-card-wrap" key={skill.id} onMouseEnter={() => setPreview(skill)}><button onFocus={() => setPreview(skill)} className={`draft-card skill-card ${choice === skill.id ? 'is-selected' : ''} ${choice && choice !== skill.id ? 'not-selected' : ''}`} style={{ '--card-index': index } as CSSProperties} aria-pressed={choice === skill.id} aria-label={`${skill.name} 선택`} disabled={locking || aiTurn || onlineWaiting} onClick={() => setChoice(skill.id)}>
           <div className="card-topline"><span>{category?.english}</span><span>0{index + 1}</span></div><div className="card-symbol">{civilization && specialPieceTypes[skill.id] ? <Piece type={specialPieceTypes[skill.id]} color={step.color} civilization={civilization} skill={skill.id} /> : <SkillSymbol skill={skill} />}</div><span className="card-subtitle">{skill.subtitle}</span><h2>{skill.name}</h2><p className="card-description">{skill.description}</p><p className="card-detail">{skill.detail}</p>{skill.pending && <span className="pending-tag">세부 효과 기획 중</span>}<div className="card-select-label">{choice === skill.id ? <><Check size={15} />{locking ? '선택 확정' : '선택됨'}</> : <>카드 선택 <ArrowRight size={14} /></>}</div>
@@ -161,6 +161,8 @@ export default function Draft({ onStart, settings, onSettings, network }: { netw
           </button>;
         })];
         })}
+      </div>
+      {category && <div className="skill-preview-slot">{preview && civilization ? <SkillDemo key={preview.id} skill={preview} civilization={civilization} color={step.color} onClose={() => setPreview(null)}/> : <div className="skill-preview-empty"><Sparkles size={28}/><strong>스킬 시연</strong><p>카드에 마우스를 올리거나<br/>시연 보기를 누르세요.</p></div>}</div>}
       </div>
       {!category && !visibleCivilizations.length && <div className="civilization-empty" role="status"><p>조건에 맞는 문명이 없습니다. 검색어·나라·대륙·시대를 바꿔보세요.</p><button className="draft-back" disabled={locking || aiTurn || onlineWaiting} onClick={resetFilters}>필터 초기화</button></div>}
       <div className="draft-controls"><button className="draft-back" onClick={back} disabled={!previous || locking || aiTurn || onlineWaiting}><ArrowLeft size={16} /> 이전 선택</button><span className="draft-counter">{picks.length + 1} / 8<span>{category ? '카드 3장 중 하나를 선택하세요' : '같은 문명도 선택할 수 있습니다'}</span></span><button className="primary-button" disabled={!choice || locking || aiTurn || onlineWaiting} onClick={() => setLocking(true)}>{onlineWaiting ? '상대 선택 대기' : aiTurn ? 'AI 선택 중' : locking ? '선택 확정 중' : '선택 확정'}{locking ? <Check size={18} /> : <ArrowRight size={18} />}</button></div>
