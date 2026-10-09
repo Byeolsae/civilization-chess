@@ -1,3 +1,4 @@
+import SkillDemo from './SkillDemo';
 import { civilizationReadiness, readinessLabels, chooseAiDraftPick } from './civilizationReadiness';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Color } from 'chess.js';
@@ -43,6 +44,8 @@ export function LoadoutList({ players, loadouts }: { players: Players; loadouts:
 export default function Draft({ onStart, settings, onSettings, network }: { network?: {picks:string[];color:Color;busy:boolean;connected:boolean;onPick:(choice:string)=>Promise<boolean>}; settings: MatchSettings; onSettings: () => void; onStart: (players: Players, loadouts: Loadouts) => void }) {
   const [localPicks, setPicks] = useState<string[]>(() => { try { return restoreDraft(localStorage.getItem(DRAFT_KEY)); } catch { return []; } });
   const picks = network?.picks ?? localPicks;
+  const [preview, setPreview] = useState<Skill | null>(null);
+  useEffect(() => setPreview(null), [picks.length]);
   const [choice, setChoice] = useState<string | null>(null);
   const [locking, setLocking] = useState(false);
   const [saveFailed, setSaveFailed] = useState(false);
@@ -122,6 +125,7 @@ export default function Draft({ onStart, settings, onSettings, network }: { netw
       </div>;
     })}</div>
 
+    {preview && civilization && <SkillDemo key={preview.id} skill={preview} civilization={civilization} color={step.color} onClose={() => setPreview(null)}/>}
     {complete ? <div className="draft-complete">
       <div className="draft-intro"><span className="draft-eyebrow">READY TO PLAY</span><h1 ref={titleRef} tabIndex={-1}>두 문명, 하나의 전장</h1><p>선택이 끝났습니다. 서로의 조합을 확인하세요.</p></div>
       <LoadoutList players={complete.players} loadouts={complete.loadouts} />
@@ -143,9 +147,9 @@ export default function Draft({ onStart, settings, onSettings, network }: { netw
         </div>
       </div>}
       <div className={`draft-card-grid ${!category ? 'civilization-grid' : ''} ${locking ? 'is-locking' : ''}`} key={`cards-${picks.length}`} role="group" aria-label={`${colorNames[step.color]} ${category?.name ?? '문명'} 카드 ${currentCards?.length ?? visibleCivilizations.length}장`}>
-        {currentCards ? currentCards.map((skill, index) => <button key={skill.id} className={`draft-card skill-card ${choice === skill.id ? 'is-selected' : ''} ${choice && choice !== skill.id ? 'not-selected' : ''}`} style={{ '--card-index': index } as CSSProperties} aria-pressed={choice === skill.id} aria-label={`${skill.name} 선택`} disabled={locking || aiTurn || onlineWaiting} onClick={() => setChoice(skill.id)}>
+        {currentCards ? currentCards.map((skill, index) => <div className="skill-card-wrap" key={skill.id} onMouseEnter={() => setPreview(skill)}><button onFocus={() => setPreview(skill)} className={`draft-card skill-card ${choice === skill.id ? 'is-selected' : ''} ${choice && choice !== skill.id ? 'not-selected' : ''}`} style={{ '--card-index': index } as CSSProperties} aria-pressed={choice === skill.id} aria-label={`${skill.name} 선택`} disabled={locking || aiTurn || onlineWaiting} onClick={() => setChoice(skill.id)}>
           <div className="card-topline"><span>{category?.english}</span><span>0{index + 1}</span></div><div className="card-symbol">{civilization && specialPieceTypes[skill.id] ? <Piece type={specialPieceTypes[skill.id]} color={step.color} civilization={civilization} skill={skill.id} /> : <SkillSymbol skill={skill} />}</div><span className="card-subtitle">{skill.subtitle}</span><h2>{skill.name}</h2><p className="card-description">{skill.description}</p><p className="card-detail">{skill.detail}</p>{skill.pending && <span className="pending-tag">세부 효과 기획 중</span>}<div className="card-select-label">{choice === skill.id ? <><Check size={15} />{locking ? '선택 확정' : '선택됨'}</> : <>카드 선택 <ArrowRight size={14} /></>}</div>
-        </button>) : countries.flatMap(group => {
+        </button><button className="skill-demo-trigger" onClick={() => setPreview(skill)}>▷ 시연 보기</button></div>) : countries.flatMap(group => {
           if (country !== '전체' && country !== group) return [];
           const members = visibleCivilizations.filter(civ => belongsToCountry(civ, group));
           if (!members.length) return [];
