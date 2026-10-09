@@ -1,3 +1,4 @@
+import { SphinxRiddle } from './SphinxRiddle';
 import { translateUi } from './i18n';
 import { useEffect, useState } from "react";
 import { AbilityGame, abilityNames, type AbilityAction } from "./AbilityGame";
@@ -179,9 +180,8 @@ export function SphinxChallenge({
   return (
     <div className="quiz-overlay">
       <section role="dialog" aria-modal="true" aria-label={translateUi("스핑크스의 수수께끼")}>
-        <h2>{translateUi("스핑크스의 수수께끼")}</h2>
-        <p>
-          {translateUi(problem.a)} × {translateUi(problem.b)} = ? · {translateUi(left)}{translateUi("초")}</p>
+        <SphinxRiddle seconds={left}/>
+        <p className="sphinx-question">{problem.a} × {problem.b} = ?</p>
         <form
           onSubmit={(e) => {
             e.preventDefault();

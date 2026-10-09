@@ -69,7 +69,7 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
     if (!effects.length) return;
     setPlaying(current => [...current, ...effects].slice(-8));
     setAnnouncement(effects.map(e => `${abilityNames[e.skill] ?? labels[e.skill] ?? '스킬'} 발동`).join(' · '));
-    const timer = setTimeout(() => { setPlaying(current => current.filter(e => !effects.some(next => next.id === e.id))); timers.current.delete(timer); }, effects.some(e => e.skill === 'judgment') ? 3600 : effects.some(e => ['osiris', 'revive', 'judgment', 'anubis'].includes(e.skill)) ? 2600 : effects.some(e => e.skill === 'poseidon') ? POSEIDON_WAVE_MS + POSEIDON_RETURN_MS + 100 : 1250);
+    const timer = setTimeout(() => { setPlaying(current => current.filter(e => !effects.some(next => next.id === e.id))); timers.current.delete(timer); }, effects.some(e => e.skill === 'judgment') ? 3600 : effects.some(e => ['osiris', 'revive', 'judgment', 'anubis'].includes(e.skill)) ? 2600 : effects.some(e => e.skill === 'cleopatra') ? 1900 : effects.some(e => e.skill === 'poseidon') ? POSEIDON_WAVE_MS + POSEIDON_RETURN_MS + 100 : 1250);
     timers.current.add(timer);
   }, [game, count, flipped]);
   useLayoutEffect(() => () => { timers.current.forEach(clearTimeout); timers.current.clear(); }, []);
@@ -90,6 +90,7 @@ function Effect({ effect: e, flipped, ghostSrc }: { effect: SkillEffect; flipped
   const color = colors[e.skill] ?? '#f6d58d';
   if (e.skill === 'osiris' || e.skill === 'revive') return <ResurrectionBurst x={to.x} y={to.y}/>;
   if (e.skill === 'anubis' || e.skill === 'judgment') return <g>{e.squares.map(square => { const point = boardPoint(square, flipped); return <g key={square}>{e.skill === 'judgment'&&<JudgmentDeath x={point.x} y={point.y} src={ghostSrc}/>}<JudgmentScales x={point.x} y={point.y} sentence={e.skill === 'judgment'}/></g>; })}</g>;
+  if (e.skill === 'cleopatra') return <CharmFlight from={from} to={to}/>;
   if (e.skill === 'minotaur') return <GroundFracture x={from.x} y={from.y}/>;
   if (e.skill === 'set') return <g className="skill-fx skill-fx-set"><ellipse className="set-dust" cx={to.x} cy={to.y} rx="138" ry="118" /></g>;
   const beam = ['ballista', 'pilum', 'cleopatra', 'trojan', 'deploy', 'gladiator'].includes(e.skill);
@@ -160,5 +161,18 @@ function GroundFracture({x,y}:{x:number;y:number}) {
   return <g transform={`translate(${x} ${y})`} className="ground-fracture">
     {cracks.map((d,i)=><g key={d} style={{animationDelay:`${i*35}ms`}} className="ground-crack"><path className="ground-crack-edge" d={d} pathLength="1"/><path className="ground-crack-core" d={d} pathLength="1"/></g>)}
     {Array.from({length:14},(_,i)=>{const a=i*2.399;return <path key={i} className="ground-debris" d="M-5 -3L2 -6 6 1 1 5Z" style={{'--debris-x':`${Math.cos(a)*(42+i%4*22)}px`,'--debris-y':`${Math.sin(a)*85+14}px`,'--debris-turn':`${i*39}deg`,animationDelay:`${80+i%4*35}ms`} as CSSProperties}/>;})}
+  </g>;
+}
+
+function CharmFlight({from,to}:{from:{x:number;y:number};to:{x:number;y:number}}) {
+  const heart='M0 17C-36 -5 -23 -31 0 -13C23 -31 36 -5 0 17Z';
+  return <g className="charm-cast" style={{'--charm-x':`${to.x-from.x}px`,'--charm-y':`${to.y-from.y}px`} as CSSProperties}>
+    <g transform={`translate(${from.x} ${from.y})`}>
+      {[3,2,1,0].map(i=><g key={i} className="charm-projectile" style={{animationDelay:`${i*65}ms`}}><path d={heart} className={i?'charm-echo':'charm-heart'} style={{opacity:i? .38-i*.07:1}}/></g>)}
+    </g>
+    <g transform={`translate(${to.x} ${to.y})`}>
+      <path className="charm-bloom" d={heart}/>
+      {Array.from({length:9},(_,i)=><g key={i} className="charm-petal" style={{'--petal-x':`${Math.cos(i*2.4)*55}px`,'--petal-y':`${-40-Math.sin(i*2.4)*30}px`,animationDelay:`${600+i*40}ms`} as CSSProperties}><path d={heart}/></g>)}
+    </g>
   </g>;
 }

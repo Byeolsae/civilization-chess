@@ -1,3 +1,4 @@
+import { SphinxRiddle } from './SphinxRiddle';
 import { translateUi } from './i18n';
 import { useEffect,useState } from 'react';
 import type { OnlineController } from './useOnlineRoom';
@@ -17,7 +18,7 @@ export function OnlineQuiz({online}:{online:OnlineController}){
  useEffect(()=>{setAnswer('');if(!q)return;const remaining=Math.max(0,q.expiresAt-(online.room?.serverTime??Date.now()));const end=performance.now()+remaining;const timer=setInterval(()=>setSeconds(Math.max(0,Math.ceil((end-performance.now())/1000))),100);return()=>clearInterval(timer);},[q?.expiresAt]);
  useEffect(()=>{if(q&&seconds===0&&q.color===online.session?.color&&!online.busy)void online.send({kind:'answer',answer:null});},[seconds,q,online.busy,online.send]);
  if(!q)return null;
- return <div className="online-quiz-backdrop"><section role="dialog" aria-modal="true" aria-label={translateUi("스핑크스의 질문")} className="online-quiz"><h2>{translateUi("스핑크스의 질문")}</h2>{translateUi(q.color===online.session?.color?<form onSubmit={e=>{e.preventDefault();void online.send({kind:'answer',answer:Number(answer)});}}><strong>{translateUi(q.question)} = ?</strong><p>{translateUi(seconds)}{translateUi("초 남음")}</p><input autoFocus inputMode="numeric" aria-label={translateUi("정답")} value={answer} onChange={e=>setAnswer(e.target.value.replace(/\D/g,''))}/><button className="primary-button" disabled={!answer||online.busy||seconds===0}>{translateUi("정답 제출")}</button></form>:<p>{translateUi("상대가 문제를 풀고 있어요.")}</p>)}</section></div>;
+ return <div className="online-quiz-backdrop"><section role="dialog" aria-modal="true" aria-label={translateUi("스핑크스의 질문")} className="online-quiz"><SphinxRiddle seconds={seconds}/>{translateUi(q.color===online.session?.color?<form onSubmit={e=>{e.preventDefault();void online.send({kind:'answer',answer:Number(answer)});}}><strong className="sphinx-question">{translateUi(q.question)} = ?</strong><input autoFocus inputMode="numeric" aria-label={translateUi("정답")} value={answer} onChange={e=>setAnswer(e.target.value.replace(/\D/g,''))}/><button className="primary-button" disabled={!answer||online.busy||seconds===0}>{translateUi("정답 제출")}</button></form>:<p>{translateUi("상대가 문제를 풀고 있어요.")}</p>)}</section></div>;
 }
 
 export function OnlineWaitingRoom({online}:{online:OnlineController}){
