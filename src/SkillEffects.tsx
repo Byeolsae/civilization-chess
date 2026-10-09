@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { civilizationAppearance } from './civilizations';
 import type { Players } from './game';
 import { specialPieceVariant } from './specialPieces';
@@ -83,13 +84,18 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
     timers.current.add(timer);
   }, [game, count, flipped]);
   useLayoutEffect(() => () => { timers.current.forEach(clearTimeout); timers.current.clear(); }, []);
-  return <div ref={layer} className="skill-effects" aria-live="polite" aria-atomic="true">
+  return <>{playing.filter(effect => effect.skill === 'minotaur').flatMap(effect => effect.squares.map(square => {
+    const cell = layer.current?.closest('.board')?.querySelector(`[data-square="${square}"]`);
+    if (!cell) return null;
+    const point = boardPoint(square, flipped), origin = boardPoint(effect.from, flipped);
+    return createPortal(<svg className="ground-fx-layer" viewBox={`${point.x-50} ${point.y-50} 100 100`} aria-hidden="true"><GroundFracture x={origin.x} y={origin.y}/></svg>, cell, `${effect.id}-${square}`);
+  }))}<div ref={layer} className="skill-effects" aria-live="polite" aria-atomic="true">
     <span className="sr-only">{translateUi(announcement)}</span>
     <svg viewBox="0 0 800 800" aria-hidden="true" className="skill-fx-svg">
-      {translateUi(playing.map(effect => <Effect key={effect.id} effect={effect} flipped={flipped} ghostSrc={effect.victim ? (() => { const p=effect.victim; const special=specialPieceVariant(p.type,game instanceof AbilityGame ? game.loadouts[p.owner].piece : undefined,p.lives,p.revived); return special ? `/pieces/special/${p.owner}-${special}.svg` : `/pieces/${civilizationAppearance[players[p.owner]]}/${p.owner}${p.type.toUpperCase()}.svg`; })() : undefined} />))}
+      {translateUi(playing.filter(effect => effect.skill !== 'minotaur').map(effect => <Effect key={effect.id} effect={effect} flipped={flipped} ghostSrc={effect.victim ? (() => { const p=effect.victim; const special=specialPieceVariant(p.type,game instanceof AbilityGame ? game.loadouts[p.owner].piece : undefined,p.lives,p.revived); return special ? `/pieces/special/${p.owner}-${special}.svg` : `/pieces/${civilizationAppearance[players[p.owner]]}/${p.owner}${p.type.toUpperCase()}.svg`; })() : undefined} />))}
     </svg>
     {translateUi(playing.length > 0 && <div key={playing.at(-1)!.id} className="skill-fx-title" aria-hidden="true">{translateUi(abilityNames[playing.at(-1)!.skill] ?? labels[playing.at(-1)!.skill] ?? '스킬 발동')}</div>)}
-  </div>;
+  </div></>;
 }
 // Keep board recoil and the wave in the same screen-space direction.
 function screenDirection(direction: number | undefined, flipped: boolean) {
@@ -170,7 +176,7 @@ function GroundFracture({x,y}:{x:number;y:number}) {
   ];
   return <g transform={`translate(${x} ${y})`} className="ground-fracture">
     {cracks.map((d,i)=><g key={d} style={{animationDelay:`${i*35}ms`}} className="ground-crack"><path className="ground-crack-edge" d={d} pathLength="1"/><path className="ground-crack-core" d={d} pathLength="1"/></g>)}
-    {Array.from({length:14},(_,i)=>{const a=i*2.399;return <path key={i} className="ground-debris" d="M-5 -3L2 -6 6 1 1 5Z" style={{'--debris-x':`${Math.cos(a)*(42+i%4*22)}px`,'--debris-y':`${Math.sin(a)*85+14}px`,'--debris-turn':`${i*39}deg`,animationDelay:`${80+i%4*35}ms`} as CSSProperties}/>;})}
+    {Array.from({length:7},(_,i)=>{const a=i*2.399;return <path key={i} className="ground-debris" d="M-5 -3L2 -6 6 1 1 5Z" style={{'--debris-x':`${Math.cos(a)*(26+i%4*12)}px`,'--debris-y':`${Math.sin(a)*45+14}px`,'--debris-turn':`${i*39}deg`,animationDelay:`${80+i%4*35}ms`} as CSSProperties}/>;})}
   </g>;
 }
 

@@ -8,9 +8,9 @@
 @keyframes judgment-dissolve{0%,27%{opacity:1;transform:scale(1)}33%{opacity:1;transform:scale(1.12);filter:brightness(2) drop-shadow(0 0 7px #ffad69)}48%{opacity:.8;transform:translateY(10px) scale(.85);filter:sepia(1) brightness(.45)}68%,100%{opacity:0;transform:translateY(30px) scale(.1)}}@keyframes judgment-death-flash{0%,28%{opacity:0;transform:scale(.1)}35%{opacity:.95;transform:scale(1.15)}52%,100%{opacity:0;transform:scale(1.65)}}@keyframes judgment-crack{0%,23%{opacity:0}32%,52%{opacity:1}74%,100%{opacity:0}}@keyframes judgment-ash{0%{opacity:0;transform:translate(0,0) scale(.7)}12%{opacity:1}100%{opacity:0;transform:translate(var(--ash-x),var(--ash-y)) rotate(var(--ash-rotate)) scale(.15)}}
 @media(prefers-reduced-motion:reduce){.judgment-victim,.judgment-death-flash,.judgment-ash{display:none}.judgment-fracture,.judgment-final-stack{opacity:1}}
 
-.ground-fracture{fill:none;stroke-linecap:round;stroke-linejoin:bevel;animation:ground-life 1.2s both}.ground-crack path{stroke-dasharray:1;animation:ground-open .45s ease-out both;animation-delay:inherit}.ground-crack-edge{stroke:#e7b575;stroke-width:9}.ground-crack-core{stroke:#463322;stroke-width:4}.ground-debris{fill:#b59161;stroke:#f1d3a0;stroke-width:1;animation:ground-debris .85s ease-out both}
-@keyframes ground-open{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}@keyframes ground-life{0%{opacity:0}8%,65%{opacity:1}100%{opacity:0}}@keyframes ground-debris{0%{opacity:0;transform:translate(0,12px) scale(.3)}20%{opacity:1}70%{opacity:.8}100%{opacity:0;transform:translate(var(--debris-x),var(--debris-y)) rotate(var(--debris-turn)) scale(.5)}}
-@media(prefers-reduced-motion:reduce){.ground-fracture{opacity:.8}.ground-crack path{stroke-dashoffset:0}.ground-debris{display:none}}
+.ground-fracture{fill:none;stroke-linecap:round;stroke-linejoin:bevel;animation:ground-life 1.2s both}.ground-crack path{stroke-dasharray:1;animation:ground-open .45s ease-out both;animation-delay:inherit}.ground-crack-edge{stroke:#bea27b;stroke-width:4;stroke-opacity:.3}.ground-crack-core{stroke:#544738;stroke-width:1.8;stroke-opacity:.6}.ground-debris{fill:#9e896e;fill-opacity:.45;stroke:none;animation:ground-debris .85s ease-out both}
+@keyframes ground-open{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}@keyframes ground-life{0%{opacity:0}16%,55%{opacity:.55}100%{opacity:0}}@keyframes ground-debris{0%{opacity:0;transform:translate(0,12px) scale(.3)}20%{opacity:1}70%{opacity:.8}100%{opacity:0;transform:translate(var(--debris-x),var(--debris-y)) rotate(var(--debris-turn)) scale(.5)}}
+@media(prefers-reduced-motion:reduce){.ground-fracture{opacity:.4}.ground-crack path{stroke-dashoffset:0}.ground-debris{display:none}}
 
 .skill-fx-poseidon .fx-water{animation-duration:var(--wave-duration,1.8s)}
 
@@ -23,3 +23,5 @@
 .charm-original{filter:none;animation:charm-original var(--charm-hit) steps(1,end) both}@keyframes charm-original{from{opacity:1}to{opacity:0}}@media(prefers-reduced-motion:reduce){.charm-original{display:none}}
 
 .charm-cast{filter:none}.charm-projectile,.charm-bloom,.charm-petal{filter:drop-shadow(0 0 7px #f254aa)}
+
+.ground-fx-layer{position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:hidden;pointer-events:none}@media(prefers-reduced-motion:reduce){.ground-fx-layer *{animation:none!important}}
