@@ -36,6 +36,6 @@ export default function SkillDemoBoard({game,civilization,storm}:{game:AbilityGa
     </div></div>
     {game.state.duel&&<AbilityPanel game={game} players={{w:civilization,b:civilization}} enabled={false} onAction={()=>{}}/>}
     {game.state.clocks&&<div className="demo-engine-info">백 {Math.floor(game.state.clocks.w/60000)}분 · 흑 {Math.floor(game.state.clocks.b/60000)}분</div>}
-    {(game.graves('w').length+game.graves('b').length)>0&&<div className="demo-graves">{(['w','b'] as const).flatMap(c=>game.graves(c).map(p=><span key={p.id} className={p.sealed?'sealed':''} title={p.sealed?'부활 봉인':'사망한 기물'}><Piece type={p.type} color={p.owner} civilization={civilization} small skill={game.loadouts[p.owner].piece}/>{p.sealed&&<b>봉인</b>}</span>))}</div>}
+    <div className="demo-graves" aria-label="잡힌 기물"><small>잡힌 기물</small>{(['w','b'] as const).flatMap(c=>game.graves(c).map(p=><span key={p.id} className={p.sealed?'sealed':''} title={p.sealed?'부활 봉인':'사망한 기물'}><Piece type={p.type} color={p.owner} civilization={civilization} small skill={game.loadouts[p.owner].piece}/>{p.sealed&&<b>봉인</b>}</span>))}</div>
   </div>;
 }
