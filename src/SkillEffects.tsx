@@ -9,8 +9,8 @@ import { boardPoint, skillEffects, type SkillEffect } from './skillEffectEvents'
 import './skillEffects.css';
 
 type PlayingEffect = SkillEffect & { id: number };
-const POSEIDON_WAVE_MS = 900;
-const POSEIDON_RETURN_MS = 650;
+const POSEIDON_WAVE_MS = 1800;
+const POSEIDON_RETURN_MS = 1600;
 const colors: Record<string, string> = { zeus: '#c5eeff', poseidon: '#75d8ff', hades: '#be98ff', osiris: '#fbe3a0', set: '#e7bf7a', anubis: '#eac27b', judgment: '#f3c367', alesia: '#eeb98e', vesta: '#ffbc75', pilum: '#ffce9c', ballista: '#ffe1ac', minotaur: '#f3c98c', cleopatra: '#ffadd8', trojan: '#bcdfac', deploy: '#bcdfac', gladiator: '#efb2a3', shield: '#b7e8fc', revive: '#f5dfa7', sphinx: '#ceb9ff' };
 const labels: Record<string, string> = { judgment: '심장의 심판', shield: '방어 발동', revive: '미라 부활', sphinx: '수수께끼 방어' };
 export default function SkillEffects({ game, flipped, players }: { game: Chess; flipped: boolean; players: Players }) {
@@ -33,9 +33,8 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
       const y = direction === 2 ? -distance : direction === 3 ? distance : 0;
       const duration = POSEIDON_WAVE_MS + POSEIDON_RETURN_MS;
       const motion = board.animate([
-        { transform: 'translate(0,0)', offset: 0, easing: 'ease-out' },
-        { transform: `translate(${x}px,${y}px)`, offset: POSEIDON_WAVE_MS / duration, easing: 'ease-in-out' },
-        { transform: `translate(${-x * .08}px,${-y * .08}px)`, offset: .9, easing: 'ease-out' },
+        { transform: 'translate(0,0)', offset: 0, easing: 'cubic-bezier(.45,0,.55,1)' },
+        { transform: `translate(${x}px,${y}px)`, offset: POSEIDON_WAVE_MS / duration, easing: 'cubic-bezier(.45,0,.55,1)' },
         { transform: 'translate(0,0)', offset: 1 },
       ], { duration, easing: 'linear' });
       return () => motion.cancel();
@@ -87,7 +86,7 @@ function Effect({ effect: e, flipped, ghostSrc }: { effect: SkillEffect; flipped
   const zone = ['set', 'vesta', 'alesia'].includes(e.skill);
   const direction = screenDirection(e.direction, flipped);
   const waveStyle = { '--wave-duration': `${POSEIDON_WAVE_MS}ms`, '--wave-x': `${direction === 0 ? 800 : direction === 1 ? -800 : 0}px`, '--wave-y': `${direction === 2 ? -800 : direction === 3 ? 800 : 0}px` } as CSSProperties;
-  return <g style={{ color }} className={`skill-fx skill-fx-${e.skill}`}>
+  return <g style={{ color, '--wave-duration': `${POSEIDON_WAVE_MS}ms` } as CSSProperties} className={`skill-fx skill-fx-${e.skill}`}>
     {translateUi(beam && <line className="fx-beam" x1={from.x} y1={from.y} x2={to.x} y2={to.y} pathLength="1" />)}
     {translateUi(e.skill === 'poseidon' && <>
       {translateUi(e.squares.map(square => { const p = boardPoint(square, flipped); return <rect key={square} className="fx-water" x={p.x-49} y={p.y-49} width="98" height="98" />; }))}
