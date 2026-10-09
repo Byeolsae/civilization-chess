@@ -19,17 +19,31 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
   const [playing, setPlaying] = useState<PlayingEffect[]>([]);
   const [announcement, setAnnouncement] = useState('');
   const layer = useRef<HTMLDivElement>(null);
-  const impactId = [...playing].reverse().find(e => e.skill === 'minotaur' || e.skill === 'zeus')?.id;
+  const impact = [...playing].reverse().find(e => ['minotaur', 'zeus', 'poseidon'].includes(e.skill));
   useLayoutEffect(() => {
-    if (!impactId || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!impact || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const board = layer.current?.closest('.board-section');
-    const motion = board?.animate([
+    if (!board) return;
+    if (impact.skill === 'poseidon') {
+      const direction = screenDirection(impact.direction, flipped);
+      const distance = Math.min(18, board.getBoundingClientRect().width * .025);
+      const x = direction === 0 ? distance : direction === 1 ? -distance : 0;
+      const y = direction === 2 ? -distance : direction === 3 ? distance : 0;
+      const motion = board.animate([
+        { transform: 'translate(0,0)', offset: 0 },
+        { transform: `translate(${x}px,${y}px)`, offset: .35 },
+        { transform: `translate(${-x * .16}px,${-y * .16}px)`, offset: .76 },
+        { transform: 'translate(0,0)', offset: 1 },
+      ], { duration: 900, easing: 'cubic-bezier(.22,.61,.36,1)' });
+      return () => motion.cancel();
+    }
+    const motion = board.animate([
       { transform: 'translate(0,0)' }, { transform: 'translate(-4px,3px)' },
       { transform: 'translate(4px,-2px)' }, { transform: 'translate(-3px,2px)' },
       { transform: 'translate(2px,-1px)' }, { transform: 'translate(0,0)' },
     ], { duration: 420, easing: 'ease-out' });
     return () => motion?.cancel();
-  }, [impactId]);
+  }, [impact, flipped]);
   useLayoutEffect(() => {
     const old = previous.current;
     previous.current = { game, count, flipped, state: game instanceof AbilityGame ? structuredClone(game.state) : null };
@@ -54,6 +68,10 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
     {translateUi(playing.length > 0 && <div key={playing.at(-1)!.id} className="skill-fx-title" aria-hidden="true">{translateUi(abilityNames[playing.at(-1)!.skill] ?? labels[playing.at(-1)!.skill] ?? '스킬 발동')}</div>)}
   </div>;
 }
+// Keep board recoil and the wave in the same screen-space direction.
+function screenDirection(direction: number | undefined, flipped: boolean) {
+  return (direction ?? 0) ^ (flipped ? 1 : 0);
+}
 function Effect({ effect: e, flipped, ghostSrc }: { effect: SkillEffect; flipped: boolean; ghostSrc?: string }) {
   const from = boardPoint(e.from, flipped), to = boardPoint(e.to, flipped);
   const color = colors[e.skill] ?? '#f6d58d';
@@ -64,7 +82,7 @@ function Effect({ effect: e, flipped, ghostSrc }: { effect: SkillEffect; flipped
   const beam = ['ballista', 'pilum', 'cleopatra', 'trojan', 'deploy', 'gladiator'].includes(e.skill);
   const portal = ['osiris', 'hades', 'anubis', 'trojan', 'deploy', 'gladiator', 'revive'].includes(e.skill);
   const zone = ['set', 'vesta', 'alesia'].includes(e.skill);
-  const direction = flipped ? (e.direction ?? 0) ^ 1 : e.direction ?? 0;
+  const direction = screenDirection(e.direction, flipped);
   const waveStyle = { '--wave-x': `${direction === 0 ? 800 : direction === 1 ? -800 : 0}px`, '--wave-y': `${direction === 2 ? -800 : direction === 3 ? 800 : 0}px` } as CSSProperties;
   return <g style={{ color }} className={`skill-fx skill-fx-${e.skill}`}>
     {translateUi(beam && <line className="fx-beam" x1={from.x} y1={from.y} x2={to.x} y2={to.y} pathLength="1" />)}
