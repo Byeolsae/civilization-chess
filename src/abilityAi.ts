@@ -20,6 +20,7 @@ export function score(game: AbilityGame, color: Color) {
         (value[p.type] +
           (p.lives - 1) * 70 +
           p.glory * 35 -
+          (p.judgment && !p.judgment.executedAt ? value[p.type] * (.12 + p.judgment.kills * .22) : 0) -
           Object.keys(p.effects).length * 25 +
           center * (p.type === "n" ? 10 : 3));
     }
@@ -44,7 +45,8 @@ export function chooseAbilityAction(
       (p && p.owner !== game.turn() ? value[p.type] : 0) +
       (a.kind === "move" ? 10 : 0) +
       (a.skill === "ballista" ? 200 : 0) +
-      (a.skill === "osiris" ? 500 : 0)
+      (a.skill === "osiris" ? 500 : 0) +
+      (a.skill === "anubis" ? (a.id?.split(",").reduce((sum, id) => sum + value[game.state.pieces[id].type] * .25, 0) ?? 0) : 0)
     );
   }
   let best = actions[0],

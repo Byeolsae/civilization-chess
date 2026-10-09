@@ -38,7 +38,7 @@ export function createSkillScenario(id: string): SkillScenario | null {
     case 'hades': pieces = { a1:'K',h8:'k',c6:'p',d6:'n',e6:'b' }; add('죽은 적 셋을 봉인합니다. 이후 부활할 수 없습니다.',cast(id)); break;
     case 'osiris': pieces = { a1:'K',h8:'k',d3:'B' }; add('사망한 아군이 빈 칸에서 부활하고 그 턴에는 행동하지 못합니다.',cast(id,'d3')); break;
     case 'set': add('실제 사막 지형이 생성되고 영역 내 적의 이동을 제한합니다.',cast(id,'d5')); break;
-    case 'anubis': add('빈 칸에 함정을 설치합니다.',cast(id,'d5')); add('적 폰이 함정에 들어오면 사망하고 함정이 사라집니다.',move('d6','d5')); break;
+    case 'anubis': pieces={a1:'K',h8:'k',d6:'r',g6:'n',d4:'P',d3:'P'}; intro='적 룩과 나이트를 지정합니다. 지정 이후 킬 수를 각각 셉니다.'; add('두 적 기물에 깃털과 심장의 심판 표식이 붙습니다.',cast(id)); add('룩이 첫 기물을 잡아 1/2킬이 됩니다. 나이트는 0/2킬 그대로입니다.',move('d6','d4')); add('상대 차례에도 심판 표식과 누적 킬 수가 유지됩니다.',move('a1','b1')); add('룩의 두 번째 킬이 성립한 뒤 저울이 기울며 룩도 심판으로 사망합니다.',move('d4','d3')); break;
     case 'alesia': add('실제 2×2 포위망이 생겨 적의 경계 통과를 막습니다.',cast(id,'d5')); break;
     case 'vesta': loadouts.b.active='zeus'; add('성화를 설치해 주변 아군을 한 번 보호합니다.',cast(id,'d5')); add('상대의 번개를 성화 보호가 막습니다.',cast('zeus','d4')); break;
     case 'pilum': add('상대 기물에 인게임 무장 해제 표시가 나타납니다.',cast(id,'d6')); break;

@@ -109,6 +109,7 @@ export const abilityNames: Record<string, string> = {
 export class AbilityGame extends Chess {
   state: State;
   readonly loadouts: Loadouts;
+  private replayingLegacyAnubis = false;
   private placements?: Partial<Record<Color, PassivePlacement>>;
   private journal: { before: State; action: AbilityAction; move: Move }[] = [];
   private actionCache: { key: string; actions: AbilityAction[] } | null = null;
@@ -260,7 +261,10 @@ export class AbilityGame extends Chess {
         }
         game.state.clocks = { ...clock };
       }
-      game.perform(action);
+      // Older saved matches used an empty-square trap. Replay only, never a new action.
+      game.replayingLegacyAnubis = action.skill === "anubis" && !action.id;
+      game.actionCache = null;
+      try { game.perform(action); } finally { game.replayingLegacyAnubis = false; game.actionCache = null; }
     }
     if (game.state.clocks && data.clocks)
       for (const c of ["w", "b"] as Color[]) {
@@ -518,6 +522,7 @@ export class AbilityGame extends Chess {
     const square = p.square;
     p.square = null;
     p.effects = {};
+    delete p.judgment;
     for (const id of p.cargo) this.kill(this.state.pieces[id]);
     p.cargo = [];
     if (
@@ -529,6 +534,17 @@ export class AbilityGame extends Chess {
     ) {
       p.mummyAt = square;
       p.mummyTurn = this.state.turns[p.owner] + 1;
+    }
+  }
+  private creditKill(p: ExtraPiece) {
+    const judgment = p.judgment;
+    if (!judgment || judgment.executedAt || !p.square) return;
+    judgment.kills++;
+    if (judgment.kills >= 2) {
+      const executedAt = p.square;
+      this.kill(p);
+      p.judgment = { ...judgment, executedAt };
+      if (this.state.extraAction === p.id) this.state.extraAction = null;
     }
   }
   private capture(p: ExtraPiece) {
@@ -637,7 +653,13 @@ export class AbilityGame extends Chess {
               !(p.type === "p" && ["1", "8"].includes(s[1]))
             )
               add(active, origin, s, { id: p.id });
-      if (["set", "anubis", "vesta"].includes(active))
+      if (active === "anubis" && !this.replayingLegacyAnubis) {
+        const targets = enemies.filter(p => p.type !== "k" && !p.judgment);
+        for (let i = 0; i < targets.length - 1; i++)
+          for (let j = i + 1; j < targets.length; j++)
+            add(active, origin, targets[i].square!, { id: [targets[i].id, targets[j].id].join(",") });
+      }
+      if (["set", "vesta"].includes(active) || (active === "anubis" && this.replayingLegacyAnubis))
         for (const s of SQUARES) if (!this.unit(s)) add(active, origin, s);
       if (active === "alesia")
         for (const s of SQUARES) {
@@ -929,6 +951,7 @@ export class AbilityGame extends Chess {
       if (p.owner === c && p.mummyAt && p.mummyTurn! <= this.state.turns[c]) {
         if (!p.sealed && !this.unit(p.mummyAt)) {
           p.square = p.mummyAt;
+          delete p.judgment;
           p.lives = 1;
         }
         // Check at the start of each of the next three owner turns.
@@ -1017,6 +1040,7 @@ export class AbilityGame extends Chess {
         `${a.from[0]}${(Number(a.from[1]) + Number(a.to[1])) / 2}` as Square;
     if (a.promotion) p.type = a.promotion as PieceSymbol;
     this.arrive(p);
+    if (q) this.creditKill(p);
     if (this.state.extraAction && !p.square) this.state.extraAction = null;
   }
   private arrive(p: ExtraPiece) {
@@ -1100,12 +1124,16 @@ export class AbilityGame extends Chess {
       const dead = this.state.pieces[a.id!];
       dead.square = a.to;
       dead.lives = 1;
+      delete dead.judgment;
       delete dead.mummyAt;
       delete dead.mummyTurn;
       dead.effects = { stun: this.state.turns[c] };
       this.arrive(dead);
     }
-    if (["set", "anubis", "vesta", "alesia"].includes(skill)) {
+    if (skill === "anubis" && a.id) {
+      for (const id of a.id.split(",")) this.state.pieces[id].judgment = { caster: c, kills: 0 };
+    }
+    if (["set", "vesta", "alesia"].includes(skill) || (skill === "anubis" && this.replayingLegacyAnubis && !a.id)) {
       const kind =
         skill === "set"
           ? "desert"
@@ -1157,7 +1185,7 @@ export class AbilityGame extends Chess {
     }
     if (skill === "ballista" && p && q) {
       if (!(q.type === "n" && this.has(q.owner, "sphinx") && a.quiz === false))
-        this.capture(q);
+        if (this.capture(q)) this.creditKill(p);
       p.cooldownUntil = this.state.turns[c] + 4;
     }
     if (skill === "gladiator" && p && q) {
@@ -1201,6 +1229,8 @@ export class AbilityGame extends Chess {
         p.square = d.origin[pieceId];
         if (pieceId === loser) this.kill(p);
       }
+      const winner = this.state.pieces[loser === d.attacker ? d.defender : d.attacker];
+      this.creditKill(winner);
       this.state.turn = d.initiator;
       this.state.duel = null;
     } else this.state.turn = other(this.turn());
@@ -1219,6 +1249,7 @@ export class AbilityGame extends Chess {
     const p = this.unit(s);
     const notes: string[] = [];
     if (p) {
+      if (p.judgment && !p.judgment.executedAt) notes.push(`심판 ${p.judgment.kills}/2`);
       if (p.lives > 1) notes.push("추가 목숨");
       if (p.glory) notes.push(`영광 ${p.glory}/3`);
       if (this.disabled(p)) notes.push("행동불가");

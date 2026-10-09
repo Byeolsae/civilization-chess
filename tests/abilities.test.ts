@@ -157,13 +157,16 @@ test("desert limits sliders while knights retain their leap; siege excludes king
     false,
   );
 });
-test("anubis kills an arriving enemy and disappears", () => {
-  const g = create({ active: "anubis" }, {}, "4k3/p7/8/8/8/8/8/4K3 w - - 0 1");
-  skill(g, "anubis", undefined, "a6");
-  g.move({ from: "a7", to: "a6" });
-  assert.equal(g.get("a6"), undefined);
-  assert.equal(g.state.zones.length, 0);
+test("old Anubis trap saves replay but new casts cannot create traps", () => {
+  const loadouts = {w:{...blank,active:'anubis'},b:{...blank}} as Loadouts;
+  const oldCast: AbilityAction = {kind:'skill',skill:'anubis',from:'e1',to:'a6'};
+  assert.throws(()=>new AbilityGame(loadouts).perform(oldCast));
+  const g = AbilityGame.restoreSave({version:1,loadouts,actions:[oldCast,{kind:'move',from:'a7',to:'a6'}],clocks:null,clocksBefore:[]});
+  assert.equal(g.get('a6'),undefined);
+  assert.equal(g.state.zones.length,0);
+  assert.equal(g.state.activeUsed.w,true);
 });
+
 test("Cleopatra changes allegiance temporarily without moving either piece", () => {
   const g = create(
     { piece: "cleopatra" },

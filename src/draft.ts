@@ -40,7 +40,7 @@ export const skills: Record<Civilization, Record<Category, Skill[]>> = {
     active: [
       { id: 'osiris', name: '오시리스', subtitle: '다시 일어서는 영혼', description: '죽은 아군 하나를 아군 진영의 빈 칸에 부활시킵니다.', detail: '원래 능력을 유지하지만 그 턴에는 행동하지 못합니다. 부활 불가 기물은 제외됩니다.', symbol: 'sun' },
       { id: 'set', name: '세트', subtitle: '사막의 지배자', description: '빈 칸과 주변 8칸에 2턴 동안 사막 지대를 만듭니다.', detail: '사막 안의 상대 기물은 최대 1칸만 이동합니다. 나이트 계열은 예외입니다.', symbol: 'wind' },
-      { id: 'anubis', name: '아누비스', subtitle: '죽음의 심판', description: '빈 칸에 함정을 설치해 들어오는 상대 기물을 즉사시킵니다.', detail: '한 번 발동하면 사라지며 아군에게는 무해합니다. 패배 조건과 연결된 킹은 즉사하지 않습니다.', symbol: 'skull' },
+      { id: 'anubis', name: '아누비스', subtitle: '죽음의 심판', description: '적 기물 두 개에 심판을 지정합니다. 각 대상이 지정 이후 2킬을 하면 심장이 깃털보다 무거워져 사망합니다.', detail: '두 대상의 킬 수는 각각 계산합니다. 킹은 제외하며 지정 이전의 킬은 세지 않습니다. 심판은 추가 목숨을 무시합니다.', symbol: 'scale' },
     ],
     piece: [
       { id: 'mummy', name: '미라 병사', subtitle: '폰의 변신', description: '처음 잡힌 뒤 자기 턴 시작마다 최대 3번 확인하고, 사망 칸이 비면 한 번 부활합니다.', detail: '부활할 칸이 비어 있어야 합니다. 한 번 부활한 뒤 다시 잡히면 완전히 사망합니다.', symbol: 'shield' },

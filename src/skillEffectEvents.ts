@@ -14,6 +14,7 @@ export function skillEffects(action: AbilityAction, before: AbilityState, after:
   const result: SkillEffect[] = [];
   if (action.kind === 'skill' && action.skill) {
     let squares = activeArea(action.skill, action.to, action.direction);
+    if (action.skill === 'anubis' && action.id) squares = action.id.split(',').flatMap(id => after.pieces[id]?.square ? [after.pieces[id].square!] : []);
     if (action.skill === 'minotaur') squares = [action.from, ...adjacentSquares(action.from)];
     if (action.skill === 'zeus') squares = [action.to, ...Object.values(after.pieces).filter(p => p.square && p.effects.shock !== before.pieces[p.id]?.effects.shock).map(p => p.square!)];
     result.push({ skill: action.skill, from: action.from, to: action.to, direction: action.direction, squares: [...new Set(squares)] });
@@ -21,6 +22,8 @@ export function skillEffects(action: AbilityAction, before: AbilityState, after:
   for (const p of Object.values(after.pieces)) {
     const old = before.pieces[p.id];
     if (!old) continue;
+    const sentence = p.judgment?.executedAt;
+    if (sentence && sentence !== old.judgment?.executedAt) result.push({ skill: 'judgment', from: sentence, to: sentence, squares: [sentence] });
     if (old.lives > p.lives && p.square) result.push({ skill: 'shield', from: p.square, to: p.square, squares: [p.square] });
     if (!old.square && p.square && p.revived && !old.revived && action.skill !== 'osiris') result.push({ skill: 'revive', from: p.square, to: p.square, squares: [p.square] });
   }

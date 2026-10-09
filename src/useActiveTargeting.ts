@@ -21,6 +21,14 @@ export function useActiveTargeting(game: Chess, enabled: boolean, revision: numb
   const execute = (action: AbilityAction | undefined) => { if (action) { cancel(); onAction(action); } };
   const select = (square: Square) => {
     if (!armed || !enabled || skill === 'poseidon' || skill === 'hades' || (skill === 'osiris' && graves.length !== 1)) return;
+    if (skill === 'anubis' && game instanceof AbilityGame) {
+      const id = game.unit(square)?.id;
+      if (!id || !actions.some(a => a.id?.split(',').includes(id))) return;
+      const next = graves.includes(id) ? graves.filter(value => value !== id) : [...graves, id];
+      if (next.length === 2) execute(actions.find(a => a.id?.split(',').every(value => next.includes(value))));
+      else setGraves(next);
+      return;
+    }
     execute(findActiveAction(actions, skill, square, skill === 'osiris' ? graves[0] : undefined));
   };
   const pickGrave = (id: string) => {
@@ -52,10 +60,11 @@ export function useActiveTargeting(game: Chess, enabled: boolean, revision: numb
     } else if (Math.hypot(e.clientX-g.x, e.clientY-g.y) < 14) select(g.square);
   };
   const usable = actions.filter(a => skill !== 'osiris' || a.id === graves[0]);
-  const valid = new Set(armed && skill !== 'poseidon' && skill !== 'hades' ? usable.map(a => a.to) : []);
+  const valid = new Set(armed && skill !== 'poseidon' && skill !== 'hades' ? skill === 'anubis' && game instanceof AbilityGame ? usable.filter(a => !graves.length || a.id?.split(',').includes(graves[0])).flatMap(a => a.id!.split(',').map(id => game.state.pieces[id].square!)) : usable.map(a => a.to) : []);
+  const chosen = new Set(skill === 'anubis' && game instanceof AbilityGame ? graves.map(id => game.state.pieces[id].square!) : []);
   const waveAction = wave && findActiveAction(actions, skill, wave.square, undefined, wave.direction);
   const area = armed ? wave && waveAction ? activeArea(skill, wave.square, wave.direction) : hover && valid.has(hover) ? activeArea(skill, hover) : [] : [];
-  return { armed, skill, actions, graves, valid, area, direction: waveAction && wave ? (flipped ? wave.direction ^ 1 : wave.direction) : undefined, cancel, select, pickGrave, down, move, up,
+  return { armed, skill, actions, graves, valid, chosen, area, direction: waveAction && wave ? (flipped ? wave.direction ^ 1 : wave.direction) : undefined, cancel, select, pickGrave, down, move, up,
     hover: (square: Square | null) => { if (armed && !gesture.current) setHover(square); },
     toggle: () => { if (armed) cancel(); else if (actions.length) setArmed(true); } };
 }
