@@ -1,13 +1,13 @@
 import { useRef } from 'react';
 import type { Square } from 'chess.js';
-import { Swords } from 'lucide-react';
+import { Swords, RotateCcw } from 'lucide-react';
 import { AbilityGame, type AbilityAction } from './AbilityGame';
 import type { Players } from './game';
 import { translateUi } from './i18n';
 import Piece from './Piece';
 import './duelArena.css';
 
-export default function DuelArena({game,players,enabled,onAction,embedded=false}:{game:AbilityGame;players:Players;enabled:boolean;embedded?:boolean;onAction:(action:AbilityAction)=>void}) {
+export default function DuelArena({game,players,enabled,onAction,embedded=false,onUndo,undoEnabled=false,undoLabel='한 수 무르기'}:{game:AbilityGame;players:Players;enabled:boolean;embedded?:boolean;onUndo?:()=>void;undoEnabled?:boolean;undoLabel?:string;onAction:(action:AbilityAction)=>void}) {
   const drag=useRef(false),root=useRef<HTMLDivElement>(null);
   const duel=game.state.duel!;
   const flipped=duel.initiator==='b';
@@ -33,6 +33,7 @@ export default function DuelArena({game,players,enabled,onAction,embedded=false}
         })}
       </div>
       <p className="duel-instructions">{translateUi(actor===duel.attacker?'이동·공격은 퀸처럼. 제한 안에 상대를 잡으세요.':'원래 기물의 이동으로 버티세요. 외곽에 남으면 즉사합니다.')}</p>
+      {onUndo&&<button className="duel-undo" disabled={!undoEnabled} onClick={()=>{drag.current=false;onUndo();}}><RotateCcw size={16}/>{translateUi(undoLabel)}</button>}
       {!enabled&&<p className="duel-wait">{translateUi('상대의 결투 행동을 기다리는 중')}</p>}
       {actions.some(a=>a.kind==='pass')&&<button className="primary-button" onClick={()=>onAction(actions.find(a=>a.kind==='pass')!)}>{translateUi('행동 대기')}</button>}
     </section>

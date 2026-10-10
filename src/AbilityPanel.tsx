@@ -13,11 +13,17 @@ export function AbilityPanel({
   players,
   enabled,
   onAction,
+  onUndo,
+  undoEnabled,
+  undoLabel,
 }: {
   game: AbilityGame;
   players: Players;
   enabled: boolean;
   onAction: (action: AbilityAction) => void;
+  onUndo?: () => void;
+  undoEnabled?: boolean;
+  undoLabel?: string;
 }) {
   const [category, setCategory] = useState("");
   const [choice, setChoice] = useState("");
@@ -46,7 +52,7 @@ export function AbilityPanel({
   };
   const clock = (n: number) =>
     `${Math.floor(Math.ceil(n / 1000) / 60)}:${String(Math.ceil(n / 1000) % 60).padStart(2, "0")}`;
-  if(duel)return <DuelArena game={game} players={players} enabled={enabled} onAction={onAction}/>;
+  if(duel)return <DuelArena game={game} players={players} enabled={enabled} onAction={onAction} onUndo={onUndo} undoEnabled={undoEnabled} undoLabel={undoLabel}/>;
   return (
     <section className="ability-panel" aria-label={translateUi("문명 능력")}>
       <h3>

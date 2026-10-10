@@ -1,3 +1,4 @@
+import { undoTurn } from '../src/aiMatch';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { AbilityGame } from '../src/AbilityGame';
@@ -43,4 +44,19 @@ test('queen movement cannot leap over the opposing piece',()=>{
  const g=setup();move(g,'b6');
  assert.ok(g.actions().some(a=>a.to==='b6'));
  assert.equal(g.actions().some(a=>a.to==='a6'),false);
+});
+
+test('local undo restores the arena before collapse and can undo the summon',()=>{
+ const g=setup();for(const to of ['c2','g5','d2','g4'])move(g,to);
+ assert.equal(g.state.duel!.actions,4);
+ undoTurn(g,{mode:'local',humanColor:'w',difficulty:'normal'});
+ assert.equal(g.state.duel!.actions,3);assert.ok(g.actions().some(a=>a.to==='h5'));
+ while(g.state.duel)undoTurn(g,{mode:'local',humanColor:'w',difficulty:'normal'});
+ assert.ok(g.unit('c1'));assert.ok(g.unit('a8'));assert.equal(g.unit('c1')!.duelUses??0,0);
+});
+test('AI undo removes the reply and human duel action together',()=>{
+ const g=setup();move(g,'c2');move(g,'g5');
+ undoTurn(g,{mode:'ai',humanColor:'w',difficulty:'normal'});
+ assert.equal(g.state.duel!.actions,0);assert.equal(g.turn(),'w');
+ assert.equal(g.state.duel!.positions[g.state.duel!.attacker],'b2');
 });
