@@ -47,3 +47,5 @@
 .theme-joseon{--draft-accent:#f2ae70;--draft-rgb:242,174,112}.theme-aztec{--draft-accent:#dfa13a;--draft-rgb:223,161,58}
 
 .theme-qing{--draft-accent:#f5cf45;--draft-rgb:245,207,69}
+
+.card-symbol .greek-skill-icon{width:76px;height:76px;overflow:visible;filter:drop-shadow(0 2px 2px #0003)}.greek-skill-icon .icon-line{fill:none;stroke:currentColor;stroke-width:3}.greek-skill-icon .sculpture-cut{fill:var(--board-frame,#20332c);stroke:var(--board-frame,#20332c);stroke-width:1.5}

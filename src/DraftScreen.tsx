@@ -1,3 +1,4 @@
+import GreekSkillIcon, { hasGreekSkillIcon } from './GreekSkillIcon';
 import { translateUi } from './i18n';
 import SkillDemo from './SkillDemo';
 import { civilizationReadiness, readinessLabels, chooseAiDraftPick } from './civilizationReadiness';
@@ -27,6 +28,7 @@ const civilizationCopy: Partial<Record<string, { headline: string; detail: strin
 };
 
 function SkillSymbol({ skill }: { skill: Skill }) {
+  if (hasGreekSkillIcon(skill.id)) return <GreekSkillIcon skill={skill.id}/>;
   const Icon = icons[skill.symbol] ?? Sparkles;
   return skill.symbol === 'horse' ? <span className="draft-horse" aria-hidden="true">♞</span> : <Icon size={54} strokeWidth={1.15} aria-hidden="true" />;
 }
