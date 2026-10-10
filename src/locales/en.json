@@ -448,7 +448,6 @@
   "임시 규칙: 행은 좌우, 열은 상하 중 방향을 고릅니다. 진행 방향 앞쪽 기물부터 밀며 막힌 칸·보드 밖은 그대로입니다. 끝줄에 밀린 폰은 퀸으로 승격합니다.": "Experimental rules: Choose left/right for a rank or up/down for a file. Push frontmost pieces first. Blocked pieces and board edges stop movement. Pawns pushed to the last rank promote to queens.",
   "임시 규칙: 모든 나이트가 목마입니다. 상하좌우의 아군 폰 하나 탑승 또는 실은 폰 하나 하차가 각각 한 행동입니다. 목마가 사망하면 탑승 폰도 사망합니다.": "Experimental rules: All knights are horses. Loading an orthogonally adjacent allied pawn or unloading one pawn each consumes an action. Carried pawns die with the horse.",
   "임시 규칙: 현재 사망한 아군 4개 이상이면 게임당 한 번 발동합니다. 상대의 두 차례 동안 이집트 쪽 절반을 가리고 룩·비숍·퀸을 최대 3칸으로 제한합니다. 로컬 시야 연출이며 숨은 정보 보안 기능은 아닙니다.": "Experimental rules: Triggers once per match with at least 4 currently dead allies. For two enemy turns, obscures Egypt's half and limits rooks, bishops, and queens to 3 squares. This is a local visual effect, not secure hidden-information enforcement.",
-  "임시 규칙: 게임 시작 전 선택한 칸에 피라미드 영역을 둡니다. 중앙과 주변 8칸의 아군이 상태이상 면역(기절·감전·밀침)을 얻습니다. 피라미드는 기물이 아니며 파괴되지 않습니다.": "Experimental rules: Place a pyramid before play. Allies on its square and 8 neighbors gain status immunity (stun, shock, push). The pyramid is terrain and cannot be destroyed.",
   "임시 규칙: 사망한 아군 하나를 아군 쪽 절반의 빈 칸에 부활시킵니다. 봉인·수송·결투 중인 기물은 제외합니다. 폰은 1·8행에 놓을 수 없고 목숨 1개로 부활합니다.": "Experimental rules: Revive one dead ally on an empty square on your half. Sealed, transported, and dueling pieces are excluded. Pawns cannot revive on ranks 1 or 8 and return with 1 life.",
   "임시 규칙: 빈 중심 칸과 주변 8칸에 사막을 만듭니다. 해당 칸을 출발하거나 도착하는 적의 이동은 최대 1칸입니다. 나이트와 발리스타 사격은 예외입니다.": "Experimental rules: Create desert on an empty center and its 8 neighbors. Enemy moves starting or ending there are limited to 1 square. Knights and ballista shots are exempt.",
   "임시 규칙: 함정은 양쪽에 표시됩니다. 적이 이동·밀침·배치로 들어오면 목숨과 관계없이 사망하고 함정이 사라집니다. 일반 킹은 함정을 발동시키지 않습니다.": "Experimental rules: Traps are visible to both sides. An enemy moving, being pushed, or deploying onto a trap dies regardless of lives; the trap disappears. Ordinary kings do not trigger traps.",
@@ -801,13 +800,14 @@
   "로마는 퀸 승격 가능": "Rome may promote to queens",
   "현재 세 가지 법을 선택할 수 있습니다. 나머지 9개 법은 준비 중입니다.": "Three laws are available. The remaining nine are in development.",
   "선택한 법": "Selected law",
-  "강의 흐름": "River Flow",
   "나일강의 유연한 진형": "Flexible formations of the Nile",
   "자기 진영 절반에서 폰이 좌우 빈칸으로 한 칸 이동할 수 있습니다.": "Pawns on your half of the board may move one square sideways into an empty square.",
   "옆 이동은 한 행동을 사용하며 포획할 수 없습니다. 기존 전진과 대각선 포획은 유지됩니다.": "Sideways movement uses one action and cannot capture. Normal forward movement and diagonal captures remain available.",
-  "임시 규칙: 자기 진영 절반(백 1~4행, 흑 5~8행)에서 폰이 좌우 빈칸으로 한 칸 이동할 수 있습니다. 일반 이동처럼 한 행동을 사용하며 옆으로 포획할 수 없습니다. 기존 전진·대각선 포획은 유지하고 주기적 추가 전진은 제거합니다.": "Experimental rules: Pawns on your half (White ranks 1–4, Black 5–8) may move one square sideways to an empty square. This uses one normal action and cannot capture. Normal advances and diagonal captures remain; periodic bonus advances are removed.",
-  "임시 규칙: 시작 준비에서 법 하나를 선택합니다. 군율법은 상대 기물 스킬 쿨타임 +1턴, 진군법은 상대 폰의 기본 첫 2칸 전진 금지, 징집법은 상대 퀸 승격 금지입니다. 12표법 진영은 제한에서 면제됩니다. 강의 흐름의 옆 이동은 유지하며, 징집법 아래 자동 승격은 룩입니다. 나머지 9개 법은 준비 중입니다.": "Experimental rules: Choose one law during setup. Military Code adds 1 turn to enemy piece-skill cooldowns; March Law blocks the normal initial two-square pawn advance; Conscription Law bans enemy queen promotion. Twelve Tables holders are exempt. River Flow sideways movement remains; automatic promotions under Conscription Law become rooks. Nine laws are in development.",
   "앞이 막힌 폰도 강의 흐름을 따라 옆으로 움직일 수 있습니다.": "A blocked pawn can follow the river sideways.",
   "폰이 좌우 빈칸으로 한 칸 이동하며 차례를 사용합니다.": "The pawn moves one square sideways into an empty square, using its turn.",
-  "옆으로 이동한 폰은 다음 턴에 평소처럼 전진할 수 있습니다.": "On its next turn, the pawn can advance normally from its new file."
+  "옆으로 이동한 폰은 다음 턴에 평소처럼 전진할 수 있습니다.": "On its next turn, the pawn can advance normally from its new file.",
+  "자기 진영 절반(백 1~4행, 흑 5~8행)에서 폰이 좌우 빈칸으로 한 칸 이동할 수 있습니다. 일반 이동처럼 한 행동을 사용하며 옆으로 포획할 수 없습니다. 기존 전진·대각선 포획은 유지하고 주기적 추가 전진은 제거합니다.": "Pawns on your half (White ranks 1–4, Black 5–8) may move one square sideways to an empty square. This uses one normal action and cannot capture. Normal advances and diagonal captures remain; periodic bonus advances are removed.",
+  "게임 시작 전 선택한 칸에 피라미드 영역을 둡니다. 중앙과 주변 8칸의 아군이 상태이상 면역(기절·감전·밀침)을 얻습니다. 피라미드는 기물이 아니며 파괴되지 않습니다.": "Place a pyramid before play. Allies on its square and 8 neighbors gain status immunity (stun, shock, push). The pyramid is terrain and cannot be destroyed.",
+  "나일강의 범람": "Nile Flood",
+  "임시 규칙: 시작 준비에서 법 하나를 선택합니다. 군율법은 상대 기물 스킬 쿨타임 +1턴, 진군법은 상대 폰의 기본 첫 2칸 전진 금지, 징집법은 상대 퀸 승격 금지입니다. 12표법 진영은 제한에서 면제됩니다. 나일강의 범람의 옆 이동은 유지하며, 징집법 아래 자동 승격은 룩입니다. 나머지 9개 법은 준비 중입니다.": "Experimental rules: Choose one law during setup. Military Code adds 1 turn to enemy piece-skill cooldowns; March Law blocks the normal initial two-square pawn advance; Conscription Law bans enemy queen promotion. Twelve Tables holders are exempt. Nile Flood sideways movement remains; automatic promotions under Conscription Law become rooks. Nine laws are in development."
 }

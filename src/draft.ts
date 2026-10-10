@@ -33,7 +33,7 @@ export const skills: Record<Civilization, Record<Category, Skill[]>> = {
   },
   egypt: {
     passive: [
-      { id: 'nile', name: '강의 흐름', subtitle: '나일강의 유연한 진형', description: '자기 진영 절반에서 폰이 좌우 빈칸으로 한 칸 이동할 수 있습니다.', detail: '옆 이동은 한 행동을 사용하며 포획할 수 없습니다. 기존 전진과 대각선 포획은 유지됩니다.', symbol: 'waves' },
+      { id: 'nile', name: '나일강의 범람', subtitle: '나일강의 유연한 진형', description: '자기 진영 절반에서 폰이 좌우 빈칸으로 한 칸 이동할 수 있습니다.', detail: '옆 이동은 한 행동을 사용하며 포획할 수 없습니다. 기존 전진과 대각선 포획은 유지됩니다.', symbol: 'waves' },
       { id: 'sandstorm', name: '모래폭풍', subtitle: '모래에 가려진 전장', description: '아군 기물이 일정 수 이상 잡히면 상대의 시야와 이동을 제한합니다.', detail: '2턴 동안 상대는 아군 진영 절반의 시야가 제한되며 룩·비숍·퀸은 최대 3칸만 이동합니다. 발동 기준 수는 기획 중입니다.', symbol: 'wind' },
       { id: 'pyramid', name: '피라미드의 축복', subtitle: '불멸의 수호 영역', description: '시작 전 위치를 고른 피라미드와 주변 8칸의 아군이 상태이상 면역을 얻습니다.', detail: '상태이상 면역: 기절·감전·밀침을 막고 감전 전이를 차단합니다. 영역을 벗어나면 면역이 사라집니다.', symbol: 'pyramid' },
     ],
