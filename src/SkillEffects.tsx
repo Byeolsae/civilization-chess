@@ -12,7 +12,7 @@ import './skillEffects.css';
 type PlayingEffect = SkillEffect & { id: number };
 const CHARM_HIT_MS = 720;
 const POSEIDON_WAVE_MS = 900;
-const POSEIDON_RETURN_MS = 900;
+const POSEIDON_RETURN_MS = 380;
 const colors: Record<string, string> = { zeus: '#c5eeff', poseidon: '#75d8ff', hades: '#be98ff', osiris: '#fbe3a0', set: '#e7bf7a', anubis: '#eac27b', judgment: '#f3c367', alesia: '#eeb98e', vesta: '#ffbc75', pilum: '#ffce9c', ballista: '#ffe1ac', minotaur: '#f3c98c', cleopatra: '#ffadd8', trojan: '#bcdfac', deploy: '#bcdfac', gladiator: '#efb2a3', shield: '#b7e8fc', revive: '#f5dfa7', sphinx: '#ceb9ff' };
 const labels: Record<string, string> = { judgment: '심장의 심판', shield: '방어 발동', revive: '미라 부활', sphinx: '수수께끼 방어' };
 export default function SkillEffects({ game, flipped, players }: { game: Chess; flipped: boolean; players: Players }) {
@@ -72,15 +72,16 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
       cell.classList.add('minotaur-airborne'); cells.push(cell);
       const height = Math.min(24,cell.getBoundingClientRect().height*.32);
       const jump = piece.animate([
-        {transform:'translateY(0) scale(1)',offset:0},
-        {transform:'translateY(2px) scale(1.05,.92)',offset:.14},
-        {transform:`translateY(${-height}px) scale(.98,1.03)`,offset:.46},
-        {transform:'translateY(0) scale(1.08,.9)',offset:.84},
+        {transform:'translateY(0) scale(1)',offset:0,easing:'ease-in'},
+        {transform:'translateY(2px) scale(1.04,.94)',offset:.1,easing:'cubic-bezier(.15,.65,.3,1)'},
+        {transform:`translateY(${-height}px) scale(.98,1.02)`,offset:.65,easing:'linear'},
+        {transform:`translateY(${-height}px) scale(1)`,offset:.72,easing:'cubic-bezier(.65,0,1,.45)'},
+        {transform:'translateY(1px) scale(1.07,.91)',offset:.9,easing:'ease-out'},
         {transform:'translateY(0) scale(1)',offset:1},
-      ],{duration:760,easing:'ease-in-out'});
+      ],{duration:920,easing:'linear'});
       motions.push(jump);
       const dizzy = cell.querySelector('.status-dizzy');
-      if (dizzy) motions.push(dizzy.animate([{opacity:0},{opacity:0}],{duration:640}));
+      if (dizzy) motions.push(dizzy.animate([{opacity:0},{opacity:0}],{duration:828}));
       jump.onfinish=()=>cell.classList.remove('minotaur-airborne');
     }
     return ()=>{motions.forEach(m=>m.cancel());cells.forEach(c=>c.classList.remove('minotaur-airborne'));};
