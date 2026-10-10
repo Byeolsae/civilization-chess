@@ -49,3 +49,5 @@
 .theme-qing{--draft-accent:#f5cf45;--draft-rgb:245,207,69}
 
 .card-symbol .greek-skill-icon{width:76px;height:76px;overflow:visible;filter:drop-shadow(0 2px 2px #0003)}.greek-skill-icon .icon-line{fill:none;stroke:currentColor;stroke-width:3}.greek-skill-icon .sculpture-cut{fill:var(--board-frame,#20332c);stroke:var(--board-frame,#20332c);stroke-width:1.5}
+
+.skill-card .card-symbol:has(.greek-god-portrait),.card-symbol:has(.greek-god-portrait){width:100%;height:190px;margin:14px auto 18px;border:0;background:none;box-shadow:none}.card-symbol .greek-god-portrait{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 6px 10px #0005)}@media(max-width:600px){.card-symbol:has(.greek-god-portrait){height:160px}}
