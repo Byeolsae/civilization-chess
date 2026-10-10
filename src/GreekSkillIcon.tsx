@@ -39,6 +39,12 @@ const artwork: Record<string, ReactNode> = {
   </>,
 };
 export default function GreekSkillIcon({skill}:{skill:string}) {
+  const active: Record<string,ReactNode> = {
+    zeus: <path d="M14 3L5 13H11L10 21 19 10H13Z"/>,
+    poseidon: <><path d="M12 3V21 M9 6L12 3 15 6 M5 5V10Q5 14 12 14Q19 14 19 10V5 M3 7L5 5 7 7 M17 7L19 5 21 7 M9 21H15"/></>,
+    hades: <><path d="M6 10V8a6 6 0 0 1 12 0v2l-3 2v3H9v-3Z"/><circle cx="9.5" cy="8" r=".6" fill="currentColor"/><circle cx="14.5" cy="8" r=".6" fill="currentColor"/><path d="M11 12h2 M7 16l-2-1a2 2 0 0 0-2 3l4 3a2 2 0 0 0 3-2 M17 16l2-1a2 2 0 0 1 2 3l-4 3a2 2 0 0 1-3-2 M8 18l3 2h2l3-2"/></>,
+  };
+  if (active[skill]) return <svg className="greek-active-symbol" width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{active[skill]}</svg>;
   return <svg className="greek-skill-icon" viewBox="0 0 100 100" aria-hidden="true" fill="currentColor" strokeLinejoin="round" strokeLinecap="round">{artwork[skill]}</svg>;
 }
 export const hasGreekSkillIcon = (skill:string) => Object.hasOwn(artwork,skill);
