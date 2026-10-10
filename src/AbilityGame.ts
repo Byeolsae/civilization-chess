@@ -386,11 +386,13 @@ export class AbilityGame extends Chess {
           add(to, true);
       }
       if (!attacks) {
-        const flood =
-          this.has(p.owner, "nile") &&
-          this.state.turns[p.owner] % 4 === 0 &&
-          (p.owner === "w" ? y <= 3 : y >= 4);
-        const max = (y === (p.owner === "w" ? 1 : 6) && !this.lawApplies(p.owner, "march-law") ? 2 : 1) + (flood ? 1 : 0);
+        if (this.has(p.owner, "nile") && (p.owner === "w" ? y <= 3 : y >= 4)) {
+          for (const dx of [-1, 1]) {
+            const to = at(x + dx, y);
+            if (to && !this.unit(to)) add(to);
+          }
+        }
+        const max = y === (p.owner === "w" ? 1 : 6) && !this.lawApplies(p.owner, "march-law") ? 2 : 1;
         for (let d = 1; d <= max; d++) {
           const to = at(x, y + dy * d);
           if (!to || this.unit(to) || this.zoneBlocks(p, from, to)) break;

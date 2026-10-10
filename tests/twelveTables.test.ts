@@ -59,10 +59,12 @@ test('different Roman laws still grant each holder an exemption',()=>{
  assert.ok(g.actions().some(a=>a.promotion==='q'));
  g.move({from:'b7',to:'b8',promotion:'q'});assert.equal(g.unit('b8')!.type,'q');
 });
-test('March Law retains the separate Nile bonus',()=>{
+test('March Law blocks initial double steps but retains River Flow',()=>{
  const g=new AbilityGame({w:{...none,passive:'nile'},b:{...none,passive:'twelve-tables'}}).beginPlacement();
  g.placePassive('b',{law:'march-law'});g.state.turns.w=4;
- assert.ok(g.actions().some(a=>a.from==='e2'&&a.to==='e4'));
+ assert.equal(g.actions().some(a=>a.from==='e2'&&a.to==='e4'),false);
+ g.move({from:'e2',to:'e3'});g.move({from:'a7',to:'a6'});
+ assert.ok(g.actions().some(a=>a.from==='e3'&&a.to==='f3'));
  assert.equal(g.actions().some(a=>a.from==='e2'&&a.to==='e5'),false);
 });
 

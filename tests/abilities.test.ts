@@ -242,12 +242,10 @@ test("Olympics grants one same-piece action on the third successful capture", ()
   assert.equal(g.turn(), "b");
   assert.equal(g.state.turns.w, 1);
 });
-test("Nile provides a third straight step on every fourth own turn only", () => {
+test("River Flow never grants the old fourth-turn bonus advance", () => {
   const g = create({ passive: "nile" });
   g.state.turns.w = 4;
-  assert.ok(
-    g.moves({ square: "a2", verbose: true }).some((m) => m.to === "a5"),
-  );
+  assert.equal(g.moves({ square: "a2", verbose: true }).some((m) => m.to === "a5"), false);
   g.state.turns.w = 5;
   assert.equal(
     g.moves({ square: "a2", verbose: true }).some((m) => m.to === "a5"),

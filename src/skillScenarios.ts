@@ -53,7 +53,7 @@ export function createSkillScenario(id: string): SkillScenario | null {
     case 'praetorian':pieces={d4:'K',h8:'k',c4:'N',d6:'r'};turn='b';add('킹을 공격하면 근위병과 공격자가 함께 사망합니다.',move('d6','d4'));break;
     case 'democracy':pieces={d4:'K',h8:'k',b2:'P',d6:'r'};turn='b';add('킹이 잡혀도 폰이 살아 있으므로 대전이 계속됩니다.',move('d6','d4'));break;
     case 'olympics':pieces={a1:'K',h8:'k',d3:'R',d6:'p'};intro='영광 두 개를 쌓은 룩으로 시작합니다.';add('세 번째 포획으로 실제 트로피가 채워지고 같은 기물에 추가 행동이 생깁니다.',move('d3','d6'));add('상대 턴 전에 같은 룩으로 한 번 더 움직입니다.',move('d6','e6'));break;
-    case 'nile':pieces={a1:'K',h8:'k',d3:'P'};turn='b';intro='백의 네 번째 턴 직전 상황입니다.';add('백의 네 번째 턴에 범람 이동이 활성화됩니다.',move('h8','g8'));add('폰이 실제 추가 전진 규칙으로 두 칸 이동합니다.',move('d3','d5'));break;
+    case 'nile':pieces={a1:'K',h8:'k',d3:'P',d4:'p'};intro='앞이 막힌 폰도 강의 흐름을 따라 옆으로 움직일 수 있습니다.';add('폰이 좌우 빈칸으로 한 칸 이동하며 차례를 사용합니다.',move('d3','e3'));add('상대가 한 수를 둡니다.',move('h8','g8'));add('옆으로 이동한 폰은 다음 턴에 평소처럼 전진할 수 있습니다.',move('e3','e4'));break;
     case 'sandstorm':pieces={a1:'K',h8:'k',b2:'P',c2:'P',d2:'P',e2:'P',d6:'r'};intro='이집트 기물 네 개가 사망한 상황입니다. 상대 시점으로 보여줍니다.';add('턴이 넘어가며 실제 모래폭풍과 시야 제한이 발동합니다.',move('a1','b1'));break;
     case 'pyramid':loadouts.b.active='zeus';add('시작 배치로 중심 칸과 주변에 실제 축복 영역을 만듭니다.',g => g.placePassive('w',{square:'d4',axis:'row'}));add('배치를 마치고 백이 한 수를 둡니다.',move('a1','b1'));add('영역 안의 아군은 상태이상 면역을 얻습니다. 이 장면에서는 상대의 감전을 막습니다.',cast('zeus','d4'));break;
     case 'roads':pieces={a1:'K',h8:'k',c2:'R',c3:'P'};add('시작 전에 두 행을 도로로 지정합니다.',g=>g.placePassive('w',{square:'a4',axis:'row'}));add('룩이 아군 폰을 뛰어넘어 실제 도로 위에 착지합니다.',move('c2','c4'));break;
@@ -69,7 +69,6 @@ export function createSkillScenario(id: string): SkillScenario | null {
   }
   if (id === 'philosophy') game.unit('f3')!.cooldownUntil=4;
   if (id === 'olympics') game.unit('d3')!.glory=2;
-  if (id === 'nile') game.state.turns.w=3;
   if (id === 'pyramid' || id === 'roads' || id === 'twelve-tables') game.beginPlacement();
   return {game,steps,intro};
 }
