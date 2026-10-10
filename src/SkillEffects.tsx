@@ -115,10 +115,14 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
     if (!effects.length) return;
     setPlaying(current => [...current, ...effects].slice(-8));
     setAnnouncement(effects.map(e => `${abilityNames[e.skill] ?? labels[e.skill] ?? '스킬'} 발동`).join(' · '));
-    const timer = setTimeout(() => { setPlaying(current => current.filter(e => !effects.some(next => next.id === e.id))); timers.current.delete(timer); }, effects.some(e => e.skill === 'judgment') ? 3600 : effects.some(e => ['osiris', 'revive', 'judgment', 'anubis'].includes(e.skill)) ? 2600 : effects.some(e => e.skill === 'cleopatra') ? 1900 : effects.some(e => e.skill === 'poseidon') ? POSEIDON_EFFECT_MS : 1250);
+    const timer = setTimeout(() => { setPlaying(current => current.filter(e => !effects.some(next => next.id === e.id))); timers.current.delete(timer); }, effects.some(e => e.skill === 'judgment') ? 3600 : effects.some(e => ['osiris', 'revive', 'judgment', 'anubis', 'hades'].includes(e.skill)) ? 2600 : effects.some(e => e.skill === 'cleopatra') ? 1900 : effects.some(e => e.skill === 'poseidon') ? POSEIDON_EFFECT_MS : 1250);
     timers.current.add(timer);
   }, [game, count, flipped]);
   useLayoutEffect(() => () => { timers.current.forEach(clearTimeout); timers.current.clear(); }, []);
+  const sprite = (p: NonNullable<SkillEffect['victim']>) => {
+    const special = specialPieceVariant(p.type,game instanceof AbilityGame ? game.loadouts[p.owner].piece : undefined,p.lives,p.revived);
+    return special ? `/pieces/special/${p.owner}-${special}.svg` : `/pieces/${civilizationAppearance[players[p.owner]]}/${p.owner}${p.type.toUpperCase()}.svg`;
+  };
   return <>{playing.filter(effect => effect.skill === 'minotaur').flatMap(effect => effect.squares.map(square => {
     const cell = layer.current?.closest('.board')?.querySelector(`[data-square="${square}"]`);
     if (!cell) return null;
@@ -127,7 +131,7 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
   }))}<div ref={layer} className="skill-effects" aria-live="polite" aria-atomic="true">
     <span className="sr-only">{translateUi(announcement)}</span>
     <svg viewBox="0 0 800 800" aria-hidden="true" className="skill-fx-svg">
-      {translateUi(playing.filter(effect => effect.skill !== 'minotaur').map(effect => <Effect key={effect.id} effect={effect} flipped={flipped} ghostSrc={effect.victim ? (() => { const p=effect.victim; const special=specialPieceVariant(p.type,game instanceof AbilityGame ? game.loadouts[p.owner].piece : undefined,p.lives,p.revived); return special ? `/pieces/special/${p.owner}-${special}.svg` : `/pieces/${civilizationAppearance[players[p.owner]]}/${p.owner}${p.type.toUpperCase()}.svg`; })() : undefined} />))}
+      {translateUi(playing.filter(effect => effect.skill !== 'minotaur').map(effect => <Effect key={effect.id} effect={effect} flipped={flipped} soulSrcs={effect.souls?.map(sprite)} ghostSrc={effect.victim ? (() => { const p=effect.victim; const special=specialPieceVariant(p.type,game instanceof AbilityGame ? game.loadouts[p.owner].piece : undefined,p.lives,p.revived); return special ? `/pieces/special/${p.owner}-${special}.svg` : `/pieces/${civilizationAppearance[players[p.owner]]}/${p.owner}${p.type.toUpperCase()}.svg`; })() : undefined} />))}
     </svg>
     {translateUi(playing.length > 0 && <div key={playing.at(-1)!.id} className="skill-fx-title" aria-hidden="true">{translateUi(abilityNames[playing.at(-1)!.skill] ?? labels[playing.at(-1)!.skill] ?? '스킬 발동')}</div>)}
   </div></>;
@@ -136,9 +140,10 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
 function screenDirection(direction: number | undefined, flipped: boolean) {
   return (direction ?? 0) ^ (flipped ? 1 : 0);
 }
-function Effect({ effect: e, flipped, ghostSrc }: { effect: SkillEffect; flipped: boolean; ghostSrc?: string }) {
+function Effect({ effect: e, flipped, ghostSrc, soulSrcs }: { effect: SkillEffect; flipped: boolean; ghostSrc?: string; soulSrcs?: string[] }) {
   const from = boardPoint(e.from, flipped), to = boardPoint(e.to, flipped);
   const color = colors[e.skill] ?? '#f6d58d';
+  if (e.skill === 'hades') return <HadesPortal souls={soulSrcs ?? []}/>;
   if (e.skill === 'osiris' || e.skill === 'revive') return <ResurrectionBurst x={to.x} y={to.y}/>;
   if (e.skill === 'anubis' || e.skill === 'judgment') return <g>{e.squares.map(square => { const point = boardPoint(square, flipped); return <g key={square}>{e.skill === 'judgment'&&<JudgmentDeath x={point.x} y={point.y} src={ghostSrc}/>}<JudgmentScales x={point.x} y={point.y} sentence={e.skill === 'judgment'}/></g>; })}</g>;
   if (e.skill === 'cleopatra') return <CharmFlight from={from} to={to} originalSrc={ghostSrc}/>;
@@ -225,6 +230,23 @@ function CharmFlight({from,to,originalSrc}:{from:{x:number;y:number};to:{x:numbe
       {originalSrc&&<image className="charm-original" href={originalSrc} x="-43" y="-43" width="86" height="86"/>}
       <path className="charm-bloom" d={heart}/>
       {Array.from({length:9},(_,i)=><g key={i} className="charm-petal" style={{'--petal-x':`${Math.cos(i*2.4)*55}px`,'--petal-y':`${-40-Math.sin(i*2.4)*30}px`,animationDelay:`${CHARM_HIT_MS+i*40}ms`} as CSSProperties}><path d={heart}/></g>)}
+    </g>
+  </g>;
+}
+
+function HadesPortal({souls}:{souls:string[]}) {
+  return <g className="hades-scene">
+    <rect className="hades-dim" width="800" height="800"/>
+    <g transform="translate(400 400)">
+      <g className="hades-gate">
+        <path className="hades-void" d="M-100 115V-65Q-100 -168 0 -168Q100 -168 100 -65V115Z"/>
+        <path className="hades-arch" d="M-113 115V-68Q-113 -180 0 -180Q113 -180 113 -68V115 M-132 115H132 M-88 115V-66Q-88 -150 0 -150Q88 -150 88 -66V115"/>
+        <path className="hades-runes" d="M-112 -55H-88 M-112 -17H-88 M-112 22H-88 M-112 62H-88 M88 -55H112 M88 -17H112 M88 22H112 M88 62H112 M-44 -161L-38 -141 M44 -161L38 -141 M0 -180V-151"/>
+        <path className="hades-crown" d="M-30 -180L-45 -206 -12 -197 0 -223 12 -197 45 -206 30 -180Z"/>
+      </g>
+      {souls.map((src,i)=><g key={i} className="hades-soul" style={{'--soul-x':`${(i-1)*155}px`,'--soul-y':`${i===1?95:25}px`,animationDelay:`${260+i*160}ms`} as CSSProperties}><image href={src} x="-40" y="-40" width="80" height="80"/></g>)}
+      {[0,1,2,3,4,5].map(i=><path key={i} className="hades-ember" d="M0 8Q-10 0 0 -15Q10 0 0 8" style={{'--ember-x':`${(i-2.5)*35}px`,animationDelay:`${i*120}ms`} as CSSProperties}/>)}
+      <g className="hades-seal"><circle r="57"/><path d="M-22 -8V-23A22 22 0 0 1 22 -23V-8 M-30 -8H30V33H-30Z M0 4V20"/></g>
     </g>
   </g>;
 }

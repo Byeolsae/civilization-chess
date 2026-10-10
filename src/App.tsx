@@ -158,7 +158,7 @@ export default function App() {
     // Finish the move/skill effect before handing the board to the next player.
     const newAction = previous.game === game && history.length > previous.count;
     const action = newAction && game instanceof AbilityGame ? JSON.parse(game.history().at(-1)!) as AbilityAction : undefined;
-    const delay = newAction ? action?.skill === 'poseidon' ? POSEIDON_EFFECT_MS + 120 : lastMove?.flags.includes('s') ? 1300 : 360 : 0;
+    const delay = newAction ? action?.skill === 'poseidon' ? POSEIDON_EFFECT_MS + 120 : action?.skill === 'hades' ? 2800 : lastMove?.flags.includes('s') ? 1300 : 360 : 0;
     const timer = setTimeout(() => {
       dragRef.current = null; setDragVisual(null); setSelected(null);
       setFlipped((placementOwner ?? turn) === 'b');
@@ -324,13 +324,16 @@ export default function App() {
   }
   function playerBar(color: Color) {
     const civ = getCivilization(players[color]);
-    const captured = game instanceof AbilityGame ? game.graves(opposite(color)).map(piece => piece.type) : history.filter(move => move.color === color && move.captured).map(move => move.captured!);
+    const ordinaryGraves = game instanceof AbilityGame ? game.graves(opposite(color)).filter(p=>!p.sealed) : [];
+    const sealedGraves = game instanceof AbilityGame ? game.graves(opposite(color)).filter(p=>p.sealed) : [];
+    const captured = game instanceof AbilityGame ? ordinaryGraves.map(piece => piece.type) : history.filter(move => move.color === color && move.captured).map(move => move.captured!);
     return <div className={`player-bar ${started && !status.over && (placementOwner ?? game.turn()) === color ? 'current-player' : ''}`}>
       {translateUi(hasCivilizationIcon(players[color]) && <div className={`player-avatar ${color}`}><CivilizationIcon civilization={players[color]} color={color} size={36} /></div>)}
       <div className="player-identity"><strong>{translateUi(civ.name)}{translateUi(settings.mode !== 'local' && <small className="opponent-label">{translateUi(color === settings.humanColor ? '나' : settings.mode === 'online' ? '상대' : 'AI')}</small>)}<span className={`color-chip ${color}`}>{translateUi(colorNames[color])}</span></strong><span>{translateUi(placementOwner ? placementOwner === color ? '시작 지형 배치 중' : '상대 배치를 기다리는 중' : started ? (game.turn() === color && !status.over ? (settings.mode === 'online' && color !== settings.humanColor ? '상대의 차례' : settings.mode === 'ai' && color !== settings.humanColor ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : '당신의 차례') : status.over ? '대전 종료' : '상대의 수를 기다리는 중') : '문명 선택 중')}</span></div>
       <div className="captured" aria-label={translateUi(`${colorNames[color]}이 잡은 기물: ${captured.map(p => pieceNames[p]).join(', ') || '없음'}`)}>
-        {translateUi(captured.map((type, index) => <Piece key={index} type={type} color={opposite(color)} civilization={players[opposite(color)]} revived={game instanceof AbilityGame ? game.graves(opposite(color))[index]?.revived : undefined} lives={game instanceof AbilityGame ? game.graves(opposite(color))[index]?.lives : undefined} skill={game instanceof AbilityGame ? game.loadouts[opposite(color)].piece : undefined} small />))}
+        {translateUi(captured.map((type, index) => <Piece key={index} type={type} color={opposite(color)} civilization={players[opposite(color)]} revived={game instanceof AbilityGame ? ordinaryGraves[index]?.revived : undefined} lives={game instanceof AbilityGame ? ordinaryGraves[index]?.lives : undefined} skill={game instanceof AbilityGame ? game.loadouts[opposite(color)].piece : undefined} small />))}
       </div>
+      {sealedGraves.length>0&&<div className="hades-vault" aria-label={translateUi('하데스의 봉인')}><span className="hades-vault-label">{translateUi('하데스의 봉인')} · {sealedGraves.length}</span><div>{sealedGraves.map(p=><span key={p.id} title={translateUi('부활 봉인')}><Piece type={p.type} color={p.owner} civilization={players[p.owner]} lives={p.lives} revived={p.revived} skill={game instanceof AbilityGame?game.loadouts[p.owner].piece:undefined} small/></span>)}</div></div>}
       {translateUi(started && (placementOwner ?? game.turn()) === color && !status.over && <span className="turn-tag">{translateUi(placementOwner ? '배치' : '차례')}</span>)}
     </div>;
   }

@@ -4,7 +4,7 @@ import type { AbilityState } from './abilityState';
 import { activeArea } from './activeTargeting';
 import { adjacentSquares } from './abilityState';
 
-export type SkillEffect = { skill: string; from: Square; to: Square; squares: Square[]; direction?: number; stunned?: Square[]; victim?: { type: PieceSymbol; owner: Color; lives: number; revived: boolean } };
+export type SkillEffect = { skill: string; from: Square; to: Square; squares: Square[]; direction?: number; stunned?: Square[]; souls?: { type: PieceSymbol; owner: Color; lives: number; revived: boolean }[]; victim?: { type: PieceSymbol; owner: Color; lives: number; revived: boolean } };
 export function boardPoint(square: Square, flipped: boolean) {
   const x = square.charCodeAt(0) - 97, y = 8 - Number(square[1]);
   return { x: ((flipped ? 7 - x : x) + .5) * 100, y: ((flipped ? 7 - y : y) + .5) * 100 };
@@ -18,7 +18,7 @@ export function skillEffects(action: AbilityAction, before: AbilityState, after:
     if (action.skill === 'minotaur') squares = [action.from, ...adjacentSquares(action.from)];
     if (action.skill === 'zeus') squares = [action.to, ...Object.values(after.pieces).filter(p => p.square && p.effects.shock !== before.pieces[p.id]?.effects.shock).map(p => p.square!)];
     const original = action.skill === 'cleopatra' ? Object.values(before.pieces).find(p => p.square === action.to) : undefined;
-    result.push({ skill: action.skill, from: action.from, to: action.to, direction: action.direction, squares: [...new Set(squares)], ...(action.skill === 'minotaur' ? { stunned: Object.values(after.pieces).filter(p => p.square && p.effects.stun !== before.pieces[p.id]?.effects.stun).map(p => p.square!) } : {}), ...(original ? { victim: { type: original.type, owner: original.owner, lives: original.lives, revived: original.revived } } : {}) });
+    result.push({ skill: action.skill, from: action.from, to: action.to, direction: action.direction, squares: [...new Set(squares)], ...(action.skill === 'hades' ? { souls: (action.id ?? '').split(',').flatMap(id => before.pieces[id] ? [{ type: before.pieces[id].type, owner: before.pieces[id].owner, lives: before.pieces[id].lives, revived: before.pieces[id].revived }] : []) } : {}), ...(action.skill === 'minotaur' ? { stunned: Object.values(after.pieces).filter(p => p.square && p.effects.stun !== before.pieces[p.id]?.effects.stun).map(p => p.square!) } : {}), ...(original ? { victim: { type: original.type, owner: original.owner, lives: original.lives, revived: original.revived } } : {}) });
   }
   for (const p of Object.values(after.pieces)) {
     const old = before.pieces[p.id];
