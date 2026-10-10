@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 260" fill="none">
+<defs>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2=".8"><stop stop-color="#ffe9a0"/><stop offset=".32" stop-color="#efbf52"/><stop offset=".65" stop-color="#bd7d25"/><stop offset="1" stop-color="#f7ce69"/></linearGradient>
+ <linearGradient id="face" x1="0" y1="0" x2="1" y2=".2"><stop stop-color="#a96722"/><stop offset=".28" stop-color="#e6ad3e"/><stop offset=".48" stop-color="#ffda72"/><stop offset=".72" stop-color="#d79930"/><stop offset="1" stop-color="#875020"/></linearGradient>
+ <clipPath id="nemes"><path d="M120 22Q70 20 45 56L21 148 40 169 53 224 93 230 96 159H144L147 230 187 224 200 169 219 148 195 56Q170 20 120 22Z"/></clipPath>
+</defs>
+<g stroke-linejoin="round" stroke-linecap="round">
+<path d="M52 171Q23 170 23 215Q27 245 120 249Q213 245 217 215Q217 170 188 171Z" fill="url(#gold)" stroke="#342b21" stroke-width="4"/>
+<path d="M38 196Q36 235 120 236Q204 235 202 196 M47 192Q48 222 120 225Q192 222 193 192" stroke="#634521" stroke-width="3"/>
+<path d="M120 22Q70 20 45 56L21 148 40 169 53 224 93 230 96 159H144L147 230 187 224 200 169 219 148 195 56Q170 20 120 22Z" fill="url(#gold)" stroke="#251f19" stroke-width="4"/>
+<g clip-path="url(#nemes)" stroke="#152127" stroke-width="8"><path d="M32 82 Q120 94 208 82"/><path d="M32 95 Q120 107 208 95"/><path d="M32 108 Q120 120 208 108"/><path d="M32 121 Q120 133 208 121"/><path d="M32 134 Q120 146 208 134"/><path d="M32 147 Q120 159 208 147"/><path d="M32 160 Q120 172 208 160"/><path d="M32 173 Q120 185 208 173"/><path d="M32 186 Q120 198 208 186"/><path d="M32 199 Q120 211 208 199"/><path d="M32 212 Q120 224 208 212"/><path d="M32 225 Q120 237 208 225"/><path d="M52 32L83 79 M75 23L96 72 M96 18L108 69 M188 32L157 79 M165 23L144 72 M144 18L132 69"/></g>
+<path d="M68 75Q120 58 172 75" stroke="#ffe19a" stroke-width="3"/>
+<path d="M78 91Q61 79 67 113Q71 132 83 131 M162 91Q179 79 173 113Q169 132 157 131" fill="url(#gold)" stroke="#745027" stroke-width="3"/>
+<path d="M81 78Q120 65 159 78L156 121Q152 155 134 166Q120 174 106 166Q88 155 84 121Z" fill="url(#face)" stroke="#70451f" stroke-width="2"/>
+<path d="M89 91Q102 80 113 88 M127 88Q138 80 151 91" stroke="#815020" stroke-width="5"/>
+<path d="M89 90Q102 82 113 88 M127 88Q138 82 151 90" stroke="#fbdc81" stroke-width="2"/>
+<path d="M88 102Q100 91 112 101Q101 113 88 102Z M128 101Q140 91 152 102Q139 113 128 101Z" fill="#eac776" stroke="#4c3925" stroke-width="2"/>
+<ellipse cx="101" cy="102" rx="4.5" ry="6" fill="#9c6728" stroke="#583e24"/><ellipse cx="139" cy="102" rx="4.5" ry="6" fill="#9c6728" stroke="#583e24"/>
+<path d="M88 102L82 108 M152 102L158 108 M88 112Q101 119 113 110 M127 110Q139 119 152 112" stroke="#ae742d" stroke-width="1.5"/>
+<path d="M119 95L113 125Q120 131 127 125L123 95" fill="#e7b853"/>
+<path d="M116 98L111 124Q111 130 116 128 M124 98L129 124Q129 130 124 128 M117 129Q120 131 123 129" stroke="#966027" stroke-width="2"/>
+<path d="M102 143Q111 138 116 140L120 137 124 140Q129 138 138 143Q130 153 120 152Q110 153 102 143Z" fill="#c78c31" stroke="#8b5724" stroke-width="1.5"/>
+<path d="M104 143Q120 146 136 143 M112 149Q120 151 128 149" stroke="#ffe193" stroke-width="1.5"/>
+<path d="M98 126Q99 137 107 139 M142 126Q141 137 133 139" stroke="#f6cf65" stroke-width="3"/>
+<path d="M110 171H130L128 223Q120 228 112 223Z" fill="url(#gold)" stroke="#644321" stroke-width="3"/>
+<g stroke="#6f4c25" stroke-width="1.5"><path d="M111 176L120 180 129 176"/><path d="M111 183L120 187 129 183"/><path d="M111 190L120 194 129 190"/><path d="M111 197L120 201 129 197"/><path d="M111 204L120 208 129 204"/><path d="M111 211L120 215 129 211"/><path d="M111 218L120 222 129 218"/></g>
+<path d="M116 65Q99 48 109 31Q112 26 111 17L119 21 127 17Q126 26 130 32Q140 48 124 65Z" fill="url(#gold)" stroke="#61411f" stroke-width="2"/>
+<path d="M117 31Q111 42 118 59L121 66 124 59Q130 42 123 31Z" fill="#be842e" stroke="#765021"/>
+<path d="M114 24H125L122 32H117Z" fill="#243238"/><path d="M119 37V54" stroke="#ffe69b" stroke-width="3"/>
+</g></svg>
