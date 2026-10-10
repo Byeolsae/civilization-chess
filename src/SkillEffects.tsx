@@ -1,3 +1,4 @@
+import { POSEIDON_WAVE_MS, POSEIDON_RETURN_MS, POSEIDON_EFFECT_MS } from './skillTiming';
 import { createPortal } from 'react-dom';
 import { civilizationAppearance } from './civilizations';
 import type { Players } from './game';
@@ -13,8 +14,6 @@ type PlayingEffect = SkillEffect & { id: number };
 const CHARM_HIT_MS = 720;
 const MINOTAUR_JUMP_MS = 920;
 const MINOTAUR_DIZZY_DELAY_MS = MINOTAUR_JUMP_MS + 100;
-const POSEIDON_WAVE_MS = 900;
-const POSEIDON_RETURN_MS = 380;
 const colors: Record<string, string> = { zeus: '#c5eeff', poseidon: '#75d8ff', hades: '#be98ff', osiris: '#fbe3a0', set: '#e7bf7a', anubis: '#eac27b', judgment: '#f3c367', alesia: '#eeb98e', vesta: '#ffbc75', pilum: '#ffce9c', ballista: '#ffe1ac', minotaur: '#f3c98c', cleopatra: '#ffadd8', trojan: '#bcdfac', deploy: '#bcdfac', gladiator: '#efb2a3', shield: '#b7e8fc', revive: '#f5dfa7', sphinx: '#ceb9ff' };
 const labels: Record<string, string> = { judgment: '심장의 심판', shield: '방어 발동', revive: '미라 부활', sphinx: '수수께끼 방어' };
 export default function SkillEffects({ game, flipped, players }: { game: Chess; flipped: boolean; players: Players }) {
@@ -25,9 +24,11 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
   const [playing, setPlaying] = useState<PlayingEffect[]>([]);
   const [announcement, setAnnouncement] = useState('');
   const layer = useRef<HTMLDivElement>(null);
+  const playedImpact = useRef(0);
   const impact = [...playing].reverse().find(e => ['minotaur', 'zeus', 'poseidon'].includes(e.skill));
   useLayoutEffect(() => {
-    if (!impact || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!impact || impact.id <= playedImpact.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    playedImpact.current = impact.id;
     const board = layer.current?.closest('.board-section');
     if (!board) return;
     if (impact.skill === 'poseidon') {
@@ -39,9 +40,10 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
       const wave = layer.current?.querySelector('.fx-wave');
       const dx = direction === 0 ? 800 : direction === 1 ? -800 : 0;
       const dy = direction === 2 ? -800 : direction === 3 ? 800 : 0;
-      // Both tracks share one start time, travel duration, and easing.
+      // The board takes the initial push with the white crest, then holds until the wave exits.
       const motion = board.animate([
         { transform: 'translate(0,0)', offset: 0, easing: 'ease-out' },
+        { transform: `translate(${x}px,${y}px)`, offset: POSEIDON_WAVE_MS * .65 / duration, easing: 'linear' },
         { transform: `translate(${x}px,${y}px)`, offset: POSEIDON_WAVE_MS / duration, easing: 'ease-in-out' },
         { transform: 'translate(0,0)', offset: 1 },
       ], { duration, easing: 'linear' });
@@ -113,7 +115,7 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
     if (!effects.length) return;
     setPlaying(current => [...current, ...effects].slice(-8));
     setAnnouncement(effects.map(e => `${abilityNames[e.skill] ?? labels[e.skill] ?? '스킬'} 발동`).join(' · '));
-    const timer = setTimeout(() => { setPlaying(current => current.filter(e => !effects.some(next => next.id === e.id))); timers.current.delete(timer); }, effects.some(e => e.skill === 'judgment') ? 3600 : effects.some(e => ['osiris', 'revive', 'judgment', 'anubis'].includes(e.skill)) ? 2600 : effects.some(e => e.skill === 'cleopatra') ? 1900 : effects.some(e => e.skill === 'poseidon') ? POSEIDON_WAVE_MS + POSEIDON_RETURN_MS + 100 : 1250);
+    const timer = setTimeout(() => { setPlaying(current => current.filter(e => !effects.some(next => next.id === e.id))); timers.current.delete(timer); }, effects.some(e => e.skill === 'judgment') ? 3600 : effects.some(e => ['osiris', 'revive', 'judgment', 'anubis'].includes(e.skill)) ? 2600 : effects.some(e => e.skill === 'cleopatra') ? 1900 : effects.some(e => e.skill === 'poseidon') ? POSEIDON_EFFECT_MS : 1250);
     timers.current.add(timer);
   }, [game, count, flipped]);
   useLayoutEffect(() => () => { timers.current.forEach(clearTimeout); timers.current.clear(); }, []);

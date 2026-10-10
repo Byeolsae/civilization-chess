@@ -1,3 +1,4 @@
+import { POSEIDON_EFFECT_MS } from './skillTiming';
 import { translateUi, useLocale } from './i18n';
 import LanguageSwitch from './LanguageSwitch';
 import MatchHistory from './MatchHistory';
@@ -156,13 +157,14 @@ export default function App() {
     if (!started || settings.mode !== 'local' || status.over) return;
     // Finish the move/skill effect before handing the board to the next player.
     const newAction = previous.game === game && history.length > previous.count;
-    const delay = newAction ? lastMove?.flags.includes('s') ? 1300 : 360 : 0;
+    const action = newAction && game instanceof AbilityGame ? JSON.parse(game.history().at(-1)!) as AbilityAction : undefined;
+    const delay = newAction ? action?.skill === 'poseidon' ? POSEIDON_EFFECT_MS + 120 : lastMove?.flags.includes('s') ? 1300 : 360 : 0;
     const timer = setTimeout(() => {
       dragRef.current = null; setDragVisual(null); setSelected(null);
       setFlipped((placementOwner ?? turn) === 'b');
     }, delay);
     return () => clearTimeout(timer);
-  }, [game, turn, started, settings.mode, status.over, placementOwner]);
+  }, [game, turn, history.length, started, settings.mode, status.over, placementOwner]);
   const ranks = flipped ? [1, 2, 3, 4, 5, 6, 7, 8] : [8, 7, 6, 5, 4, 3, 2, 1];
   const files = (flipped ? 'hgfedcba' : 'abcdefgh').split('');
   const topColor: Color = flipped ? 'w' : 'b';
