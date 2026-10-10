@@ -8,8 +8,8 @@ test('piece skill targets belong only to the selected piece and exclude actives'
   const g = game('trojan');
   assert.equal(pieceSkillInfo(g, 'a1'), null);
   const info = pieceSkillInfo(g, 'b1')!;
-  assert.deepEqual(info.actions.map(a => a.to), ['b2']);
-  g.perform(info.actions[0]);
+  assert.deepEqual(info.actions.map(a => a.to).sort(), ['a2','b2','c2']);
+  g.perform(info.actions.find(a=>a.to==='b2')!);
   g.move({ from: 'a7', to: 'a6' });
   const loaded = pieceSkillInfo(g, 'b1')!;
   assert.deepEqual(loaded.cargo, ['w-b2']);
@@ -48,4 +48,21 @@ test('finalized Minotaur stuns both sides for three own turns and recharges afte
     assert.equal(info.actions.some(a => a.skill === 'minotaur'), round === 5);
     if (round < 5) g.move({ from: round % 2 ? 'a1' : 'a2', to: round % 2 ? 'a2' : 'a1' });
   }
+});
+
+test('Trojan horse embarks and deploys diagonally, consuming an action each',()=>{
+ const g=game('trojan','7k/8/8/8/3N4/2P5/8/K7 w - - 0 1');
+ g.perform(g.actions().find(a=>a.skill==='trojan'&&a.to==='c3')!);
+ assert.equal(g.unit('c3'),undefined);assert.equal(g.unit('d4')!.cargo.length,1);assert.equal(g.turn(),'b');
+ g.move({from:'h8',to:'g8'});
+ const drops=g.actions().filter(a=>a.skill==='deploy');assert.equal(new Set(drops.map(a=>a.to)).size,8);
+ g.perform(drops.find(a=>a.to==='e5')!);assert.equal(g.unit('e5')!.type,'p');assert.equal(g.unit('d4')!.cargo.length,0);assert.equal(g.turn(),'b');
+ g.undo();assert.equal(g.unit('d4')!.cargo.length,1);
+});
+test('Trojan horse still enforces capacity, vacant destinations and incapacitation',()=>{
+ const g=game('trojan','7k/8/8/8/3N4/2Pp4/8/K7 w - - 0 1');
+ g.unit('d4')!.cargo=['a','b','c','d'];
+ assert.equal(g.actions().some(a=>a.skill==='trojan'),false);
+ assert.equal(g.actions().some(a=>a.skill==='deploy'&&['c3','d3'].includes(a.to)),false);
+ g.unit('d4')!.effects.stun=2;assert.equal(g.actions().some(a=>a.from==='d4'),false);
 });

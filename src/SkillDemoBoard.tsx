@@ -23,7 +23,7 @@ export default function SkillDemoBoard({game,civilization,storm}:{game:AbilityGa
         const square=`${file}${rank}` as Square,p=game.get(square),unit=game.unit(square);
         const fog=game.state.stormUntil[viewer]>0&&game.state.stormUntil[viewer]>=game.state.turns[viewer]&&(viewer==='w'?rank>=5:rank<=4);
         const cooldown=unit?Math.max(0,unit.cooldownUntil-game.state.turns[unit.owner]):0;
-        const note=game.squareNote(square).split(' · ').filter(n=>!n.startsWith('영광 ')&&!n.startsWith('재사용 ')&&!n.startsWith('심판 ')&&!['행동불가','무장해제','매혹','추가 목숨','사막','피라미드'].includes(n)).join(' · ');
+        const note=game.squareNote(square).split(' · ').filter(n=>!n.startsWith('영광 ')&&!n.startsWith('재사용 ')&&!n.startsWith('심판 ')&&!n.startsWith('탑승 ')&&!['행동불가','무장해제','매혹','추가 목숨','사막','피라미드'].includes(n)).join(' · ');
         return <div key={square} data-square={square} className={`square ${(file.charCodeAt(0)-97+rank)%2?'dark':'light'}`}>
           <BoardTerrain game={game} square={square} row={row} column={column} flipped={flipped}/>
           {translateUi(column===0&&<span className="rank-label">{translateUi(rank)}</span>)}{translateUi(row===7&&<span className="file-label">{translateUi(file)}</span>)}

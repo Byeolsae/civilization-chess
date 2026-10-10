@@ -293,7 +293,6 @@
   "선택한 기물은 어떤 효과로도 부활할 수 없습니다.": "Sealed pieces cannot be revived by any effect.",
   "트로이 목마": "Trojan Horse",
   "나이트의 변신": "A transformed knight",
-  "최대 4개의 폰을 수용하고 인접한 상하좌우 칸에 배치합니다.": "Carry up to 4 pawns and deploy them to orthogonally adjacent squares.",
   "목마가 잡히면 안에 있던 모든 폰도 함께 사망합니다.": "All carried pawns die if the horse is captured.",
   "스파르타": "Sparta",
   "폰의 변신": "A transformed pawn",
@@ -446,7 +445,6 @@
   "우세 평가: {0}": "Position evaluation: {0}",
   "임시 규칙: 감전은 대상의 다음 자기 턴까지 이동·공격을 막습니다. 인접 8칸에서 좌표순으로 아직 맞지 않은 기물 하나에 전이하며 최초 대상 외 최대 3개입니다. 보호에 막히면 전이도 끝납니다.": "Experimental rules: Shock prevents movement and attacks through the target's next turn. Chains in coordinate order to an unhit piece on an adjacent square, up to 3 additional targets. Protection also stops the chain.",
   "임시 규칙: 행은 좌우, 열은 상하 중 방향을 고릅니다. 진행 방향 앞쪽 기물부터 밀며 막힌 칸·보드 밖은 그대로입니다. 끝줄에 밀린 폰은 퀸으로 승격합니다.": "Experimental rules: Choose left/right for a rank or up/down for a file. Push frontmost pieces first. Blocked pieces and board edges stop movement. Pawns pushed to the last rank promote to queens.",
-  "임시 규칙: 모든 나이트가 목마입니다. 상하좌우의 아군 폰 하나 탑승 또는 실은 폰 하나 하차가 각각 한 행동입니다. 목마가 사망하면 탑승 폰도 사망합니다.": "Experimental rules: All knights are horses. Loading an orthogonally adjacent allied pawn or unloading one pawn each consumes an action. Carried pawns die with the horse.",
   "임시 규칙: 현재 사망한 아군 4개 이상이면 게임당 한 번 발동합니다. 상대의 두 차례 동안 이집트 쪽 절반을 가리고 룩·비숍·퀸을 최대 3칸으로 제한합니다. 로컬 시야 연출이며 숨은 정보 보안 기능은 아닙니다.": "Experimental rules: Triggers once per match with at least 4 currently dead allies. For two enemy turns, obscures Egypt's half and limits rooks, bishops, and queens to 3 squares. This is a local visual effect, not secure hidden-information enforcement.",
   "임시 규칙: 사망한 아군 하나를 아군 쪽 절반의 빈 칸에 부활시킵니다. 봉인·수송·결투 중인 기물은 제외합니다. 폰은 1·8행에 놓을 수 없고 목숨 1개로 부활합니다.": "Experimental rules: Revive one dead ally on an empty square on your half. Sealed, transported, and dueling pieces are excluded. Pawns cannot revive on ranks 1 or 8 and return with 1 life.",
   "임시 규칙: 빈 중심 칸과 주변 8칸에 사막을 만듭니다. 해당 칸을 출발하거나 도착하는 적의 이동은 최대 1칸입니다. 나이트와 발리스타 사격은 예외입니다.": "Experimental rules: Create desert on an empty center and its 8 neighbors. Enemy moves starting or ending there are limited to 1 square. Knights and ballista shots are exempt.",
@@ -588,7 +586,6 @@
   "위의 초대 링크나 방 코드를 공유하세요. 두 명이 입장하면 문명 선택이 시작됩니다.": "Share the invite link or room code above. Civilization selection begins when both players join.",
   "선택한 기물 스킬": "Selected piece skill",
   "탑승": "Aboard",
-  "/4 · 상하좌우 한 칸": "/4 · One orthogonal square",
   "폰 ·": "Pawn ·",
   "출신": "origin",
   "조건을 만족하면 자동으로 적용됩니다.": "Applies automatically when its conditions are met.",
@@ -606,7 +603,6 @@
   "선택 중 · 취소": "Selected · Cancel",
   "사용하기": "Cast",
   "사용 불가": "Unavailable",
-  "탑승·하차마다 한 행동 · 상하좌우 1칸 · 최대 폰 4개": "One action per load or deployment · One orthogonal square · Up to 4 pawns",
   "주변 8칸 피아 모두 각자 3턴 기절 · 사용 후 내 5번째 턴에 재사용": "Stuns adjacent allies and enemies for 3 of their own turns · Reusable on your 5th turn after use",
   "퀸이 공격 가능한 적 폰 · 동시에 1개만 매혹 · 원래 주인의 두 번째 턴에 복귀": "An enemy pawn the queen can attack · Charm one at a time · Returns on its owner's second turn",
   "8방향 최대 5칸 · 아군 관통, 첫 적에서 정지 · 사용 후 내 3개 턴 동안 재장전": "Up to 5 squares in 8 directions · Through allies, stops at first enemy · Reload for 3 of your turns",
@@ -811,5 +807,9 @@
   "나일강의 범람": "Nile Flood",
   "임시 규칙: 시작 준비에서 법 하나를 선택합니다. 군율법은 상대 기물 스킬 쿨타임 +1턴, 진군법은 상대 폰의 기본 첫 2칸 전진 금지, 징집법은 상대 퀸 승격 금지입니다. 12표법 진영은 제한에서 면제됩니다. 나일강의 범람의 옆 이동은 유지하며, 징집법 아래 자동 승격은 룩입니다. 나머지 9개 법은 준비 중입니다.": "Experimental rules: Choose one law during setup. Military Code adds 1 turn to enemy piece-skill cooldowns; March Law blocks the normal initial two-square pawn advance; Conscription Law bans enemy queen promotion. Twelve Tables holders are exempt. Nile Flood sideways movement remains; automatic promotions under Conscription Law become rooks. Nine laws are in development.",
   "군단 · 보호 소모": "Legion · protection spent",
-  "군단 · 보호 가능": "Legion · protection ready"
+  "군단 · 보호 가능": "Legion · protection ready",
+  "최대 4개의 폰을 수용하고 주변 8칸에서 탑승·하차합니다.": "Carries up to 4 pawns. Embark and deploy on any of the 8 adjacent squares.",
+  "임시 규칙: 모든 나이트가 목마입니다. 주변 8칸의 아군 폰 하나 탑승 또는 빈칸에 실은 폰 하나 하차가 각각 한 행동입니다. 최대 4개까지 탑승하며 목마가 사망하면 탑승 폰도 사망합니다.": "Experimental rules: All knights are Trojan Horses. Embark one allied pawn from any of the 8 surrounding squares or deploy one carried pawn onto an empty adjacent square, using one action each. Capacity is 4. If the horse dies, all carried pawns die too.",
+  "탑승·하차마다 한 행동 · 주변 8칸 · 최대 폰 4개": "One action per embark/deploy · 8 surrounding squares · Up to 4 pawns",
+  "/4 · 주변 8칸": "/4 · 8 surrounding squares"
 }

@@ -17,7 +17,7 @@ export function PieceSkillGuide({ game, square, players, mode, cargo, enabled, o
   return <section className="piece-skill-guide" aria-label={translateUi("선택한 기물 스킬")}>
     <div className="piece-skill-heading"><strong>{translateUi(square)} {translateUi(pieceNames[p.type])} · {translateUi(card?.name ?? abilityNames[info.skill])}</strong><span role="status">{translateUi(info.cooldown > 0 ? <CooldownBadge turns={info.cooldown}/> : info.status)}</span></div>
     <p>{translateUi(info.timing)}</p>
-    {translateUi(info.skill === 'trojan' && <p>{translateUi("탑승 ")}{translateUi(info.cargo.length)}{translateUi("/4 · 상하좌우 한 칸")}</p>)}
+    {translateUi(info.skill === 'trojan' && <p>{translateUi("탑승 ")}{translateUi(info.cargo.length)}{translateUi("/4 · 주변 8칸")}</p>)}
 
     {translateUi(mode === 'deploy' && <div className="grave-choices">{translateUi(info.cargo.map(id => <button key={id} aria-pressed={cargo === id} onClick={() => onCargo(id)}>{translateUi("폰 · ")}{translateUi(id.slice(2))}{translateUi(" 출신")}</button>))}</div>)}
     <p className="piece-skill-hint">{translateUi(info.automatic ? '조건을 만족하면 자동으로 적용됩니다.' : mode ? mode === 'minotaur' ? '주변 강조 칸이 함께 영향을 받습니다. 선택한 나이트를 다시 누르면 발동합니다. 아군도 기절합니다.' : mode === 'deploy' && !cargo ? '하차시킬 폰을 먼저 고르세요.' : '금색으로 표시된 대상을 누르면 사용합니다. Esc로 취소합니다.' : '점은 일반 이동, 보라색 테두리는 스킬 대상입니다. 왼쪽 기물 스킬 버튼을 눌러 사용하세요.')}</p>

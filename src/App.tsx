@@ -382,7 +382,7 @@ export default function App() {
                 const square = `${file}${rank}` as Square;
                 const piece = game.get(square);
                 const possible = moves.some(move => move.to === square); const abilityNote = game instanceof AbilityGame ? game.squareNote(square) : ''; const viewer = settings.mode !== 'local' ? settings.humanColor : game.turn(); const fogged = game instanceof AbilityGame && game.state.stormUntil[viewer] > 0 && game.state.stormUntil[viewer] >= game.state.turns[viewer] && (viewer === 'w' ? rank >= 5 : rank <= 4);
-                const markerNote = abilityNote.split(' · ').filter(note => !note.startsWith('영광 ') && !note.startsWith('재사용 ') && !note.startsWith('심판 ') && !['행동불가', '무장해제', '매혹', '추가 목숨', '사막', '피라미드'].includes(note)).join(' · ');
+                const markerNote = abilityNote.split(' · ').filter(note => !note.startsWith('영광 ') && !note.startsWith('재사용 ') && !note.startsWith('심판 ') && !note.startsWith('탑승 ') && !['행동불가', '무장해제', '매혹', '추가 목숨', '사막', '피라미드'].includes(note)).join(' · ');
                 const cooldownUnit = game instanceof AbilityGame ? game.unit(square) : undefined;
                 const cooldownTurns = game instanceof AbilityGame && cooldownUnit ? Math.max(0, cooldownUnit.cooldownUntil - game.state.turns[cooldownUnit.owner]) : 0;
                 const checked = piece?.type === 'k' && piece.color === game.turn() && game.isCheck();

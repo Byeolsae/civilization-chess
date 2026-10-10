@@ -20,3 +20,5 @@
 @media(prefers-reduced-motion:reduce){.alternating-stacks .glory-trophies{bottom:27%}}
 
 .philosophy-question{position:absolute;top:23%;left:6%;display:grid;place-items:center;width:1.15em;height:1.15em;border-radius:50%;background:#213e49;color:#f5dc9a;border:1px solid #d9b98c;font-size:clamp(9px,1.3vw,12px);font-weight:700;line-height:1;box-shadow:0 1px 2px #0006}
+
+.trojan-status-page{position:absolute;inset:0;opacity:0;transition:opacity .45s ease-in-out;pointer-events:none}.trojan-status-page.visible{opacity:1}.trojan-passengers{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);display:flex;gap:2px;padding:2px 3px;border-radius:5px;background:#17241de8}.piece-status-effects .trojan-passengers svg{position:static;inset:auto;width:clamp(7px,1.1vw,12px);height:clamp(10px,1.5vw,17px);stroke-width:1.2;stroke:#ffe6a4;fill:#ffe6a4}.piece-status-effects .trojan-passengers .empty{fill:none;stroke:#899584;opacity:.5}@media(prefers-reduced-motion:reduce){.trojan-status-page{transition:none}}

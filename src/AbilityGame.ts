@@ -697,7 +697,7 @@ export class AbilityGame extends Chess {
       if (this.disabled(p)) continue;
       const from = p.square!;
       if (p.type === "n" && this.has(c, "trojan")) {
-        for (const to of adjacentSquares(from, false)) {
+        for (const to of adjacentSquares(from)) {
           const q = this.unit(to);
           if (q?.owner === c && q.type === "p" && p.cargo.length < 4)
             add("trojan", from, to, { id: q.id });
