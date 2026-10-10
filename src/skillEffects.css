@@ -33,3 +33,7 @@
 .hades-vault{display:flex;flex-direction:column;gap:4px;padding:6px 9px;border:1px solid #9b7abb66;border-radius:8px;background:#251b36cc;max-width:180px}.hades-vault-label{font-size:10px;color:#d7b9ef;letter-spacing:.03em}.hades-vault>div{display:flex;flex-wrap:wrap;gap:3px}.hades-vault>div>span{background:#ffffff08;border-radius:4px}.hades-vault .piece{width:25px;height:25px;opacity:.85;filter:drop-shadow(0 0 3px #b486c955)}
 @media(max-width:580px){.player-bar:has(.hades-vault){flex-wrap:wrap}.hades-vault{max-width:100%;margin-left:auto}}
 @media(prefers-reduced-motion:reduce){.hades-soul,.hades-ember{display:none}.hades-scene{opacity:1}.hades-seal{opacity:1}}
+
+.sparta-shield-shard{animation:sparta-shield-break .9s .12s cubic-bezier(.25,.5,.65,1) both}.sparta-shield-crack{fill:none;stroke:#ffe5b5;stroke-width:1.6;stroke-linejoin:bevel;animation:sparta-shield-crack .38s both}
+@keyframes sparta-shield-break{0%{opacity:1;transform:translate(0,0) rotate(0)}30%{opacity:1}100%{opacity:0;transform:translate(var(--shield-x),var(--shield-y)) rotate(var(--shield-r)) scale(.75)}}@keyframes sparta-shield-crack{0%{opacity:0}20%,55%{opacity:1}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.sparta-shield-shard{opacity:.75}.sparta-shield-crack{opacity:1}}

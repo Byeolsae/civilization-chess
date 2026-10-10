@@ -15,7 +15,7 @@ const CHARM_HIT_MS = 720;
 const MINOTAUR_JUMP_MS = 920;
 const MINOTAUR_DIZZY_DELAY_MS = MINOTAUR_JUMP_MS + 100;
 const colors: Record<string, string> = { zeus: '#c5eeff', poseidon: '#75d8ff', hades: '#be98ff', osiris: '#fbe3a0', set: '#e7bf7a', anubis: '#eac27b', judgment: '#f3c367', alesia: '#eeb98e', vesta: '#ffbc75', pilum: '#ffce9c', ballista: '#ffe1ac', minotaur: '#f3c98c', cleopatra: '#ffadd8', trojan: '#bcdfac', deploy: '#bcdfac', gladiator: '#efb2a3', shield: '#b7e8fc', revive: '#f5dfa7', sphinx: '#ceb9ff' };
-const labels: Record<string, string> = { judgment: '심장의 심판', shield: '방어 발동', revive: '미라 부활', sphinx: '수수께끼 방어' };
+const labels: Record<string, string> = { judgment: '심장의 심판', shield: '방패 파괴', revive: '미라 부활', sphinx: '수수께끼 방어' };
 export default function SkillEffects({ game, flipped, players }: { game: Chess; flipped: boolean; players: Players }) {
   const count = game.history().length;
   const previous = useRef({ game, count, flipped, state: game instanceof AbilityGame ? structuredClone(game.state) : null });
@@ -143,6 +143,7 @@ function screenDirection(direction: number | undefined, flipped: boolean) {
 function Effect({ effect: e, flipped, ghostSrc, soulSrcs }: { effect: SkillEffect; flipped: boolean; ghostSrc?: string; soulSrcs?: string[] }) {
   const from = boardPoint(e.from, flipped), to = boardPoint(e.to, flipped);
   const color = colors[e.skill] ?? '#f6d58d';
+  if (e.skill === 'shield') return <ShieldBreak x={to.x} y={to.y} dark={e.shieldOwner==='b'}/>;
   if (e.skill === 'hades') return <HadesPortal souls={soulSrcs ?? []}/>;
   if (e.skill === 'osiris' || e.skill === 'revive') return <ResurrectionBurst x={to.x} y={to.y}/>;
   if (e.skill === 'anubis' || e.skill === 'judgment') return <g>{e.squares.map(square => { const point = boardPoint(square, flipped); return <g key={square}>{e.skill === 'judgment'&&<JudgmentDeath x={point.x} y={point.y} src={ghostSrc}/>}<JudgmentScales x={point.x} y={point.y} sentence={e.skill === 'judgment'}/></g>; })}</g>;
@@ -248,5 +249,20 @@ function HadesPortal({souls}:{souls:string[]}) {
       {[0,1,2,3,4,5].map(i=><path key={i} className="hades-ember" d="M0 8Q-10 0 0 -15Q10 0 0 8" style={{'--ember-x':`${(i-2.5)*35}px`,animationDelay:`${i*120}ms`} as CSSProperties}/>)}
       <g className="hades-seal"><circle r="57"/><path d="M-22 -8V-23A22 22 0 0 1 22 -23V-8 M-30 -8H30V33H-30Z M0 4V20"/></g>
     </g>
+  </g>;
+}
+
+function ShieldBreak({x,y,dark}:{x:number;y:number;dark:boolean}) {
+  const id=useId().replace(/:/g,'');
+  const shards=[
+    {d:'M-23 -24H1L-4 -8 3 -2 -6 3 -23 -2Z',x:-15,y:13,r:-32},
+    {d:'M1 -24H23V-2L8 5 3 -2 -4 -8Z',x:16,y:10,r:38},
+    {d:'M-23 -2L-6 3 3 -2 -1 10 4 25H-23Z',x:-10,y:23,r:-20},
+    {d:'M3 -2L8 5 23 -2V25H4L-1 10Z',x:12,y:25,r:28},
+  ];
+  return <g transform={`translate(${x-12} ${y+15})`}>
+    <defs>{shards.map((s,i)=><clipPath key={i} id={`${id}-shield-${i}`}><path d={s.d}/></clipPath>)}</defs>
+    {shards.map((s,i)=><g key={i} className="sparta-shield-shard" style={{'--shield-x':`${s.x}px`,'--shield-y':`${s.y}px`,'--shield-r':`${s.r}deg`} as CSSProperties}><g clipPath={`url(#${id}-shield-${i})`}><ellipse rx="17" ry="18.5" fill={dark?'#7fb6b0':'#2f6f7e'} stroke={dark?'#173f4a':'#2f6f7e'} strokeWidth="2.1"/><path d="M-9 8L0 -10 9 8" fill="none" stroke="#d9b98c" strokeWidth="3.5"/></g></g>)}
+    <path className="sparta-shield-crack" d="M1 -18L-4 -8 3 -2 -1 10 3 18 M3 -2L-6 3 -17 -1 M3 -2L8 5 17 0"/>
   </g>;
 }
