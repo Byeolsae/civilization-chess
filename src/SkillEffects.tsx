@@ -11,6 +11,8 @@ import './skillEffects.css';
 
 type PlayingEffect = SkillEffect & { id: number };
 const CHARM_HIT_MS = 720;
+const MINOTAUR_JUMP_MS = 920;
+const MINOTAUR_DIZZY_DELAY_MS = MINOTAUR_JUMP_MS + 100;
 const POSEIDON_WAVE_MS = 900;
 const POSEIDON_RETURN_MS = 380;
 const colors: Record<string, string> = { zeus: '#c5eeff', poseidon: '#75d8ff', hades: '#be98ff', osiris: '#fbe3a0', set: '#e7bf7a', anubis: '#eac27b', judgment: '#f3c367', alesia: '#eeb98e', vesta: '#ffbc75', pilum: '#ffce9c', ballista: '#ffe1ac', minotaur: '#f3c98c', cleopatra: '#ffadd8', trojan: '#bcdfac', deploy: '#bcdfac', gladiator: '#efb2a3', shield: '#b7e8fc', revive: '#f5dfa7', sphinx: '#ceb9ff' };
@@ -78,10 +80,14 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
         {transform:`translateY(${-height}px) scale(1)`,offset:.72,easing:'cubic-bezier(.65,0,1,.45)'},
         {transform:'translateY(1px) scale(1.07,.91)',offset:.9,easing:'ease-out'},
         {transform:'translateY(0) scale(1)',offset:1},
-      ],{duration:920,easing:'linear'});
+      ],{duration:MINOTAUR_JUMP_MS,easing:'linear'});
       motions.push(jump);
       const dizzy = cell.querySelector('.status-dizzy');
-      if (dizzy) motions.push(dizzy.animate([{opacity:0},{opacity:0}],{duration:828}));
+      if (dizzy) motions.push(dizzy.animate([
+        {opacity:0,offset:0},
+        {opacity:0,offset:MINOTAUR_DIZZY_DELAY_MS/(MINOTAUR_DIZZY_DELAY_MS+120)},
+        {opacity:1,offset:1},
+      ],{duration:MINOTAUR_DIZZY_DELAY_MS+120,easing:'linear'}));
       jump.onfinish=()=>cell.classList.remove('minotaur-airborne');
     }
     return ()=>{motions.forEach(m=>m.cancel());cells.forEach(c=>c.classList.remove('minotaur-airborne'));};
