@@ -16,13 +16,23 @@ export default function BoardTerrain({game,square,row,column,flipped}:{game:Abil
     const timer = setTimeout(()=>setBuilding(false),1400);
     return ()=>clearTimeout(timer);
   },[center,game]);
+  const road = game.state.zones.some(z=>z.kind==='road'&&z.squares.includes(square));
+  const unit = game.unit(square);
+  const legion = !!unit?.legion && unit.type === 'p';
+  const linked = (offset:number) => {
+    const file = square.charCodeAt(0) + offset * (flipped ? -1 : 1);
+    if(file<97||file>104)return false;
+    const neighbor=game.unit(`${String.fromCharCode(file)}${square[1]}` as Square);
+    return !!neighbor?.legion && neighbor.type==='p' && neighbor.owner===unit?.owner;
+  };
   const pyramid = game.state.zones.some(z => z.kind === 'pyramid' && z.squares.includes(square));
   const mask = desertTerrainMask(square,game.state.zones.filter(z=>z.kind==='desert').flatMap(z=>z.squares),flipped);
   return <>
-    {translateUi(game.state.zones.some(z=>z.kind==='road'&&z.squares.includes(square)) && <span className="passive-road" aria-hidden="true"/>)}
+    {translateUi(road && <span className="passive-road" style={{backgroundPosition:`${column%2*100}% ${row%2*100}%`}} aria-hidden="true"/>)}
     {translateUi(pyramid && <span className="pyramid-blessing" style={{'--blessing-delay':`${-((row*3+column*5)%11)/3}s`} as CSSProperties} aria-hidden="true"><i/><i/><i/></span>)}
     {translateUi(center && <span className={`passive-pyramid ${building?'is-building':''}`} aria-hidden="true">{[70,55,40,25,0].map((top,index)=><span key={top} className="pyramid-build-course" style={{clipPath:`inset(${top}% 0 ${index===0?0:100-[70,55,40,25][index-1]}% 0)`}}><img src="/terrain/pyramid.svg" alt="" draggable={false} style={{animationDelay:`${index*180}ms`}}/></span>)}<i className="pyramid-build-dust"/></span>)}
     {translateUi(mask && <span className="desert-terrain" style={{backgroundPosition:`${column/7*100}% ${row/7*100}%`,maskImage:mask,WebkitMaskImage:mask}} aria-hidden="true"/>)}
-    {translateUi((pyramid||mask) && <span className="terrain-square-state" aria-hidden="true"/>)}
+    {legion && <span className={`legion-formation ${linked(-1)?'linked-left':''} ${linked(1)?'linked-right':''} ${unit?.legionSpent?'is-spent':''}`} aria-label={translateUi(unit?.legionSpent?'군단 · 보호 소모':'군단 · 보호 가능')}><i/><svg viewBox="0 0 24 28" aria-hidden="true"><path d="M3 3Q12 0 21 3V15Q20 22 12 26Q4 22 3 15Z"/><path className="legion-insignia" d="M12 6V19M8 10L12 6 16 10M8 15L12 19 16 15"/></svg></span>}
+    {translateUi((pyramid||mask||road) && <span className="terrain-square-state" aria-hidden="true"/>)}
   </>;
 }
