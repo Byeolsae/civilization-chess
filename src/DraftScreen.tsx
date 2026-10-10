@@ -28,7 +28,7 @@ const civilizationCopy: Partial<Record<string, { headline: string; detail: strin
 };
 
 function SkillSymbol({ skill }: { skill: Skill }) {
-  if (['zeus','poseidon','hades'].includes(skill.id)) return <img className="greek-god-portrait" src={`/skills/${skill.id}-portrait-v2.png`} alt="" aria-hidden="true" draggable={false}/>;
+  if (['zeus','poseidon','hades'].includes(skill.id)) return <img className="greek-god-portrait" src={`/skills/${skill.id}-portrait-${skill.id==='hades'?'v3':'v2'}.png`} alt="" aria-hidden="true" draggable={false}/>;
   if (hasGreekSkillIcon(skill.id)) return <GreekSkillIcon skill={skill.id}/>;
   const Icon = icons[skill.symbol] ?? Sparkles;
   return skill.symbol === 'horse' ? <span className="draft-horse" aria-hidden="true">♞</span> : <Icon size={54} strokeWidth={1.15} aria-hidden="true" />;
