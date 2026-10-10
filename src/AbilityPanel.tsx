@@ -1,3 +1,4 @@
+import { romanLaws } from './romanLaws';
 import { SphinxRiddle } from './SphinxRiddle';
 import { translateUi } from './i18n';
 import { useEffect, useState } from "react";
@@ -138,7 +139,7 @@ export function AbilityPanel({
         {translateUi((["w", "b"] as const).map((color) => (
           <div key={color}>
             <strong>{translateUi(colorNames[color])}</strong>
-            {game.state.laws?.[color] === 'military-code' && <p>{translateUi('선택한 법: 군율법')}</p>}
+            {game.state.laws?.[color] && <p>{translateUi('선택한 법')}: {translateUi(romanLaws.find(law=>law.id===game.state.laws?.[color])?.name ?? '')}</p>}
             {translateUi(Object.entries(game.loadouts[color]).map(([cat, id]) => {
               const skill = skills[players[color]][
                 cat as "passive" | "active" | "piece"

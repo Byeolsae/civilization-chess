@@ -1,3 +1,4 @@
+import type { RomanLaw } from './romanLaws';
 import type { Color, PieceSymbol, Square } from "chess.js";
 
 // Ability state is independent of chess.js history. Every action snapshots both.
@@ -33,7 +34,7 @@ export type AbilityState = {
   pieces: Record<string, AbilityPiece>;
   zones: AbilityZone[];
   extraAction: string | null;
-  laws?: Partial<Record<Color, "military-code">>;
+  laws?: Partial<Record<Color, RomanLaw>>;
 };
 
 export function createAbilityState(

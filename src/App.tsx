@@ -1,3 +1,4 @@
+import { romanLaws } from './romanLaws';
 import LawSelection from './LawSelection';
 import { POSEIDON_EFFECT_MS } from './skillTiming';
 import { translateUi, useLocale } from './i18n';
@@ -106,7 +107,7 @@ export default function App() {
   useEffect(() => {
     if (!(game instanceof AbilityGame) || !placementOwner || settings.mode !== 'ai' || placementOwner === settings.humanColor) return;
     const timer = setTimeout(() => {
-      game.placePassive(placementOwner, game.loadouts[placementOwner].passive === 'twelve-tables' ? {law:'military-code'} : {square:placementOwner === 'w' ? 'd2' : game.loadouts.b.passive === 'roads' ? 'd6' : 'd7',axis:'row'});
+      game.placePassive(placementOwner, game.loadouts[placementOwner].passive === 'twelve-tables' ? {law:romanLaws[Math.floor(Math.random()*romanLaws.length)].id} : {square:placementOwner === 'w' ? 'd2' : game.loadouts.b.passive === 'roads' ? 'd6' : 'd7',axis:'row'});
       setRevision(value => value + 1);
     }, 650);
     return () => clearTimeout(timer);
@@ -422,10 +423,10 @@ export default function App() {
             </div>
           </div>
           </div>
-          {placementOwner && choosingLaw && game instanceof AbilityGame && <LawSelection key={placementOwner} enabled={placementHuman && !confirm} onSelect={() => {
+          {placementOwner && choosingLaw && game instanceof AbilityGame && <LawSelection key={placementOwner} enabled={placementHuman && !confirm} onSelect={law => {
             if (!placementHuman || confirm) return;
-            if (settings.mode === 'online') void online.send({kind:'place',placement:{law:'military-code'}});
-            else { game.placePassive(placementOwner,{law:'military-code'}); setRevision(value=>value+1); }
+            if (settings.mode === 'online') void online.send({kind:'place',placement:{law}});
+            else { game.placePassive(placementOwner,{law}); setRevision(value=>value+1); }
           }}/>}
           {translateUi(placementOwner && !choosingLaw && game instanceof AbilityGame && <section className="placement-guide placement-toolbar" aria-label={translateUi("시작 지형 배치")}>
             <div role="status"><strong>{translateUi(colorNames[placementOwner])} · {translateUi(game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드' : '로마길')}</strong><p>{translateUi(!placementHuman ? '상대의 시작 배치를 기다리고 있어요.' : !placementArmed ? '왼쪽 시작 배치 버튼을 눌러주세요.' : placementSquare ? `${placementSquare} 선택됨 · 강조된 영역을 확인하고 확정하세요.` : '보드에서 배치할 칸을 누르세요. 기물이 있는 칸도 선택할 수 있어요.')}</p></div>
@@ -459,7 +460,7 @@ export default function App() {
     {translateUi(started && status.over && <VictoryScene winner={status.kind === 'draw' ? null : resigned ? opposite(resigned) : game instanceof AbilityGame && game.winner() || opposite(game.turn())} players={players} detail={status.detail} onNew={() => setConfirm('new')} />)}
     {translateUi(dragVisual && <div className="drag-layer" aria-hidden="true"><div className="drag-piece" style={{ left: dragVisual.x, top: dragVisual.y, width: dragVisual.size, height: dragVisual.size }}><Piece type={dragVisual.type} color={dragVisual.color} civilization={players[dragVisual.color]} revived={game instanceof AbilityGame ? game.unit(dragVisual.from)?.revived : undefined} lives={game instanceof AbilityGame ? game.unit(dragVisual.from)?.lives : undefined} skill={game instanceof AbilityGame ? game.loadouts[dragVisual.color].piece : undefined} /></div></div>)}
     {translateUi(settings.mode === 'online' && <OnlineQuiz online={online}/>)}
-    {translateUi(quiz && <SphinxChallenge onResolve={correct => performAbility({ ...quiz, quiz: correct })} />)}{translateUi(promotion && !quiz && <Modal title={translateUi("폰을 승격하세요")} onClose={() => setPromotion(null)}><p className="muted">{translateUi("마지막 줄에 도착했습니다. 새로운 기물을 선택하세요.")}</p><div className="promotion-options">{translateUi((['q', 'r', 'b', 'n'] as Promotion[]).map(type => <button key={type} onClick={() => commit(promotion.from, promotion.to, type)}><Piece type={type} color={game.turn()} civilization={players[game.turn()]} skill={game instanceof AbilityGame ? game.loadouts[game.turn()].piece : undefined} /><span>{translateUi(pieceNames[type])}</span></button>))}</div></Modal>)}
+    {translateUi(quiz && <SphinxChallenge onResolve={correct => performAbility({ ...quiz, quiz: correct })} />)}{translateUi(promotion && !quiz && <Modal title={translateUi("폰을 승격하세요")} onClose={() => setPromotion(null)}><p className="muted">{translateUi("마지막 줄에 도착했습니다. 새로운 기물을 선택하세요.")}</p><div className="promotion-options">{translateUi((['q', 'r', 'b', 'n'] as Promotion[]).filter(type => !(game instanceof AbilityGame) || game.actions().some(a => a.kind === 'move' && a.from === promotion.from && a.to === promotion.to && a.promotion === type)).map(type => <button key={type} onClick={() => commit(promotion.from, promotion.to, type)}><Piece type={type} color={game.turn()} civilization={players[game.turn()]} skill={game instanceof AbilityGame ? game.loadouts[game.turn()].piece : undefined} /><span>{translateUi(pieceNames[type])}</span></button>))}</div></Modal>)}
     {translateUi(confirm && <Modal title={translateUi(confirm === 'new' ? '새로운 대전을 시작할까요?' : `${colorNames[resigningColor]}이 기권할까요?`)} onClose={() => setConfirm(null)}><p className="muted">{translateUi(confirm === 'new' ? '현재 기록을 지우고 대전 설정 화면으로 돌아갑니다.' : `${colorNames[opposite(resigningColor)]}의 승리로 대전이 종료됩니다.`)}</p><div className="modal-actions"><button className="secondary-button" onClick={() => setConfirm(null)}>{translateUi("계속 두기")}</button><button className="primary-button" onClick={() => { if (confirm === 'new') { if(settings.mode==='online')void leaveOnline();else reset(); } else if(settings.mode==='online'){void online.send({kind:'resign'});setConfirm(null);} else { ai.cancel(); setResigned(resigningColor); setSelected(null); setConfirm(null); } }}>{translateUi(confirm === 'new' ? '대전 다시 설정' : '기권하기')}</button></div></Modal>)}
   </div>;
 }

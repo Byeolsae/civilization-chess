@@ -1,3 +1,4 @@
+import { romanLaws, type RomanLaw } from './romanLaws';
 import {
   Chess,
   Move,
@@ -56,7 +57,7 @@ type State = AbilityState & {
   clocks: Record<Color, number> | null;
   timedOut: Color | null;
 };
-export type PassivePlacement = { square: Square; axis: "row" | "column"; law?: never } | { law: "military-code"; square?: never; axis?: never };
+export type PassivePlacement = { square: Square; axis: "row" | "column"; law?: never } | { law: RomanLaw; square?: never; axis?: never };
 export type AbilitySave = {
   placements?: Partial<Record<Color, PassivePlacement>>;
   version: 1;
@@ -170,9 +171,9 @@ export class AbilityGame extends Chess {
   placePassive(owner: Color, choice: PassivePlacement) {
     if (this.placementOwner() !== owner) throw Error("Not placement turn");
     if (this.has(owner, "twelve-tables")) {
-      if (choice.law !== "military-code" || choice.square !== undefined || choice.axis !== undefined) throw Error("Invalid law");
+      if (!romanLaws.some(law => law.id === choice.law) || choice.square !== undefined || choice.axis !== undefined) throw Error("Invalid law");
       this.state.laws = { ...this.state.laws, [owner]: choice.law };
-      this.placements![owner] = { law: choice.law };
+      this.placements![owner] = { law: choice.law as RomanLaw };
       this.actionCache = null;
       return;
     }
@@ -182,9 +183,12 @@ export class AbilityGame extends Chess {
     this.placements![owner] = structuredClone(choice);
     this.actionCache = null;
   }
+  lawApplies(c: Color, law: RomanLaw) {
+    return this.state.laws?.[other(c)] === law && !this.has(c, "twelve-tables");
+  }
   private cooldownPenalty(c: Color) {
     // Both law holders retain their Roman exemption.
-    return this.state.laws?.[other(c)] === "military-code" && this.state.laws?.[c] !== "military-code" ? 1 : 0;
+    return this.lawApplies(c, "military-code") ? 1 : 0;
   }
   has(c: Color, skill: string) {
     return Object.values(this.loadouts[c]).includes(skill);
@@ -364,7 +368,7 @@ export class AbilityGame extends Chess {
         return;
       const promotions =
         p.type === "p" && (to[1] === "1" || to[1] === "8")
-          ? ["q", "r", "b", "n"]
+          ? (this.lawApplies(p.owner, "conscription-law") ? ["r", "b", "n"] : ["q", "r", "b", "n"])
           : [undefined];
       for (const promotion of promotions)
         result.push({
@@ -386,7 +390,7 @@ export class AbilityGame extends Chess {
           this.has(p.owner, "nile") &&
           this.state.turns[p.owner] % 4 === 0 &&
           (p.owner === "w" ? y <= 3 : y >= 4);
-        const max = (y === (p.owner === "w" ? 1 : 6) ? 2 : 1) + (flood ? 1 : 0);
+        const max = (y === (p.owner === "w" ? 1 : 6) && !this.lawApplies(p.owner, "march-law") ? 2 : 1) + (flood ? 1 : 0);
         for (let d = 1; d <= max; d++) {
           const to = at(x, y + dy * d);
           if (!to || this.unit(to) || this.zoneBlocks(p, from, to)) break;
@@ -1130,7 +1134,7 @@ export class AbilityGame extends Chess {
         );
         if (to && !this.unit(to) && !this.zoneBlocks(t, t.square!, to)) {
           t.square = to;
-          if (t.type === "p" && ["1", "8"].includes(to[1])) t.type = "q";
+          if (t.type === "p" && ["1", "8"].includes(to[1])) t.type = this.lawApplies(t.owner, "conscription-law") ? "r" : "q";
           this.arrive(t);
         }
       }
@@ -1190,7 +1194,7 @@ export class AbilityGame extends Chess {
       const pawn = this.state.pieces[a.id!];
       p.cargo = p.cargo.filter((id) => id !== pawn.id);
       pawn.square = a.to;
-      if (["1", "8"].includes(a.to[1])) pawn.type = "q";
+      if (["1", "8"].includes(a.to[1])) pawn.type = this.lawApplies(pawn.owner, "conscription-law") ? "r" : "q";
       this.arrive(pawn);
     }
     if (skill === "minotaur" && p) {

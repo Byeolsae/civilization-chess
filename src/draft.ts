@@ -52,7 +52,7 @@ export const skills: Record<Civilization, Record<Category, Skill[]>> = {
     passive: [
       { id: 'roads', name: '로마의 도로', subtitle: '모든 길은 로마로', description: '룩·비숍·퀸이 아군 하나를 뛰어넘어 도로 위에 착지할 수 있습니다.', detail: '게임 시작 전 인접한 2개 행 또는 열을 골라 도로로 지정합니다. 적은 뛰어넘을 수 없습니다.', symbol: 'route' },
       { id: 'legion', name: '군단', subtitle: '함께 서면 무너지지 않는다', description: '폰 3개 이상이 가로로 붙으면 각 기물이 기절·감전·밀침 중 한 번을 막습니다.', detail: '각 기물당 상태이상 한 번을 막습니다. 진형이 깨진 뒤 다시 형성되면 보호 효과를 다시 얻습니다.', symbol: 'shield' },
-      { id: 'twelve-tables', name: '12표법', subtitle: '전장을 다스리는 법', description: '게임 시작 전에 12개 법 슬롯 중 하나를 선택합니다. 로마는 법의 특권을 얻습니다.', detail: '군율법: 상대 기물 스킬의 쿨타임이 1턴 증가합니다. 로마는 기존 쿨타임을 유지합니다.', symbol: 'scroll' },
+      { id: 'twelve-tables', name: '12표법', subtitle: '전장을 다스리는 법', description: '게임 시작 전에 12개 법 슬롯 중 하나를 선택합니다. 로마는 법의 특권을 얻습니다.', detail: '군율법·진군법·징집법 중 하나를 선택합니다. 선택한 법의 제한은 로마에 적용되지 않습니다.', symbol: 'scroll' },
     ],
     active: [
       { id: 'alesia', name: '알레시아 포위망', subtitle: '벗어날 수 없는 포위', description: '2×2 영역에 2턴 동안 상대가 드나들 수 없는 포위망을 만듭니다.', detail: '아군은 자유롭게 통과합니다. 킹 계열이 포함된 영역은 선택할 수 없습니다.', symbol: 'fence' },
