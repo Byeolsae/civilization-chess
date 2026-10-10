@@ -59,6 +59,32 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
     ], { duration: 420, easing: 'ease-out' });
     return () => motion?.cancel();
   }, [impact, flipped]);
+  const stomp = [...playing].reverse().find(e => e.skill === 'minotaur');
+  useLayoutEffect(() => {
+    if (!stomp || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const board = layer.current?.closest('.board');
+    const motions: Animation[] = [];
+    const cells: Element[] = [];
+    for (const square of stomp.stunned ?? []) {
+      const cell = board?.querySelector(`[data-square="${square}"]`);
+      const piece = cell?.querySelector('.piece');
+      if (!cell || !piece) continue;
+      cell.classList.add('minotaur-airborne'); cells.push(cell);
+      const height = Math.min(24,cell.getBoundingClientRect().height*.32);
+      const jump = piece.animate([
+        {transform:'translateY(0) scale(1)',offset:0},
+        {transform:'translateY(2px) scale(1.05,.92)',offset:.14},
+        {transform:`translateY(${-height}px) scale(.98,1.03)`,offset:.46},
+        {transform:'translateY(0) scale(1.08,.9)',offset:.84},
+        {transform:'translateY(0) scale(1)',offset:1},
+      ],{duration:760,easing:'ease-in-out'});
+      motions.push(jump);
+      const dizzy = cell.querySelector('.status-dizzy');
+      if (dizzy) motions.push(dizzy.animate([{opacity:0},{opacity:0}],{duration:640}));
+      jump.onfinish=()=>cell.classList.remove('minotaur-airborne');
+    }
+    return ()=>{motions.forEach(m=>m.cancel());cells.forEach(c=>c.classList.remove('minotaur-airborne'));};
+  },[stomp,flipped]);
   const charm = [...playing].reverse().find(e => e.skill === 'cleopatra');
   useLayoutEffect(() => {
     if (!charm || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;

@@ -21,7 +21,7 @@
 <path d="M116 98L111 124Q111 130 116 128 M124 98L129 124Q129 130 124 128 M117 129Q120 131 123 129" stroke="#966027" stroke-width="2"/>
 <path d="M102 143Q111 138 116 140L120 137 124 140Q129 138 138 143Q130 153 120 152Q110 153 102 143Z" fill="#c78c31" stroke="#8b5724" stroke-width="1.5"/>
 <path d="M104 143Q120 146 136 143 M112 149Q120 151 128 149" stroke="#ffe193" stroke-width="1.5"/>
-<path d="M98 126Q99 137 107 139 M142 126Q141 137 133 139" stroke="#f6cf65" stroke-width="3"/>
+
 <path d="M110 171H130L128 223Q120 228 112 223Z" fill="url(#gold)" stroke="#644321" stroke-width="3"/>
 <g stroke="#6f4c25" stroke-width="1.5"><path d="M111 176L120 180 129 176"/><path d="M111 183L120 187 129 183"/><path d="M111 190L120 194 129 190"/><path d="M111 197L120 201 129 197"/><path d="M111 204L120 208 129 204"/><path d="M111 211L120 215 129 211"/><path d="M111 218L120 222 129 218"/></g>
 <path d="M116 65Q99 48 109 31Q112 26 111 17L119 21 127 17Q126 26 130 32Q140 48 124 65Z" fill="url(#gold)" stroke="#61411f" stroke-width="2"/>
