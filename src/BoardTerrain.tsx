@@ -19,7 +19,7 @@ export default function BoardTerrain({game,square,row,column,flipped}:{game:Abil
   const roads = game.state.zones.filter(z=>z.kind==='road').flatMap(z=>z.squares);
   const road = roads.includes(square);
   // The shoulder is visual only; roads retain their original movement area.
-  const roadMask = desertTerrainMask(square,roads,flipped)?.replaceAll('30%', '10%').replaceAll('90%', '38%');
+  const roadMask = desertTerrainMask(square,roads,flipped)?.replaceAll('30%', '5%').replaceAll('90%', '20%');
   const unit = game.unit(square);
   const legion = !!unit?.legion && unit.type === 'p';
   const linked = (offset:number) => {
