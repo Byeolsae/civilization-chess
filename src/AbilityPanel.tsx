@@ -133,7 +133,7 @@ export function AbilityPanel({
         }}
       >{translateUi("선택한 행동 실행")}</button></>)}
       <details>
-        <summary>{translateUi("선택한 능력과 임시 규칙")}</summary>
+        <summary>{translateUi("선택한 능력과 규칙")}</summary>
         <p>{translateUi("능력도 한 행동을 사용합니다. 지속시간·재장전은 각 플레이어의 턴 기준입니다. 올림픽 추가 행동은 턴 수를 늘리지 않습니다.")}</p>
         {translateUi((["w", "b"] as const).map((color) => (
           <div key={color}>

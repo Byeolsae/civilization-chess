@@ -131,7 +131,7 @@ export default function Draft({ onStart, settings, onSettings, network }: { netw
     {translateUi(complete ? <div className="draft-complete">
       <div className="draft-intro"><span className="draft-eyebrow">READY TO PLAY</span><h1 ref={titleRef} tabIndex={-1}>{translateUi("두 문명, 하나의 전장")}</h1><p>{translateUi("선택이 끝났습니다. 서로의 조합을 확인하세요.")}</p></div>
       <LoadoutList players={complete.players} loadouts={complete.loadouts} />
-      <p className="draft-disclaimer"><Shield size={15} />{translateUi("선택한 능력이 실제 대전에 적용됩니다. 12표법은 준비 중이며, 임시 규칙은 카드와 대전 도움말에서 확인하세요.")}</p>
+      <p className="draft-disclaimer"><Shield size={15} />{translateUi("선택한 능력이 실제 대전에 적용됩니다. 12표법은 준비 중이며, 자세한 규칙은 카드와 대전 도움말에서 확인하세요.")}</p>
       <div className="draft-controls"><button className="draft-back" onClick={back} disabled={!previous}><ArrowLeft size={16} />{translateUi(" 이전 선택")}</button><button className="primary-button" onClick={() => { try { localStorage.removeItem(DRAFT_KEY); } catch { /* Match saving reports storage failures. */ } onStart(complete.players, complete.loadouts); }}>{translateUi("체스 대전 시작 ")}<Swords size={18} /></button></div>
     </div> : <>
       <div className="draft-intro" aria-live="polite"><span className="draft-eyebrow">{translateUi(currentCivilization ? `${currentCivilization.english} / ${category?.english}` : 'CHOOSE YOUR CIVILIZATION')}</span><h1 key={`title-${picks.length}`} ref={titleRef} tabIndex={-1}>{translateUi(colorNames[step.color])}, {translateUi(category ? `${category.name}${category.id === 'piece' ? '을' : '를'} 선택하세요` : '문명을 선택하세요')}</h1><p>{translateUi(onlineWaiting ? '상대의 선택 또는 서버 연결을 기다리고 있어요.' : aiTurn ? 'AI가 문명과 스킬을 고르고 있어요.' : category?.description ?? '당신의 문명이 전투의 시작을 결정합니다.')}</p></div>
@@ -169,7 +169,7 @@ export default function Draft({ onStart, settings, onSettings, network }: { netw
       </div>
       {translateUi(!category && !visibleCivilizations.length && <div className="civilization-empty" role="status"><p>{translateUi("조건에 맞는 문명이 없습니다. 검색어·나라·대륙·시대를 바꿔보세요.")}</p><button className="draft-back" disabled={locking || aiTurn || onlineWaiting} onClick={resetFilters}>{translateUi("필터 초기화")}</button></div>)}
       <div className="draft-controls"><button className="draft-back" onClick={back} disabled={!previous || locking || aiTurn || onlineWaiting}><ArrowLeft size={16} />{translateUi(" 이전 선택")}</button><span className="draft-counter">{translateUi(picks.length + 1)} / 8<span>{translateUi(category ? '카드 3장 중 하나를 선택하세요' : '같은 문명도 선택할 수 있습니다')}</span></span><button className="primary-button" disabled={!choice || locking || aiTurn || onlineWaiting} onClick={() => setLocking(true)}>{translateUi(onlineWaiting ? '상대 선택 대기' : aiTurn ? 'AI 선택 중' : locking ? '선택 확정 중' : '선택 확정')}{translateUi(locking ? <Check size={18} /> : <ArrowRight size={18} />)}</button></div>
-      <p className="draft-disclaimer"><Shield size={14} />{translateUi("그리스·이집트·로마의 선택한 능력이 적용됩니다. 12표법만 준비 중이며 카드의 임시 규칙을 확인하세요.")}</p>
+      <p className="draft-disclaimer"><Shield size={14} />{translateUi("그리스·이집트·로마의 선택한 능력이 적용됩니다. 12표법만 준비 중이며 카드의 자세한 규칙을 확인하세요.")}</p>
     </>)}
     {translateUi(saveFailed && <p className="storage-warning" role="alert">{translateUi("선택 내용을 저장할 수 없습니다. 새로고침하면 다시 선택해야 합니다.")}</p>)}
   </section>;
