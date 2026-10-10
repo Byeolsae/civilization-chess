@@ -12,6 +12,6 @@ test('90 percent of the civilization probability mass is assigned to playable fa
  let implemented=0;for(let i=0;i<1000;i++){const pick=chooseAiDraftPick([],()=> (i+.5)/1000) as Civilization;if(civilizationReadiness(pick)==='ready')implemented++;}assert.equal(implemented,900);
 });
 test('AI avoids pending skills and can complete a full valid draft',()=>{
- assert.notEqual(chooseAiDraftPick(['rome','rome'],()=>.9999),'twelve-tables');
+ assert.equal(chooseAiDraftPick(['rome','rome'],()=>.9999),'twelve-tables');
  let picks:string[]=[];while(!completeDraft(picks)){const pick=chooseAiDraftPick(picks,()=>.2);assert.ok(pick);picks=confirmPick(picks,pick);}assert.ok(completeDraft(picks));assert.equal(chooseAiDraftPick(picks),undefined);
 });

@@ -56,7 +56,7 @@ type State = AbilityState & {
   clocks: Record<Color, number> | null;
   timedOut: Color | null;
 };
-export type PassivePlacement = { square: Square; axis: "row" | "column" };
+export type PassivePlacement = { square: Square; axis: "row" | "column"; law?: never } | { law: "military-code"; square?: never; axis?: never };
 export type AbilitySave = {
   placements?: Partial<Record<Color, PassivePlacement>>;
   version: 1;
@@ -156,9 +156,10 @@ export class AbilityGame extends Chess {
   }
   placementOwner(): Color | undefined {
     if (!this.placements) return undefined;
-    return (["w", "b"] as Color[]).find(c => ["pyramid", "roads"].includes(this.loadouts[c].passive) && !this.placements![c]);
+    return (["w", "b"] as Color[]).find(c => ["pyramid", "roads", "twelve-tables"].includes(this.loadouts[c].passive) && !this.placements![c]);
   }
   placementSquares(owner: Color, choice: PassivePlacement): Square[] {
+    if (choice.law !== undefined) return [];
     if (!SQUARES.includes(choice.square) || !["row", "column"].includes(choice.axis)) throw Error("Invalid placement");
     if (this.has(owner, "pyramid")) return [choice.square, ...adjacentSquares(choice.square)];
     if (!this.has(owner, "roads")) return [];
@@ -168,10 +169,22 @@ export class AbilityGame extends Chess {
   }
   placePassive(owner: Color, choice: PassivePlacement) {
     if (this.placementOwner() !== owner) throw Error("Not placement turn");
+    if (this.has(owner, "twelve-tables")) {
+      if (choice.law !== "military-code" || choice.square !== undefined || choice.axis !== undefined) throw Error("Invalid law");
+      this.state.laws = { ...this.state.laws, [owner]: choice.law };
+      this.placements![owner] = { law: choice.law };
+      this.actionCache = null;
+      return;
+    }
+    if (choice.law !== undefined) throw Error("Unexpected law");
     const squares = this.placementSquares(owner, choice);
     this.state.zones.push({ id: this.loadouts[owner].passive + "-" + owner, kind: this.has(owner, "pyramid") ? "pyramid" : "road", owner, center: choice.square, squares, expiresAfter: null, protectedPieces: [] });
     this.placements![owner] = structuredClone(choice);
     this.actionCache = null;
+  }
+  private cooldownPenalty(c: Color) {
+    // Both law holders retain their Roman exemption.
+    return this.state.laws?.[other(c)] === "military-code" && this.state.laws?.[c] !== "military-code" ? 1 : 0;
   }
   has(c: Color, skill: string) {
     return Object.values(this.loadouts[c]).includes(skill);
@@ -1184,14 +1197,14 @@ export class AbilityGame extends Chess {
       for (const t of this.units())
         if (t.square && t.id !== p.id && distance(t.square, p.square!) === 1)
           this.afflict(t, "stun", 3);
-      p.cooldownUntil = this.state.turns[c] + 5;
+      p.cooldownUntil = this.state.turns[c] + 5 + this.cooldownPenalty(c);
     }
     if (skill === "cleopatra" && q) {
       q.charmed = { owner: q.owner, until: this.state.turns[q.owner] + 2 };
       q.owner = c;
     }
     if (skill === "ballista" && p && q) {
-      p.cooldownUntil = this.state.turns[c] + 4;
+      p.cooldownUntil = this.state.turns[c] + 4 + this.cooldownPenalty(c);
       if (!(q.type === "n" && this.has(q.owner, "sphinx") && a.quiz === false))
         if (this.capture(q)) this.creditKill(p, q);
     }

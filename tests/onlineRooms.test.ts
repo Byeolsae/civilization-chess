@@ -105,3 +105,15 @@ test('joined players wait for host color choice; retry remains idempotent after 
  assert.equal(retry.revision,room.revision);assert.equal(seat(room,w),'b');assert.equal(seat(room,b),'w');
  await assert.rejects(()=>act(store,room,{kind:'color',color:'w'}));
 });
+
+test('online Twelve Tables requires an authorized law selection before play',async()=>{
+ let {store,room}=await setup(['rome','greece','twelve-tables','olympics','vesta','zeus','ballista','minotaur']);
+ assert.equal(AbilityGame.restoreSave(room.variant!).placementOwner(),'w');
+ await assert.rejects(()=>act(store,room,{kind:'place',placement:{law:'military-code'}},b));
+ room=await act(store,room,{kind:'place',placement:{law:'military-code'}});
+ const g=AbilityGame.restoreSave(room.variant!);assert.equal(g.placementOwner(),undefined);assert.equal(g.state.laws?.w,'military-code');
+ room=await act(store,room,move(room,'e2','e4'));
+ const action=AbilityGame.restoreSave(room.variant!).actions().find(a=>a.skill==='minotaur')!;
+ room=await act(store,room,{kind:'action',action},b);
+ const after=AbilityGame.restoreSave(room.variant!);assert.equal(after.unit(action.from!)!.cooldownUntil-after.state.turns.b,6);
+});

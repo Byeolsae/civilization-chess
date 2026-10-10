@@ -33,6 +33,7 @@ export type AbilityState = {
   pieces: Record<string, AbilityPiece>;
   zones: AbilityZone[];
   extraAction: string | null;
+  laws?: Partial<Record<Color, "military-code">>;
 };
 
 export function createAbilityState(

@@ -138,6 +138,7 @@ export function AbilityPanel({
         {translateUi((["w", "b"] as const).map((color) => (
           <div key={color}>
             <strong>{translateUi(colorNames[color])}</strong>
+            {game.state.laws?.[color] === 'military-code' && <p>{translateUi('선택한 법: 군율법')}</p>}
             {translateUi(Object.entries(game.loadouts[color]).map(([cat, id]) => {
               const skill = skills[players[color]][
                 cat as "passive" | "active" | "piece"
