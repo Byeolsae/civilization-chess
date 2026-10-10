@@ -60,7 +60,7 @@ export const skills: Record<Civilization, Record<Category, Skill[]>> = {
       { id: 'pilum', name: '필룸 투척', subtitle: '공격의 기회를 빼앗다', description: '상대 하나를 무장 해제해 다음 자기 턴의 공격을 막습니다.', detail: '이동은 가능하며 상대의 다음 자기 턴이 끝나면 해제됩니다.', symbol: 'swords' },
     ],
     piece: [
-      { id: 'gladiator', name: '글라디아토르', subtitle: '비숍의 변신', description: '적 하나를 콜로세움으로 데려가 6턴 동안 결투합니다.', detail: '게임당 2번 사용합니다. 킹은 지목할 수 없습니다. 4턴 뒤 외곽이 붕괴하며, 시간 내 상대를 잡지 못하면 패배합니다.', symbol: 'swords' },
+      { id: 'gladiator', name: '글라디아토르', subtitle: '비숍의 변신', description: '본 게임을 멈추고 적 하나와 별도 콜로세움에서 총 8행동 동안 결투합니다.', detail: '비숍마다 게임당 2회입니다. 8×8에서 시작해 4행동 후 6×6으로 축소됩니다. 글라는 퀸처럼 움직이며 8행동 안에 잡지 못하면 사망합니다.', symbol: 'swords' },
       { id: 'ballista', name: '발리스타', subtitle: '룩의 변신', description: '이동 대신 8방향으로 최대 5칸 사격합니다. 아군은 관통합니다.', detail: '처음 맞은 적을 잡고 자기 턴 3번 동안 재장전합니다.', symbol: 'crosshair' },
       { id: 'praetorian', name: '프라이토리아니', subtitle: '나이트의 변신', description: '킹 곁에서 킹을 노리는 공격을 대신 받고 공격자와 함께 사망합니다.', detail: '킹 주변 8칸에서 근위 상태가 됩니다. 킹은 생존하고 근위 기물은 제거됩니다.', symbol: 'shield' },
     ],

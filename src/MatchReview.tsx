@@ -1,3 +1,4 @@
+import DuelArena from './DuelArena';
 import { translateUi } from './i18n';
 import { reviewPosition } from './reviewPosition';
 import { useEffect, useRef, useState } from 'react';
@@ -27,6 +28,7 @@ export default function MatchReview({ game, players, initialPly, flipped, viewer
   const files = (orientation ? 'hgfedcba' : 'abcdefgh').split('');
   return <div className="match-review">
     <div className="review-summary"><div><span>POSITION REVIEW</span><strong role="status">{translateUi(ply === 0 ? '시작 배치' : `${last.color === 'w' ? '백' : '흑'} · ${last.san}`)}</strong></div><b>{translateUi(ply)}<small> / {translateUi(frames.length - 1)} {translateUi("수")}</small></b></div>
+    {variant?.state.duel&&<DuelArena game={variant} players={players} enabled={false} onAction={()=>{}} embedded/>}
     <div className="review-stage">
     {translateUi(playerStrip(orientation ? 'w' : 'b'))}
     <div className="board-frame review-frame" data-board-theme={players[viewer === 'w' ? 'b' : 'w']}>

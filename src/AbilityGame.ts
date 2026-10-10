@@ -298,7 +298,7 @@ export class AbilityGame extends Chess {
     this.actionCache = null; this.sync();
   }
   tick(ms: number) {
-    if (this.placementOwner() || !this.state.clocks || this.state.timedOut) return false;
+    if (this.placementOwner() || this.state.duel || !this.state.clocks || this.state.timedOut) return false;
     const c = this.turn();
     this.state.clocks[c] = Math.max(0, this.state.clocks[c] - ms);
     if (this.state.clocks[c] === 0) {
@@ -771,14 +771,16 @@ export class AbilityGame extends Chess {
       toEnemy = d.positions[targetId];
     const result: AbilityAction[] = [];
     const inner = d.actions >= 4;
-    for (let u = inner ? 1 : 0; u < (inner ? 3 : 4); u++)
-      for (let v = inner ? 1 : 0; v < (inner ? 3 : 4); v++) {
+    for (let u = inner ? 1 : 0; u < (inner ? 7 : 8); u++)
+      for (let v = inner ? 1 : 0; v < (inner ? 7 : 8); v++) {
         const to = at(u, v)!;
         if (to === from) continue;
         const dx = Math.abs(u - x),
           dy = Math.abs(v - y);
         const allowed =
-          p.type === "b"
+          id === d.attacker
+            ? !dx || !dy || dx === dy
+            : p.type === "b"
             ? dx === dy
             : p.type === "r"
               ? !dx || !dy
@@ -790,7 +792,16 @@ export class AbilityGame extends Chess {
                     ? Math.max(dx, dy) === 1
                     : v - y === (p.owner === "w" ? 1 : -1) &&
                       (to === toEnemy ? dx === 1 : dx === 0);
-        if (allowed) result.push({ kind: "duel", from, to });
+        if (allowed) {
+          const sliding = id === d.attacker || ["b","r","q"].includes(p.type);
+          if(sliding && to !== toEnemy){
+            const [ex,ey]=xy(toEnemy),sx=Math.sign(u-x),sy=Math.sign(v-y);
+            let blocked=false;
+            for(let step=1;step<Math.max(dx,dy);step++)if(x+sx*step===ex&&y+sy*step===ey)blocked=true;
+            if(blocked)continue;
+          }
+          result.push({ kind: "duel", from, to });
+        }
       }
     if (!result.length) result.push({ kind: "pass", from, to: from });
     return result;
@@ -1220,7 +1231,7 @@ export class AbilityGame extends Chess {
         attacker: p.id,
         defender: q.id,
         origin: { [p.id]: p.square!, [q.id]: q.square! },
-        positions: { [p.id]: "b1", [q.id]: "c4" },
+        positions: { [p.id]: c === "w" ? "b2" : "g7", [q.id]: c === "w" ? "g6" : "b3" },
         actions: 0,
         initiator: c,
       };
@@ -1234,32 +1245,33 @@ export class AbilityGame extends Chess {
       (id) => this.state.pieces[id].owner === this.turn(),
     )!;
     const enemy = id === d.attacker ? d.defender : d.attacker;
-    let loser: string | null = null;
+    const losers = new Set<string>();
     if (a.kind !== "pass") {
-      if (a.to === d.positions[enemy]) loser = enemy;
+      if (a.to === d.positions[enemy]) losers.add(enemy);
       d.positions[id] = a.to;
     }
     d.actions++;
-    if (!loser && d.actions === 4) {
-      const edge = (id: string) => {
-        const [x, y] = xy(d.positions[id]);
-        return x === 0 || x === 3 || y === 0 || y === 3;
-      };
-      if (edge(d.attacker)) loser = d.attacker;
-      else if (edge(d.defender)) loser = d.defender;
-    }
-    if (!loser && d.actions >= 6) loser = d.attacker;
-    if (loser) {
-      for (const pieceId of [d.attacker, d.defender]) {
-        const p = this.state.pieces[pieceId];
-        p.square = d.origin[pieceId];
-        if (pieceId === loser) this.kill(p);
+    if (!losers.size && d.actions === 4) {
+      for (const participant of [d.attacker,d.defender]) {
+        const [x,y]=xy(d.positions[participant]);
+        if(x===0||x===7||y===0||y===7)losers.add(participant);
       }
-      const winner = this.state.pieces[loser === d.attacker ? d.defender : d.attacker];
-      this.creditKill(winner, this.state.pieces[loser]);
-      this.state.turn = d.initiator;
-      this.state.duel = null;
-    } else this.state.turn = other(this.turn());
+    }
+    if (!losers.size && d.actions >= 8) losers.add(d.attacker);
+    if (losers.size) {
+      for (const pieceId of [d.attacker,d.defender]) {
+        const p=this.state.pieces[pieceId];
+        p.square=d.origin[pieceId];
+        if(losers.has(pieceId))this.kill(p);
+      }
+      if(losers.size===1){
+        const loser=[...losers][0];
+        const winner=this.state.pieces[loser===d.attacker?d.defender:d.attacker];
+        this.creditKill(winner,this.state.pieces[loser]);
+      }
+      this.state.turn=d.initiator;
+      this.state.duel=null;
+    } else this.state.turn=other(this.turn());
   }
   needsQuiz(from: Square, to: Square) {
     const p = this.unit(to);

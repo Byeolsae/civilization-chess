@@ -202,7 +202,7 @@ test("gladiator opens a bounded duel, resumes the main game and supports undo", 
   skill(g, "gladiator", "c3", "d4");
   assert.ok(g.state.duel);
   assert.equal(g.get("c3"), undefined);
-  for (let n = 0; n < 6 && g.state.duel; n++) g.perform(g.actions()[0]);
+  for (let n = 0; n < 8 && g.state.duel; n++) g.perform(g.actions()[0]);
   assert.equal(g.state.duel, null);
   while (g.history().length) g.undo();
   assert.equal(g.fen(), before);

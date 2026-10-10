@@ -1,3 +1,4 @@
+import DuelArena from './DuelArena';
 import { romanLaws } from './romanLaws';
 import { SphinxRiddle } from './SphinxRiddle';
 import { translateUi } from './i18n';
@@ -45,6 +46,7 @@ export function AbilityPanel({
   };
   const clock = (n: number) =>
     `${Math.floor(Math.ceil(n / 1000) / 60)}:${String(Math.ceil(n / 1000) % 60).padStart(2, "0")}`;
+  if(duel)return <DuelArena game={game} players={players} enabled={enabled} onAction={onAction}/>;
   return (
     <section className="ability-panel" aria-label={translateUi("문명 능력")}>
       <h3>
@@ -58,37 +60,12 @@ export function AbilityPanel({
         {translateUi(colorNames[c])} ·{translateUi(" ")}
         {translateUi(game.state.extraAction
           ? "올림픽: 방금 포획한 기물로 추가 행동"
-          : duel
-            ? `결투 ${duel.actions + 1}/6 · ${duel.actions >= 4 ? "중앙 2×2만 남았습니다" : "4행동 후 외곽 붕괴"}`
-            : game.loadouts[c].active === "pending"
+          : game.loadouts[c].active === "pending"
               ? "등록된 액티브 없음"
               : game.state.activeUsed[c]
                 ? "일회용 액티브 사용 완료"
                 : "액티브 1회 남음")}
       </p>
-      {translateUi(duel && (
-        <div className="duel-board" aria-label={translateUi("콜로세움 4×4")}>
-          {translateUi(Array.from({ length: 16 }, (_, i) => {
-            const s = `${"abcd"[i % 4]}${4 - Math.floor(i / 4)}`;
-            const id = Object.keys(duel.positions).find(
-              (id) => duel.positions[id] === s,
-            );
-            return (
-              <span
-                key={s}
-                className={
-                  duel.actions >= 4 &&
-                  (i < 4 || i >= 12 || i % 4 === 0 || i % 4 === 3)
-                    ? "collapsed"
-                    : ""
-                }
-              >
-                {translateUi(id ? <Piece type={game.state.pieces[id].type} color={game.state.pieces[id].owner} civilization={players[game.state.pieces[id].owner]} revived={game.state.pieces[id].revived} lives={game.state.pieces[id].lives} skill={game.loadouts[game.state.pieces[id].owner].piece} /> : s)}
-              </span>
-            );
-          }))}
-        </div>
-      ))}
       {translateUi(!duel && <p>{translateUi("기물을 클릭하면 보드 아래에서 스킬과 사용 조건을 확인할 수 있습니다.")}</p>)}
       {translateUi(!!groups.length && <><label>{translateUi("능력 / 특수 행동")}<select
           aria-label={translateUi("능력 선택")}

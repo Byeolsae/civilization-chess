@@ -8,7 +8,7 @@ export function score(game: AbilityGame, color: Color) {
   if (game.isCheckmate()) return game.turn() === color ? -100000 : 100000;
   let total = 0;
   for (const p of game.units())
-    if (p.square || game.units().some((n) => n.cargo.includes(p.id))) {
+    if (p.square || game.units().some((n) => n.cargo.includes(p.id)) || game.state.duel?.attacker===p.id || game.state.duel?.defender===p.id) {
       const sign = p.owner === color ? 1 : -1;
       const center = p.square
         ? 7 -
@@ -40,6 +40,12 @@ export function chooseAbilityAction(
   // Prioritize captures and tactical abilities before considering large area-target sets.
   actions.sort((a, b) => priority(b) - priority(a));
   function priority(a: AbilityAction) {
+    const duel=game.state.duel;
+    if(duel && a.kind==='duel'){
+      const enemy=[duel.attacker,duel.defender].find(id=>game.state.pieces[id].owner!==game.turn())!;
+      const edge=['a','h'].includes(a.to[0])||['1','8'].includes(a.to[1]);
+      return (duel.positions[enemy]===a.to ? 10000 : 0) + (edge ? -200 : 20);
+    }
     const p = game.unit(a.to);
     return (
       (p && p.owner !== game.turn() ? value[p.type] : 0) +
