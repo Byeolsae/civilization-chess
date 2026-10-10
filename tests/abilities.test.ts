@@ -207,12 +207,12 @@ test("gladiator opens a bounded duel, resumes the main game and supports undo", 
   while (g.history().length) g.undo();
   assert.equal(g.fen(), before);
 });
-test("philosophy allocates time and timeout wins for the opponent", () => {
+test("philosophy no longer enables a clock or a time bonus", () => {
   const g = create({ passive: "philosophy" });
-  assert.deepEqual(g.state.clocks, { w: 780000, b: 600000 });
-  assert.equal(g.tick(780000), true);
-  assert.equal(g.winner(), "b");
-  assert.deepEqual(g.actions(), []);
+  assert.equal(g.state.clocks, null);
+  assert.equal(g.tick(780000), false);
+  assert.equal(g.winner(), null);
+  assert.ok(g.actions().length);
 });
 test("ability journal replay preserves effects and AI returns a legal action without mutation", () => {
   const g = create({ active: "pilum" });
@@ -331,7 +331,7 @@ test("variant castling and en passant preserve ordinary chess behavior", () => {
   assert.equal(e.get("d5"), undefined);
   assert.equal(e.get("d6")?.color, "w");
 });
-test("time spent before moves survives reload and undo", () => {
+test("untimed philosophy games remain untimed after reload and undo", () => {
   const g = create({ passive: "philosophy" });
   g.tick(1500);
   g.move({ from: "e2", to: "e4" });
@@ -341,7 +341,7 @@ test("time spent before moves survives reload and undo", () => {
   const restored = AbilityGame.restoreSave(g.save());
   assert.deepEqual(restored.state.clocks, g.state.clocks);
   restored.undo();
-  assert.deepEqual(restored.state.clocks, { w: 778500, b: 598000 });
+  assert.equal(restored.state.clocks, null);
 });
 test("mixed ability matches keep legal royal positions and replay complete action journals", () => {
   const loadouts: Loadouts[] = [

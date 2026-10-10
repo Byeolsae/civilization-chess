@@ -125,12 +125,7 @@ export class AbilityGame extends Chess {
       stormUsed: { w: false, b: false },
       stormUntil: { w: 0, b: 0 },
       duel: null,
-      clocks: Object.values(loadouts).some((l) => l.passive === "philosophy")
-        ? {
-            w: loadouts.w.passive === "philosophy" ? 780000 : 600000,
-            b: loadouts.b.passive === "philosophy" ? 780000 : 600000,
-          }
-        : null,
+      clocks: null,
       timedOut: null,
     };
     this.state.turns =
@@ -536,7 +531,16 @@ export class AbilityGame extends Chess {
       p.mummyTurn = this.state.turns[p.owner] + 1;
     }
   }
-  private creditKill(p: ExtraPiece) {
+  private creditKill(p: ExtraPiece, victim: ExtraPiece) {
+    const question = victim.question;
+    if (p.square && question?.owner === p.owner &&
+        question.until === this.state.turns[p.owner] && this.has(p.owner, "philosophy")) {
+      p.cooldownUntil = Math.max(this.state.turns[p.owner], p.cooldownUntil - 1);
+    }
+    delete victim.question;
+    if (p.square && victim.owner !== p.owner && this.has(victim.owner, "philosophy")) {
+      p.question = { owner: victim.owner, until: this.state.turns[victim.owner] + 1 };
+    }
     const judgment = p.judgment;
     if (!judgment || judgment.executedAt || !p.square) return;
     judgment.kills++;
@@ -924,6 +928,9 @@ export class AbilityGame extends Chess {
               ) as (keyof typeof p.effects)[])
                 if (p.effects[kind]! <= this.state.turns[ended])
                   delete p.effects[kind];
+          for (const p of Object.values(this.state.pieces))
+            if (p.question && (!p.square || (p.question.owner === ended && p.question.until <= this.state.turns[ended])))
+              delete p.question;
           this.state.turn = other(ended);
           this.beginTurn(this.state.turn);
         }
@@ -1040,7 +1047,7 @@ export class AbilityGame extends Chess {
         `${a.from[0]}${(Number(a.from[1]) + Number(a.to[1])) / 2}` as Square;
     if (a.promotion) p.type = a.promotion as PieceSymbol;
     this.arrive(p);
-    if (q) this.creditKill(p);
+    if (q) this.creditKill(p, q);
     if (this.state.extraAction && !p.square) this.state.extraAction = null;
   }
   private arrive(p: ExtraPiece) {
@@ -1184,9 +1191,9 @@ export class AbilityGame extends Chess {
       q.owner = c;
     }
     if (skill === "ballista" && p && q) {
-      if (!(q.type === "n" && this.has(q.owner, "sphinx") && a.quiz === false))
-        if (this.capture(q)) this.creditKill(p);
       p.cooldownUntil = this.state.turns[c] + 4;
+      if (!(q.type === "n" && this.has(q.owner, "sphinx") && a.quiz === false))
+        if (this.capture(q)) this.creditKill(p, q);
     }
     if (skill === "gladiator" && p && q) {
       p.duelUses = (p.duelUses ?? 0) + 1;
@@ -1230,7 +1237,7 @@ export class AbilityGame extends Chess {
         if (pieceId === loser) this.kill(p);
       }
       const winner = this.state.pieces[loser === d.attacker ? d.defender : d.attacker];
-      this.creditKill(winner);
+      this.creditKill(winner, this.state.pieces[loser]);
       this.state.turn = d.initiator;
       this.state.duel = null;
     } else this.state.turn = other(this.turn());

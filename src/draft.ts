@@ -17,7 +17,7 @@ export const skills: Record<Civilization, Record<Category, Skill[]>> = {
   greece: {
     passive: [
       { id: 'democracy', name: '민주주의', subtitle: '왕보다 강한 시민', description: '킹을 잃어도 전투는 계속됩니다. 모든 폰을 잃으면 패배합니다.', detail: '기존 킹 중심의 패배 조건을 폰 중심으로 바꾸는 패시브입니다.', symbol: 'crown' },
-      { id: 'philosophy', name: '철학', subtitle: '사유하는 자의 시간', description: '상대보다 3분의 추가시간을 얻습니다.', detail: '시간제한 대전용 능력입니다. 현재 기본 대전에는 타이머가 없습니다.', symbol: 'hourglass' },
+      { id: 'philosophy', name: '철학', subtitle: '소크라테스의 문답', description: '아군을 잡은 적을 다음 내 턴에 처치하면, 처치한 기물의 스킬 쿨타임이 1턴 감소합니다.', detail: '적에게 질문 표식이 붙습니다. 쿨타임 감소는 저장되지 않습니다.', symbol: 'hourglass' },
       { id: 'olympics', name: '올림픽', subtitle: '승리가 부르는 승리', description: '기물이 적을 잡아 영광을 3개 쌓으면 한 번 더 행동합니다.', detail: '기물마다 영광을 쌓습니다. 추가 행동이 발동하면 해당 기물의 영광은 0이 됩니다.', symbol: 'trophy' },
     ],
     active: [

@@ -57,11 +57,11 @@ test('unfinished setup, completed setup, replay and undo preserve placements', (
   assert.deepEqual(replay.state.zones,resumed.state.zones);
 });
 
-test('setup pauses the clock and games without placeable passives start immediately', () => {
+test('philosophy has no clock during or after setup and non-placeable passives start immediately', () => {
   const g = new AbilityGame({w:{...none,passive:'philosophy'},b:loadouts.b}).beginPlacement();
-  const before=g.state.clocks!.w;
-  g.tick(5000);assert.equal(g.state.clocks!.w,before);
+  assert.equal(g.state.clocks,null);
+  g.tick(5000);assert.equal(g.state.clocks,null);
   g.placePassive('b',{square:'f6',axis:'row'});
-  g.tick(1000);assert.equal(g.state.clocks!.w,before-1000);
+  g.tick(1000);assert.equal(g.state.clocks,null);
   assert.equal(new AbilityGame({w:none,b:none}).beginPlacement().placementOwner(),undefined);
 });

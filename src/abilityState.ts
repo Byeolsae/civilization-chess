@@ -14,6 +14,7 @@ export type AbilityPiece = {
   cargo: string[];
   effects: Partial<Record<EffectKind, number>>;
   cooldownUntil: number;
+  question?: { owner: Color; until: number };
   judgment?: { caster: Color; kills: number; executedAt?: Square };
 };
 export type AbilityZone = {

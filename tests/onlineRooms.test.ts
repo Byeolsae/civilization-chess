@@ -54,11 +54,11 @@ test('online placement belongs to each owner, survives reconnect and does not co
  room=await act(store,room,{kind:'place',placement:{square:'f7',axis:'row'}},b);
  const g=AbilityGame.restoreSave(room.variant!);assert.equal(g.placementOwner(),undefined);assert.equal(g.turn(),'w');assert.equal(g.state.zones.length,2);
 });
-test('server owns clocks and rejects moves after timeout',async()=>{
+test('philosophy does not start a timed online match',async()=>{
  let {store,room}=await setup(['greece','egypt','philosophy','sandstorm','zeus','set','sparta','mummy']);
- assert.equal(publicRoom(room,now+1000).variant!.clocks!.w,779000);
- room=await act(store,room,move(room,'e2','e4'),w,now+2000);assert.equal(room.variant!.clocks!.w,778000);
- await assert.rejects(()=>act(store,room,move(room,'e7','e5'),b,now+700000));
+ assert.equal(publicRoom(room,now+1000).variant!.clocks,null);
+ room=await act(store,room,move(room,'e2','e4'),w,now+2000);assert.equal(room.variant!.clocks,null);
+ room=await act(store,room,move(room,'e7','e5'),b,now+700000);assert.equal(room.variant!.clocks,null);
 });
 test('skills are validated and resignation ends both players game',async()=>{
  let {store,room}=await setup();const skill=AbilityGame.restoreSave(room.variant!).actions().find(a=>a.skill==='zeus');assert.ok(skill);
