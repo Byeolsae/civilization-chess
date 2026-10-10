@@ -277,7 +277,7 @@ test("legion absorbs one shock per pawn and Minotaur stuns neighboring enemies",
   );
   skill(m, "minotaur", "d3", "d3");
   assert.equal(m.moves({ square: "d4", verbose: true }).length, 0);
-  assert.equal(m.unit("d3")?.cooldownUntil, 4);
+  assert.equal(m.unit("d3")?.cooldownUntil, 6);
 });
 test("Praetorian substitutes for a royal king and dies with the attacker", () => {
   const g = create(

@@ -28,7 +28,7 @@ export const skills: Record<Civilization, Record<Category, Skill[]>> = {
     piece: [
       { id: 'trojan', name: '트로이 목마', subtitle: '나이트의 변신', description: '최대 4개의 폰을 수용하고 인접한 상하좌우 칸에 배치합니다.', detail: '목마가 잡히면 안에 있던 모든 폰도 함께 사망합니다.', symbol: 'horse' },
       { id: 'sparta', name: '스파르타', subtitle: '폰의 변신', description: '모든 폰이 추가 목숨 하나를 얻습니다.', detail: '공격으로 목숨을 잃어도 남은 목숨이 있다면 기물은 유지됩니다.', symbol: 'shield' },
-      { id: 'minotaur', name: '미노타우르스', subtitle: '나이트의 변신', description: '3턴마다 바닥을 내리쳐 주변 8칸의 기물을 기절시킵니다.', detail: '아군과 적군 모두 1턴 동안 전투불능 상태가 됩니다.', symbol: 'hammer' },
+      { id: 'minotaur', name: '미노타우르스', subtitle: '나이트의 변신', description: '5턴마다 바닥을 내리쳐 주변 8칸의 기물을 기절시킵니다.', detail: '아군과 적군 모두 각자 자신의 3턴 동안 전투불능 상태가 됩니다.', symbol: 'hammer' },
     ],
   },
   egypt: {

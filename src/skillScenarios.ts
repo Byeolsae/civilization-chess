@@ -43,7 +43,7 @@ export function createSkillScenario(id: string): SkillScenario | null {
     case 'vesta': loadouts.b.active='zeus'; add('성화를 설치해 주변 아군을 한 번 보호합니다.',cast(id,'d5')); add('상대의 번개를 성화 보호가 막습니다.',cast('zeus','d4')); break;
     case 'pilum': add('상대 기물에 인게임 무장 해제 표시가 나타납니다.',cast(id,'d6')); break;
     case 'trojan': pieces={a1:'K',h8:'k',d4:'N',d3:'P'}; add('인접한 폰을 목마에 태웁니다.',cast(id,'d3')); add('상대가 한 수를 둡니다.',move('h8','g8')); add('목마에서 폰을 인접한 빈 칸에 내립니다.',cast('deploy','e4')); break;
-    case 'minotaur': pieces={a1:'K',h8:'k',d4:'N',d5:'r',e4:'P'}; add('실제 충격파와 화면 흔들림이 발생하고 주변 기물에 기절 표시가 남습니다.',cast(id)); break;
+    case 'minotaur': pieces={a1:'K',h8:'k',d4:'N',d5:'r',e4:'P'}; add('땅이 갈라지고 주변 기물이 뛰어오른 뒤 착지하며 기절합니다. 피아 모두 각자 3턴 기절하며, 내 5번째 턴에 재사용할 수 있습니다.',cast(id)); break;
     case 'cleopatra': pieces={a1:'K',h8:'k',c3:'Q',e5:'p'}; add('폰의 진영이 바뀌고 실제 하트 효과가 나타납니다.',cast(id,'e5')); break;
     case 'ballista': pieces={a1:'K',h8:'k',d3:'R',d4:'P',d6:'b'}; add('아군을 관통하는 실제 사격으로 적을 제거하고 재장전합니다.',cast(id,'d6')); break;
     case 'gladiator': pieces={a1:'K',h8:'k',c3:'B',f6:'r'}; add('두 기물이 본 보드에서 사라지고 실제 결투장으로 이동합니다.',cast(id,'f6')); add('결투장에서 가능한 첫 수를 둡니다.',g => { const a=g.actions()[0]; if(!a)throw Error('Missing duel move');g.perform(a); }); break;

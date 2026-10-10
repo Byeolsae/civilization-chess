@@ -583,9 +583,9 @@ export class AbilityGame extends Chess {
     }
     return false;
   }
-  private afflict(p: ExtraPiece, kind: "shock" | "stun") {
+  private afflict(p: ExtraPiece, kind: "shock" | "stun", duration = 1) {
     if (!this.immune(p))
-      applyEffect(this.state, p.id, kind, this.state.turns[p.owner] + 1);
+      applyEffect(this.state, p.id, kind, this.state.turns[p.owner] + duration);
   }
   private updateLegion() {
     for (const p of this.units()) {
@@ -1176,8 +1176,8 @@ export class AbilityGame extends Chess {
     if (skill === "minotaur" && p) {
       for (const t of this.units())
         if (t.square && t.id !== p.id && distance(t.square, p.square!) === 1)
-          this.afflict(t, "stun");
-      p.cooldownUntil = this.state.turns[c] + 3;
+          this.afflict(t, "stun", 3);
+      p.cooldownUntil = this.state.turns[c] + 5;
     }
     if (skill === "cleopatra" && q) {
       q.charmed = { owner: q.owner, until: this.state.turns[q.owner] + 2 };

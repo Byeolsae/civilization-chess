@@ -6,7 +6,7 @@ import { specialPieceTypes } from './specialPieces';
 const types = specialPieceTypes;
 const timing: Record<string, string> = {
   trojan: '탑승·하차마다 한 행동 · 상하좌우 1칸 · 최대 폰 4개',
-  minotaur: '주변 8칸 피아 모두 기절 · 사용 후 내 3번째 턴에 재사용',
+  minotaur: '주변 8칸 피아 모두 각자 3턴 기절 · 사용 후 내 5번째 턴에 재사용',
   cleopatra: '퀸이 공격 가능한 적 폰 · 동시에 1개만 매혹 · 원래 주인의 두 번째 턴에 복귀',
   ballista: '8방향 최대 5칸 · 아군 관통, 첫 적에서 정지 · 사용 후 내 3개 턴 동안 재장전',
   gladiator: '체크 중 사용 불가 · 적 킹 제외 · 비숍마다 2회',

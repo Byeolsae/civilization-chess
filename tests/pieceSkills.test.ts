@@ -34,3 +34,18 @@ test('automatic Sphinx belongs to knights, and exhausted duel cannot be activate
   assert.match(pieceSkillInfo(duel, 'c1')!.status, /사용 완료/);
   assert.equal(pieceSkillInfo(duel, 'c1')!.actions.length, 0);
 });
+
+
+test('finalized Minotaur stuns both sides for three own turns and recharges after five', () => {
+  const g = game('minotaur', '7k/8/8/3p4/3NP3/8/8/K7 w - - 0 1');
+  g.perform(pieceSkillInfo(g, 'd4')!.actions[0]);
+  for (let round = 1; round <= 5; round++) {
+    assert.equal(g.moves({ square: 'd5', verbose: true }).length === 0, round <= 3);
+    g.move({ from: round % 2 ? 'h8' : 'h7', to: round % 2 ? 'h7' : 'h8' });
+    assert.equal(g.moves({ square: 'e4', verbose: true }).length === 0, round <= 3);
+    const info = pieceSkillInfo(g, 'd4')!;
+    assert.equal(info.cooldown, 5 - round);
+    assert.equal(info.actions.some(a => a.skill === 'minotaur'), round === 5);
+    if (round < 5) g.move({ from: round % 2 ? 'a1' : 'a2', to: round % 2 ? 'a2' : 'a1' });
+  }
+});
