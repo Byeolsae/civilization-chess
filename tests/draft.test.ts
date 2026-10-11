@@ -9,11 +9,11 @@ import { civilizationAppearance } from '../src/civilizations';
 
 const picks = ['greece', 'egypt', 'olympics', 'pyramid', 'zeus', 'osiris', 'sparta', 'mummy'];
 
-test('thirty-one civilizations each have all twelve nonempty piece assets', () => {
-  assert.equal(civilizations.length, 31);
-  assert.equal(new Set(civilizations.map(civ => civ.id)).size, 31);
-  assert.equal(new Set(civilizations.map(civ => civ.name)).size, 31);
-  assert.deepEqual(new Set(civilizations.map(civ => civ.id)), new Set(['greece', 'rome', 'egypt', 'tang', 'song', 'han', 'qing', 'qin', 'korea', 'goryeo', 'goguryeo', 'baekje', 'silla', 'heian', 'edo', 'meiji', 'sengoku', 'wei', 'shu', 'wu', 'gojoseon', 'kamakura', 'mongol-empire', 'yuan', 'russian-empire', 'prussia', 'inca', 'aztec', 'maya', 'gaul', 'babylon']));
+test('thirty-two civilizations each have all twelve nonempty piece assets', () => {
+  assert.equal(civilizations.length, 32);
+  assert.equal(new Set(civilizations.map(civ => civ.id)).size, 32);
+  assert.equal(new Set(civilizations.map(civ => civ.name)).size, 32);
+  assert.deepEqual(new Set(civilizations.map(civ => civ.id)), new Set(['greece', 'rome', 'egypt', 'tang', 'song', 'han', 'ming', 'qing', 'qin', 'korea', 'goryeo', 'goguryeo', 'baekje', 'silla', 'heian', 'edo', 'meiji', 'sengoku', 'wei', 'shu', 'wu', 'gojoseon', 'kamakura', 'mongol-empire', 'yuan', 'russian-empire', 'prussia', 'inca', 'aztec', 'maya', 'gaul', 'babylon']));
   for (const civ of civilizations) for (const color of ['w', 'b']) for (const piece of ['P', 'N', 'B', 'R', 'Q', 'K']) {
     const palette = civilizationAppearance[civ.id];
     const svg = readFileSync(new URL(`../public/pieces/${palette}/${color}${piece}.svg`, import.meta.url), 'utf8');

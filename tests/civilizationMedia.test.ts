@@ -6,6 +6,17 @@ import { civilizationMedia, defaultMediaPreferences, mediaForCivilization, oppon
 import { defaultSettings, localSettings } from '../src/matchSettings';
 import type { Players } from '../src/game';
 
+test('period backgrounds exist separately without inheriting another dynasty soundtrack', () => {
+  const paths = new Set<string>();
+  for (const id of ['sengoku', 'edo', 'ming', 'goryeo'] as const) {
+    const media = mediaForCivilization(id);
+    assert.ok(media.background && existsSync(`public${media.background}`), `${id} background missing`);
+    paths.add(media.background);
+    assert.equal(media.bgm, null);
+  }
+  assert.equal(paths.size, 4);
+});
+
 test('AI atmosphere always belongs to the opponent regardless of turn', () => {
   const players: Players = { w: 'greece', b: 'egypt' };
   for (const turn of ['w', 'b'] as const) {

@@ -10,6 +10,10 @@ export const defaultMedia: CivilizationMedia = { background: null, bgm: null };
 // Example after adding files under public/media/greece/:
 // greece: { background: '/media/greece/background.webp', bgm: '/media/greece/bgm.mp3' },
 export const civilizationMedia: Partial<Record<Civilization, CivilizationMedia>> = {
+  sengoku: { background: '/media/sengoku/background-v1.webp', bgm: null },
+  edo: { background: '/media/edo/background-v1.webp', bgm: null },
+  ming: { background: '/media/ming/background-v1.webp', bgm: null },
+  goryeo: { background: '/media/goryeo/background-v1.webp', bgm: null },
   greece: { background: '/media/greece/background-v1.webp', bgm: '/media/greece/bgm-loop-v1.mp3', credit: { title: 'Kallipolian Dance', artist: 'Farya Faraji & World Musicians · SEIKILO Ancient World Music' } },
   egypt: { background: '/media/egypt/background-v1.webp', bgm: '/media/egypt/bgm-loop-v1.mp3', credit: { title: 'The Legend of Narmer', artist: 'WombatNoisesAudio' } },
   rome: { background: '/media/rome/background-v1.webp', bgm: '/media/rome/bgm-loop-v1.mp3', credit: { title: 'National Anthem of the Roman Empire — S.P.Q.R.', artist: 'VidGames', sourceOnly: true } },

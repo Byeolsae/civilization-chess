@@ -1,0 +1,4 @@
+Input: exec-9fd3e781-0237-46d8-8a93-c32cb5066e6c.png (original generation retained in Codex generated_images).
+Output: exec-fa5d9fb6-df80-4ff3-a750-04fc5ba4b665.png, copied to background-v1.png.
+
+Refine this Edo circa 1809 merchant canal background for historical plausibility. Preserve exact widescreen composition, foreground timber merchant buildings left, white plaster storehouses right, wooden bridge, boats, calm central water, warm atmospheric light. REMOVE every tall castle-like pagoda/tiered tower and square watchtower in the distant left and central skyline; replace them with a LOW dense skyline of modest dark gray Japanese tiled merchant roofs fading into haze, no giant keep. Remove the white emblem from the blue curtain left; plain indigo cloth. No text or symbols. Keep all other scene details and rendering quality.
