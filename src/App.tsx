@@ -421,11 +421,11 @@ export default function App() {
               {translateUi(game instanceof AbilityGame && <Sandstorm game={game} viewer={settings.mode !== 'local' ? settings.humanColor : game.turn()} flipped={flipped} />)}
               <SkillEffects game={game} flipped={flipped} players={players} />
             </div>
-            <div className="board-law-overlay">          {placementOwner && choosingLaw && game instanceof AbilityGame && <LawSelection key={placementOwner} enabled={placementHuman && !confirm} onSelect={law => {
+            {placementOwner && choosingLaw && game instanceof AbilityGame && <div className="board-law-overlay"><LawSelection key={placementOwner} enabled={placementHuman && !confirm} onSelect={law => {
             if (!placementHuman || confirm) return;
             if (settings.mode === 'online') void online.send({kind:'place',placement:{law}});
             else { game.placePassive(placementOwner,{law}); setRevision(value=>value+1); }
-          }}/>}</div>
+          }}/></div>}
           </div>
           </div>
 
