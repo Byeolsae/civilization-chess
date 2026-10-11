@@ -827,5 +827,14 @@
   "같은 문명 · 스킬 다시 선택": "Same civilizations · Choose skills again",
   "양쪽 문명과 흑백을 유지하고 스킬을 다시 고릅니다.": "Keep both civilizations and sides, and choose new skills.",
   "같은 문명 · 같은 스킬": "Same civilizations · Same skills",
-  "현재 조합으로 새 대전을 시작합니다. 시작 배치는 다시 선택합니다.": "Start a fresh match with the current loadouts. Choose starting placements again."
+  "현재 조합으로 새 대전을 시작합니다. 시작 배치는 다시 선택합니다.": "Start a fresh match with the current loadouts. Choose starting placements again.",
+  "온라인 재대전": "Online rematch",
+  "상대의 재대전 수락을 기다리고 있습니다.": "Waiting for your opponent to accept the rematch.",
+  "상대가 재대전을 요청했습니다.": "Your opponent has requested a rematch.",
+  "두 참가자가 동의하면 현재 대전을 초기화합니다. 흑백과 방은 유지됩니다.": "Once both players agree, the match resets. The room and sides stay the same.",
+  "요청 취소": "Cancel request",
+  "거절": "Decline",
+  "수락하고 재대전": "Accept rematch",
+  "재대전 요청을 확인해주세요.": "Please respond to the pending rematch request.",
+  "상대만 재대전을 수락할 수 있습니다.": "Only the opponent can accept a rematch."
 }

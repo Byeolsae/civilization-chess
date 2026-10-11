@@ -62,6 +62,7 @@ export default function App() {
   const online = useOnlineRoom();
   const [onlineRequested] = useState(() => !!online.session || new URL(location.href).searchParams.has('room'));
   const onlineApplied = useRef('');
+  const onlineRound = useRef('');
   const [restored] = useState(() => { try { return onlineRequested ? null : decodeMatch(localStorage.getItem(STORAGE_KEY)); } catch { return null; } });
   const [preparation] = useState(() => {
     try {
@@ -121,9 +122,20 @@ export default function App() {
   useEffect(() => {
     const room=online.room;if (!online.session || !room) return;
     const key=room.id+':'+room.revision;
+    const roundKey=room.id+':'+(room.round??0);
+    const newRound=onlineRound.current!==roundKey;
+    if(newRound){
+      onlineRound.current=roundKey;
+      setConfirm(null);setResigned(null);setReviewPly(null);setSelected(null);setPromotion(null);setQuiz(null);
+      setPieceMode('');setPieceCargo('');setPlacementArmed(false);setPlacementSquare(null);
+      dragRef.current=null;setDragVisual(null);activeTarget.cancel();
+      setFlipped(online.session.color==='b');
+      if(!room.variant){setStarted(false);setLoadouts(null);setGame(new Chess());}
+    }
+
     if (room.variant && onlineApplied.current !== key) {
       const complete=completeDraft(room.picks);if(!complete)return;
-      if(game instanceof AbilityGame && started && JSON.stringify(game.loadouts)===JSON.stringify(room.variant.loadouts)) game.acceptOnlineSave(room.variant);
+      if(!newRound && game instanceof AbilityGame && started && JSON.stringify(game.loadouts)===JSON.stringify(room.variant.loadouts)) game.acceptOnlineSave(room.variant);
       else setGame(AbilityGame.restoreSave(room.variant));
       setPlayers(complete.players);setLoadouts(complete.loadouts);setStarted(true);setResigned(room.resigned);
       setSelected(null);setPromotion(null);setRevision(value=>value+1);onlineApplied.current=key;
@@ -311,7 +323,7 @@ export default function App() {
   }
 
   function rematch(keepSkills: boolean) {
-    if (settings.mode === 'online') return;
+    if (settings.mode === 'online') { void online.send({kind:'rematch',mode:keepSkills?'loadouts':'civilizations'}).then(ok=>{if(ok)setConfirm(null);}); return; }
     const previousLoadouts=loadouts;
     reset();
     setSetupReady(true);
@@ -481,6 +493,13 @@ export default function App() {
     {translateUi(dragVisual && <div className="drag-layer" aria-hidden="true"><div className="drag-piece" style={{ left: dragVisual.x, top: dragVisual.y, width: dragVisual.size, height: dragVisual.size }}><Piece type={dragVisual.type} color={dragVisual.color} civilization={players[dragVisual.color]} revived={game instanceof AbilityGame ? game.unit(dragVisual.from)?.revived : undefined} lives={game instanceof AbilityGame ? game.unit(dragVisual.from)?.lives : undefined} skill={game instanceof AbilityGame ? game.loadouts[dragVisual.color].piece : undefined} /></div></div>)}
     {translateUi(settings.mode === 'online' && <OnlineQuiz online={online}/>)}
     {translateUi(quiz && <SphinxChallenge onResolve={correct => performAbility({ ...quiz, quiz: correct })} />)}{translateUi(promotion && !quiz && <Modal title={translateUi("폰을 승격하세요")} onClose={() => setPromotion(null)}><p className="muted">{translateUi("마지막 줄에 도착했습니다. 새로운 기물을 선택하세요.")}</p><div className="promotion-options">{translateUi((['q', 'r', 'b', 'n'] as Promotion[]).filter(type => !(game instanceof AbilityGame) || game.actions().some(a => a.kind === 'move' && a.from === promotion.from && a.to === promotion.to && a.promotion === type)).map(type => <button key={type} onClick={() => commit(promotion.from, promotion.to, type)}><Piece type={type} color={game.turn()} civilization={players[game.turn()]} skill={game instanceof AbilityGame ? game.loadouts[game.turn()].piece : undefined} /><span>{translateUi(pieceNames[type])}</span></button>))}</div></Modal>)}
-    {translateUi(confirm && <Modal title={translateUi(confirm === 'new' ? '새로운 대전을 시작할까요?' : `${colorNames[resigningColor]}이 기권할까요?`)} onClose={() => setConfirm(null)}><p className="muted">{translateUi(confirm === 'new' ? '다시 대전할 방식을 선택하세요. 현재 진행 상황은 초기화됩니다.' : `${colorNames[opposite(resigningColor)]}의 승리로 대전이 종료됩니다.`)}</p>{confirm==='new' && settings.mode!=='online' && <div className="rematch-options"><button className="secondary-button" onClick={()=>rematch(false)}><strong>{translateUi('같은 문명 · 스킬 다시 선택')}</strong><small>{translateUi('양쪽 문명과 흑백을 유지하고 스킬을 다시 고릅니다.')}</small></button><button className="secondary-button" disabled={!loadouts} onClick={()=>rematch(true)}><strong>{translateUi('같은 문명 · 같은 스킬')}</strong><small>{translateUi('현재 조합으로 새 대전을 시작합니다. 시작 배치는 다시 선택합니다.')}</small></button></div>}<div className="modal-actions"><button className="secondary-button" onClick={() => setConfirm(null)}>{translateUi("계속 두기")}</button><button className="primary-button" onClick={() => { if (confirm === 'new') { if(settings.mode==='online')void leaveOnline();else reset(); } else if(settings.mode==='online'){void online.send({kind:'resign'});setConfirm(null);} else { ai.cancel(); setResigned(resigningColor); setSelected(null); setConfirm(null); } }}>{translateUi(confirm === 'new' ? '대전 다시 설정' : '기권하기')}</button></div></Modal>)}
+    {settings.mode==='online' && online.room?.rematch && !confirm && <Modal title={translateUi('온라인 재대전')} onClose={()=>{void online.send({kind:'rematch-answer',accept:false});}}>
+      <p>{translateUi(online.room.rematch.color===online.session?.color?'상대의 재대전 수락을 기다리고 있습니다.':'상대가 재대전을 요청했습니다.')}</p>
+      <p><strong>{translateUi(online.room.rematch.mode==='loadouts'?'같은 문명 · 같은 스킬':'같은 문명 · 스킬 다시 선택')}</strong></p>
+      <p className="muted">{translateUi('두 참가자가 동의하면 현재 대전을 초기화합니다. 흑백과 방은 유지됩니다.')}</p>
+      <div className="modal-actions"><button className="secondary-button" disabled={online.busy||!online.connected} onClick={()=>void online.send({kind:'rematch-answer',accept:false})}>{translateUi(online.room.rematch.color===online.session?.color?'요청 취소':'거절')}</button>{online.room.rematch.color!==online.session?.color&&<button className="primary-button" disabled={online.busy||!online.connected} onClick={()=>void online.send({kind:'rematch-answer',accept:true})}>{translateUi('수락하고 재대전')}</button>}</div>
+      {online.error&&<p role="alert">{translateUi(online.error)}</p>}
+    </Modal>}
+    {translateUi(confirm && <Modal title={translateUi(confirm === 'new' ? '새로운 대전을 시작할까요?' : `${colorNames[resigningColor]}이 기권할까요?`)} onClose={() => setConfirm(null)}><p className="muted">{translateUi(confirm === 'new' ? '다시 대전할 방식을 선택하세요. 현재 진행 상황은 초기화됩니다.' : `${colorNames[opposite(resigningColor)]}의 승리로 대전이 종료됩니다.`)}</p>{confirm==='new' && settings.mode==='online' && <><p className="muted">{translateUi('두 참가자가 동의하면 현재 대전을 초기화합니다. 흑백과 방은 유지됩니다.')}</p>{online.error&&<p role="alert">{translateUi(online.error)}</p>}</>}{confirm==='new' && <div className="rematch-options"><button className="secondary-button" disabled={settings.mode==='online'&&(online.busy||!online.connected||!!online.room?.rematch)} onClick={()=>rematch(false)}><strong>{translateUi('같은 문명 · 스킬 다시 선택')}</strong><small>{translateUi('양쪽 문명과 흑백을 유지하고 스킬을 다시 고릅니다.')}</small></button><button className="secondary-button" disabled={!loadouts||(settings.mode==='online'&&(online.busy||!online.connected||!!online.room?.rematch))} onClick={()=>rematch(true)}><strong>{translateUi('같은 문명 · 같은 스킬')}</strong><small>{translateUi('현재 조합으로 새 대전을 시작합니다. 시작 배치는 다시 선택합니다.')}</small></button></div>}<div className="modal-actions"><button className="secondary-button" onClick={() => setConfirm(null)}>{translateUi("계속 두기")}</button><button className="primary-button" onClick={() => { if (confirm === 'new') { if(settings.mode==='online')void leaveOnline();else reset(); } else if(settings.mode==='online'){void online.send({kind:'resign'});setConfirm(null);} else { ai.cancel(); setResigned(resigningColor); setSelected(null); setConfirm(null); } }}>{translateUi(confirm === 'new' ? '대전 다시 설정' : '기권하기')}</button></div></Modal>)}
   </div>;
 }

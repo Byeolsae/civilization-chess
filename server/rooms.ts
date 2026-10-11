@@ -2,9 +2,9 @@ import { createHash, randomBytes, randomInt } from 'node:crypto';
 import type { Color } from 'chess.js';
 import { AbilityGame, type AbilityAction, type AbilitySave } from '../src/AbilityGame.js';
 import { confirmPick, completeDraft, draftSteps } from '../src/draft.js';
-import type { RoomCommand, RoomView } from '../src/onlineProtocol.js';
+import type { RoomCommand, RoomView, RematchRequest } from '../src/onlineProtocol.js';
 export class RoomError extends Error { constructor(public status:number,message:string){super(message);} }
-export type Room = { id:string; revision:number; host?:string; colorsChosen?:boolean; seats:Record<Color,string|null>; picks:string[]; variant:AbilitySave|null; resigned:Color|null; clockAt:number; expiresAt:number; requests:Partial<Record<Color,string>>; quiz:null|{color:Color;action:AbilityAction;question:string;answer:number;expiresAt:number} };
+export type Room = { id:string; revision:number; round?:number; rematch?:RematchRequest|null; host?:string; colorsChosen?:boolean; seats:Record<Color,string|null>; picks:string[]; variant:AbilitySave|null; resigned:Color|null; clockAt:number; expiresAt:number; requests:Partial<Record<Color,string>>; quiz:null|{color:Color;action:AbilityAction;question:string;answer:number;expiresAt:number} };
 export interface RoomStore { get(id:string):Promise<Room|null>; create(room:Room):Promise<boolean>; swap(room:Room,expected:number):Promise<boolean>; }
 export const tokenHash=(token:string)=>createHash('sha256').update(token).digest('hex');
 export function seat(room:Room,token:string):Color { const hash=tokenHash(token);if(room.seats.w===hash)return 'w';if(room.seats.b===hash)return 'b';throw new RoomError(403,'이 방의 참가자 인증이 필요합니다.'); }
@@ -25,7 +25,7 @@ export async function joinRoom(store:RoomStore,id:string,token:string,now=Date.n
 function gameAt(room:Room,now:number){if(!room.variant)throw new RoomError(409,'문명과 스킬 선택을 먼저 마쳐주세요.');const game=AbilityGame.restoreSave(room.variant);if(!room.resigned&&!game.isGameOver())game.tick(Math.max(0,now-room.clockAt));return game;}
 export function publicRoom(room:Room,now=Date.now()):RoomView {
  const variant=room.variant?.clocks&&!room.resigned ? gameAt(room,now).save() : room.variant;
- return {id:room.id,revision:room.revision,joined:!!room.seats.w&&!!room.seats.b,colorsChosen:room.colorsChosen!==false,hostColor:room.host===room.seats.b?'b':'w',picks:room.picks,variant,resigned:room.resigned,expiresAt:room.expiresAt,serverTime:now,quiz:room.quiz?{color:room.quiz.color,question:room.quiz.question,expiresAt:room.quiz.expiresAt}:null};
+ return {id:room.id,revision:room.revision,round:room.round??0,rematch:room.rematch??null,joined:!!room.seats.w&&!!room.seats.b,colorsChosen:room.colorsChosen!==false,hostColor:room.host===room.seats.b?'b':'w',picks:room.picks,variant,resigned:room.resigned,expiresAt:room.expiresAt,serverTime:now,quiz:room.quiz?{color:room.quiz.color,question:room.quiz.question,expiresAt:room.quiz.expiresAt}:null};
 }
 export async function commandRoom(store:RoomStore,id:string,token:string,expected:number,requestId:string,command:RoomCommand,now=Date.now()){
  checkedToken(token);const room=await getRoom(store,id,now);const color=seat(room,token);
@@ -41,6 +41,25 @@ export async function commandRoom(store:RoomStore,id:string,token:string,expecte
  }
  if(room.colorsChosen===false)throw new RoomError(409,'대기실에서 흑백을 먼저 선택해주세요.');
  if(!room.seats.w||!room.seats.b)throw new RoomError(409,'상대의 입장을 기다려주세요.');
+ if(command.kind==='rematch'||command.kind==='rematch-answer'){
+   if(!room.variant)throw new RoomError(409,'문명과 스킬 선택을 먼저 마쳐주세요.');
+   if(command.kind==='rematch'){
+     if(!['civilizations','loadouts'].includes(command.mode)||room.rematch)throw new RoomError(409,'재대전 요청을 확인해주세요.');
+     room.rematch={color,mode:command.mode};
+   }else{
+     const request=room.rematch;
+     if(!request||typeof command.accept!=='boolean'||(command.accept&&request.color===color))throw new RoomError(403,'상대만 재대전을 수락할 수 있습니다.');
+     if(command.accept){
+       const complete=completeDraft(room.picks);if(!complete)throw new RoomError(409,'문명과 스킬 선택을 먼저 마쳐주세요.');
+       room.variant=request.mode==='loadouts'?new AbilityGame(complete.loadouts).beginPlacement().save():null;
+       if(request.mode==='civilizations')room.picks=room.picks.slice(0,2);
+       room.resigned=null;room.quiz=null;room.clockAt=now;room.round=(room.round??0)+1;
+     }
+     room.rematch=null;
+   }
+   room.revision++;room.requests[color]=requestId;
+   if(!await store.swap(room,expected))throw new RoomError(409,'동시에 다른 행동이 반영되었습니다. 최신 상태를 확인하세요.');return room;
+ }
  if(room.resigned)throw new RoomError(409,'이미 종료된 대전입니다.');
  if(command.kind==='pick'){
    if(room.variant||draftSteps[room.picks.length]?.color!==color)throw new RoomError(403,'내 선택 차례가 아닙니다.');

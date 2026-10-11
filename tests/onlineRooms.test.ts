@@ -117,3 +117,44 @@ test('online Twelve Tables requires an authorized law selection before play',asy
  room=await act(store,room,{kind:'action',action},b);
  const after=AbilityGame.restoreSave(room.variant!);assert.equal(after.unit(action.from!)!.cooldownUntil-after.state.turns.b,6);
 });
+
+test('rematch needs opponent consent, keeps seats and resets spent skills and resignation',async()=>{
+ let {store,room}=await setup();
+ const skill=AbilityGame.restoreSave(room.variant!).actions().find(a=>a.skill==='zeus')!;
+ room=await act(store,room,{kind:'action',action:skill});
+ room=await act(store,room,{kind:'resign'},b);
+ const previous=room.variant;
+ room=await act(store,room,{kind:'rematch',mode:'loadouts'});
+ assert.deepEqual(room.variant,previous);assert.equal(room.resigned,'b');
+ assert.equal(publicRoom(room,now).rematch?.mode,'loadouts');
+ await assert.rejects(()=>act(store,room,{kind:'rematch-answer',accept:true}));
+ await assert.rejects(()=>act(store,room,{kind:'rematch',mode:'civilizations'},b));
+ room=await act(store,room,{kind:'rematch-answer',accept:true},b);
+ assert.equal(room.round,1);assert.equal(room.rematch,null);assert.equal(room.resigned,null);
+ assert.equal(room.variant!.actions.length,0);assert.equal(AbilityGame.restoreSave(room.variant!).state.activeUsed.w,false);
+ assert.deepEqual(room.picks,ordinary);assert.equal(seat(room,w),'w');assert.equal(seat(room,b),'b');
+});
+test('rematch can be declined or cancelled without changing play, and civilization mode redrafts skills',async()=>{
+ let {store,room}=await setup();room=await act(store,room,move(room,'e2','e4'));
+ for(const responder of [b,w]){
+   room=await act(store,room,{kind:'rematch',mode:'civilizations'});
+   room=await act(store,room,{kind:'rematch-answer',accept:false},responder);
+   assert.equal(room.variant!.actions.length,1);assert.equal(room.rematch,null);
+ }
+ room=await act(store,room,{kind:'rematch',mode:'civilizations'},b);
+ room=await act(store,room,{kind:'rematch-answer',accept:true});
+ assert.equal(room.variant,null);assert.deepEqual(room.picks,ordinary.slice(0,2));
+ for(const choice of ordinary.slice(2)) room=await act(store,room,{kind:'pick',choice},draftSteps[room.picks.length].color==='w'?w:b);
+ assert.equal(room.variant!.actions.length,0);assert.equal(AbilityGame.restoreSave(room.variant!).turn(),'w');
+});
+test('rematch starts terrain placement again and accepting duplicate requests is idempotent',async()=>{
+ let {store,room}=await setup(['rome','egypt','roads','pyramid','pilum','set','ballista','mummy']);
+ room=await act(store,room,{kind:'place',placement:{square:'b4',axis:'column'}});
+ room=await act(store,room,{kind:'place',placement:{square:'f7',axis:'row'}},b);
+ room=await act(store,room,{kind:'rematch',mode:'loadouts'});
+ const revision=room.revision,id=randomUUID();
+ room=await commandRoom(store,room.id,b,revision,id,{kind:'rematch-answer',accept:true},now);
+ const retry=await commandRoom(store,room.id,b,revision,id,{kind:'rematch-answer',accept:true},now);
+ assert.equal(retry.round,1);assert.equal(retry.revision,room.revision);
+ const game=AbilityGame.restoreSave(room.variant!);assert.equal(game.placementOwner(),'w');assert.equal(game.state.zones.length,0);
+});
