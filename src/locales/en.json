@@ -822,5 +822,10 @@
   "상대의 결투 행동을 기다리는 중": "Waiting for the opponent’s duel action",
   "대전 시작 전 12개의 법 슬롯에서 하나를 선택합니다. 현재 세 가지 법을 사용할 수 있습니다.": "Before the match, choose one of twelve law slots. Three laws are currently available.",
   "군율법 카드를 선택합니다. 선택한 법을 확인한 뒤 확정합니다.": "Select Military Code, review the selected law, then confirm.",
-  "체스판 위에서 이번 대전에 적용할 법을 선택하세요.": "Choose the law for this match in the panel over the board."
+  "체스판 위에서 이번 대전에 적용할 법을 선택하세요.": "Choose the law for this match in the panel over the board.",
+  "다시 대전할 방식을 선택하세요. 현재 진행 상황은 초기화됩니다.": "Choose how to play again. The current match progress will be reset.",
+  "같은 문명 · 스킬 다시 선택": "Same civilizations · Choose skills again",
+  "양쪽 문명과 흑백을 유지하고 스킬을 다시 고릅니다.": "Keep both civilizations and sides, and choose new skills.",
+  "같은 문명 · 같은 스킬": "Same civilizations · Same skills",
+  "현재 조합으로 새 대전을 시작합니다. 시작 배치는 다시 선택합니다.": "Start a fresh match with the current loadouts. Choose starting placements again."
 }

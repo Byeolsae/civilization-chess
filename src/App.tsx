@@ -77,6 +77,7 @@ export default function App() {
   const [players, setPlayers] = useState<Players>(() => restored?.players ?? { w: 'greece', b: 'egypt' });
   const [loadouts, setLoadouts] = useState<Loadouts | null>(restored?.loadouts ?? null);
   const [started, setStarted] = useState(!!restored);
+  const [rematchPicks,setRematchPicks] = useState<string[] | undefined>();
   const [resigned, setResigned] = useState<Color | null>(restored?.resigned ?? null);
   const [reviewPly, setReviewPly] = useState<number | null>(null);
   const [revision, setRevision] = useState(0);
@@ -303,8 +304,26 @@ export default function App() {
     if (online.session) online.leave(); onlineApplied.current='';
     ai.cancel(); setSetupReady(false); setFlipped(false); dragRef.current = null; setDragVisual(null);
     setGame(new Chess()); setStarted(false); setResigned(null); setSelected(null);
+    setRematchPicks(undefined); setReviewPly(null); setPieceMode(''); setPieceCargo(''); activeTarget.cancel();
+    setPlacementArmed(false); setPlacementSquare(null);
     setPromotion(null); setQuiz(null); setConfirm(null); setRevision(0); setLoadouts(null);
     try { localStorage.removeItem(DRAFT_KEY); localStorage.removeItem(SETUP_KEY); } catch { /* Draft handles save failures. */ }
+  }
+
+  function rematch(keepSkills: boolean) {
+    if (settings.mode === 'online') return;
+    const previousLoadouts=loadouts;
+    reset();
+    setSetupReady(true);
+    try { localStorage.setItem(SETUP_KEY,JSON.stringify(settings)); } catch { setStorageError(true); }
+    if (keepSkills && previousLoadouts) {
+      setLoadouts(previousLoadouts);
+      setGame(Object.values(previousLoadouts).some(l=>Object.values(l).some(id=>id!=='pending')) ? new AbilityGame(previousLoadouts).beginPlacement() : new Chess());
+      setFlipped(settings.mode==='ai' && settings.humanColor==='b');
+      setStarted(true);
+    } else {
+      setRematchPicks([players.w,players.b]);
+    }
   }
 
   function undo() {
@@ -355,7 +374,7 @@ export default function App() {
           localStorage.setItem(SETUP_KEY, JSON.stringify(next));
         } catch { setStorageError(true); }
         setSettings(next); setSetupReady(true);
-      }} /> : settings.mode === 'online' ? !online.session ? <OnlineLobby online={online} onBack={()=>setSetupReady(false)}/> : !online.room?.joined || !online.room.colorsChosen ? <OnlineWaitingRoom online={online}/> : <Draft settings={settings} network={{picks:online.room.picks,color:online.session.color,busy:online.busy,connected:online.connected,onPick:choice=>online.send({kind:'pick',choice})}} onSettings={()=>void leaveOnline()} onStart={()=>{}}/> : <Draft settings={settings} onSettings={() => setSetupReady(false)} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts).beginPlacement() : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} /> : <>
+      }} /> : settings.mode === 'online' ? !online.session ? <OnlineLobby online={online} onBack={()=>setSetupReady(false)}/> : !online.room?.joined || !online.room.colorsChosen ? <OnlineWaitingRoom online={online}/> : <Draft settings={settings} network={{picks:online.room.picks,color:online.session.color,busy:online.busy,connected:online.connected,onPick:choice=>online.send({kind:'pick',choice})}} onSettings={()=>void leaveOnline()} onStart={()=>{}}/> : <Draft initialPicks={rematchPicks} settings={settings} onSettings={() => {setRematchPicks(undefined);setSetupReady(false);}} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts).beginPlacement() : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} /> : <>
       {translateUi(reviewPly !== null && <Modal title={translateUi("대전 복기")} onClose={() => setReviewPly(null)}><MatchReview game={game} players={players} initialPly={reviewPly} flipped={flipped} viewer={settings.mode === 'local' ? game.turn() : settings.humanColor} live={!status.over}/></Modal>)}
       <div className="page-heading"><div><div className="eyebrow">THE FIRST AGE</div><h1>{translateUi("한 수로 시작하는 문명")}</h1></div><span className="rules-badge"><Shield size={15} /> {translateUi(game instanceof AbilityGame ? '문명 능력 대전' : '기본 체스')}</span></div>
       <div className="game-layout">
@@ -462,6 +481,6 @@ export default function App() {
     {translateUi(dragVisual && <div className="drag-layer" aria-hidden="true"><div className="drag-piece" style={{ left: dragVisual.x, top: dragVisual.y, width: dragVisual.size, height: dragVisual.size }}><Piece type={dragVisual.type} color={dragVisual.color} civilization={players[dragVisual.color]} revived={game instanceof AbilityGame ? game.unit(dragVisual.from)?.revived : undefined} lives={game instanceof AbilityGame ? game.unit(dragVisual.from)?.lives : undefined} skill={game instanceof AbilityGame ? game.loadouts[dragVisual.color].piece : undefined} /></div></div>)}
     {translateUi(settings.mode === 'online' && <OnlineQuiz online={online}/>)}
     {translateUi(quiz && <SphinxChallenge onResolve={correct => performAbility({ ...quiz, quiz: correct })} />)}{translateUi(promotion && !quiz && <Modal title={translateUi("폰을 승격하세요")} onClose={() => setPromotion(null)}><p className="muted">{translateUi("마지막 줄에 도착했습니다. 새로운 기물을 선택하세요.")}</p><div className="promotion-options">{translateUi((['q', 'r', 'b', 'n'] as Promotion[]).filter(type => !(game instanceof AbilityGame) || game.actions().some(a => a.kind === 'move' && a.from === promotion.from && a.to === promotion.to && a.promotion === type)).map(type => <button key={type} onClick={() => commit(promotion.from, promotion.to, type)}><Piece type={type} color={game.turn()} civilization={players[game.turn()]} skill={game instanceof AbilityGame ? game.loadouts[game.turn()].piece : undefined} /><span>{translateUi(pieceNames[type])}</span></button>))}</div></Modal>)}
-    {translateUi(confirm && <Modal title={translateUi(confirm === 'new' ? '새로운 대전을 시작할까요?' : `${colorNames[resigningColor]}이 기권할까요?`)} onClose={() => setConfirm(null)}><p className="muted">{translateUi(confirm === 'new' ? '현재 기록을 지우고 대전 설정 화면으로 돌아갑니다.' : `${colorNames[opposite(resigningColor)]}의 승리로 대전이 종료됩니다.`)}</p><div className="modal-actions"><button className="secondary-button" onClick={() => setConfirm(null)}>{translateUi("계속 두기")}</button><button className="primary-button" onClick={() => { if (confirm === 'new') { if(settings.mode==='online')void leaveOnline();else reset(); } else if(settings.mode==='online'){void online.send({kind:'resign'});setConfirm(null);} else { ai.cancel(); setResigned(resigningColor); setSelected(null); setConfirm(null); } }}>{translateUi(confirm === 'new' ? '대전 다시 설정' : '기권하기')}</button></div></Modal>)}
+    {translateUi(confirm && <Modal title={translateUi(confirm === 'new' ? '새로운 대전을 시작할까요?' : `${colorNames[resigningColor]}이 기권할까요?`)} onClose={() => setConfirm(null)}><p className="muted">{translateUi(confirm === 'new' ? '다시 대전할 방식을 선택하세요. 현재 진행 상황은 초기화됩니다.' : `${colorNames[opposite(resigningColor)]}의 승리로 대전이 종료됩니다.`)}</p>{confirm==='new' && settings.mode!=='online' && <div className="rematch-options"><button className="secondary-button" onClick={()=>rematch(false)}><strong>{translateUi('같은 문명 · 스킬 다시 선택')}</strong><small>{translateUi('양쪽 문명과 흑백을 유지하고 스킬을 다시 고릅니다.')}</small></button><button className="secondary-button" disabled={!loadouts} onClick={()=>rematch(true)}><strong>{translateUi('같은 문명 · 같은 스킬')}</strong><small>{translateUi('현재 조합으로 새 대전을 시작합니다. 시작 배치는 다시 선택합니다.')}</small></button></div>}<div className="modal-actions"><button className="secondary-button" onClick={() => setConfirm(null)}>{translateUi("계속 두기")}</button><button className="primary-button" onClick={() => { if (confirm === 'new') { if(settings.mode==='online')void leaveOnline();else reset(); } else if(settings.mode==='online'){void online.send({kind:'resign'});setConfirm(null);} else { ai.cancel(); setResigned(resigningColor); setSelected(null); setConfirm(null); } }}>{translateUi(confirm === 'new' ? '대전 다시 설정' : '기권하기')}</button></div></Modal>)}
   </div>;
 }

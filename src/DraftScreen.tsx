@@ -44,8 +44,8 @@ export function LoadoutList({ players, loadouts }: { players: Players; loadouts:
   </section>))}</div>;
 }
 
-export default function Draft({ onStart, settings, onSettings, network }: { network?: {picks:string[];color:Color;busy:boolean;connected:boolean;onPick:(choice:string)=>Promise<boolean>}; settings: MatchSettings; onSettings: () => void; onStart: (players: Players, loadouts: Loadouts) => void }) {
-  const [localPicks, setPicks] = useState<string[]>(() => { try { return restoreDraft(localStorage.getItem(DRAFT_KEY)); } catch { return []; } });
+export default function Draft({ onStart, settings, onSettings, network, initialPicks }: { initialPicks?:string[]; network?: {picks:string[];color:Color;busy:boolean;connected:boolean;onPick:(choice:string)=>Promise<boolean>}; settings: MatchSettings; onSettings: () => void; onStart: (players: Players, loadouts: Loadouts) => void }) {
+  const [localPicks, setPicks] = useState<string[]>(() => { if(initialPicks)return [...initialPicks]; try { return restoreDraft(localStorage.getItem(DRAFT_KEY)); } catch { return []; } });
   const picks = network?.picks ?? localPicks;
   const [preview, setPreview] = useState<Skill | null>(null);
   useEffect(() => setPreview(null), [picks.length]);
