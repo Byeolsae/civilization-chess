@@ -25,7 +25,12 @@ export function skillEffects(action: AbilityAction, before: AbilityState, after:
     if (!old) continue;
     const sentence = p.judgment?.executedAt;
     if (sentence && sentence !== old.judgment?.executedAt) result.push({ skill: 'judgment', from: sentence, to: sentence, squares: [sentence], victim: { type: p.type, owner: p.owner, lives: p.lives, revived: p.revived } });
-    if (old.lives > p.lives && p.square) result.push({ skill: 'shield', from: p.square, to: p.square, squares: [p.square], shieldOwner: p.owner, shieldStyle: p.type==='n'?'praetorian':'sparta' });
+    if (old.lives > p.lives && p.square) {
+      const king=Object.values(before.pieces).find(q=>q.square===action.to&&q.type==='k'&&q.owner===p.owner);
+      const attacker=Object.values(before.pieces).find(q=>q.square===action.from);
+      const guarding=p.type==='n'&&king&&attacker&&after.pieces[attacker.id]?.square===action.from;
+      result.push({skill:guarding?'guard-block':'shield',from:guarding?action.from:p.square,to:guarding?action.to:p.square,squares:[p.square],shieldOwner:p.owner,shieldStyle:p.type==='n'?'praetorian':'sparta',...(guarding?{victim:{type:attacker.type,owner:attacker.owner,lives:attacker.lives,revived:attacker.revived}}:{})});
+    }
     if (!old.square && p.square && p.revived && !old.revived && action.skill !== 'osiris') result.push({ skill: 'revive', from: p.square, to: p.square, squares: [p.square] });
   }
   if (action.quiz === false) result.push({ skill: 'sphinx', from: action.to, to: action.to, squares: [action.to] });

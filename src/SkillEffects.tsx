@@ -15,7 +15,7 @@ const CHARM_HIT_MS = 720;
 const MINOTAUR_JUMP_MS = 920;
 const MINOTAUR_DIZZY_DELAY_MS = MINOTAUR_JUMP_MS + 100;
 const colors: Record<string, string> = { zeus: '#c5eeff', poseidon: '#75d8ff', hades: '#be98ff', osiris: '#fbe3a0', set: '#e7bf7a', anubis: '#eac27b', judgment: '#f3c367', alesia: '#eeb98e', vesta: '#ffbc75', pilum: '#ffce9c', ballista: '#ffe1ac', minotaur: '#f3c98c', cleopatra: '#ffadd8', trojan: '#bcdfac', deploy: '#bcdfac', gladiator: '#efb2a3', shield: '#b7e8fc', revive: '#f5dfa7', sphinx: '#ceb9ff' };
-const labels: Record<string, string> = { judgment: '심장의 심판', shield: '방패 파괴', revive: '미라 부활', sphinx: '수수께끼 방어' };
+const labels: Record<string, string> = { 'guard-block':'근위 방어', judgment: '심장의 심판', shield: '방패 파괴', revive: '미라 부활', sphinx: '수수께끼 방어' };
 export default function SkillEffects({ game, flipped, players }: { game: Chess; flipped: boolean; players: Players }) {
   const count = game.history().length;
   const previous = useRef({ game, count, flipped, state: game instanceof AbilityGame ? structuredClone(game.state) : null });
@@ -25,7 +25,7 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
   const [announcement, setAnnouncement] = useState('');
   const layer = useRef<HTMLDivElement>(null);
   const playedImpact = useRef(0);
-  const impact = [...playing].reverse().find(e => ['minotaur', 'zeus', 'poseidon'].includes(e.skill));
+  const impact = [...playing].reverse().find(e => ['minotaur', 'zeus', 'poseidon', 'guard-block'].includes(e.skill));
   useLayoutEffect(() => {
     if (!impact || impact.id <= playedImpact.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     playedImpact.current = impact.id;
@@ -60,7 +60,7 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
       { transform: 'translate(0,0)' }, { transform: 'translate(-4px,3px)' },
       { transform: 'translate(4px,-2px)' }, { transform: 'translate(-3px,2px)' },
       { transform: 'translate(2px,-1px)' }, { transform: 'translate(0,0)' },
-    ], { duration: 420, easing: 'ease-out' });
+    ], { duration: 420, delay:impact.skill==='guard-block'?450:0, easing: 'ease-out' });
     return () => motion?.cancel();
   }, [impact, flipped]);
   const stomp = [...playing].reverse().find(e => e.skill === 'minotaur');
@@ -94,6 +94,13 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
     }
     return ()=>{motions.forEach(m=>m.cancel());cells.forEach(c=>c.classList.remove('minotaur-airborne'));};
   },[stomp,flipped]);
+  const guardBlock=[...playing].reverse().find(e=>e.skill==='guard-block');
+  useLayoutEffect(()=>{
+    if(!guardBlock||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    const piece=layer.current?.closest('.board')?.querySelector(`[data-square="${guardBlock.from}"] .piece`);
+    const motion=piece?.animate([{opacity:0},{opacity:0}],{duration:1200});
+    return()=>motion?.cancel();
+  },[guardBlock,flipped]);
   const charm = [...playing].reverse().find(e => e.skill === 'cleopatra');
   useLayoutEffect(() => {
     if (!charm || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -115,7 +122,7 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
     if (!effects.length) return;
     setPlaying(current => [...current, ...effects].slice(-8));
     setAnnouncement(effects.map(e => `${abilityNames[e.skill] ?? labels[e.skill] ?? '스킬'} 발동`).join(' · '));
-    const timer = setTimeout(() => { setPlaying(current => current.filter(e => !effects.some(next => next.id === e.id))); timers.current.delete(timer); }, effects.some(e => e.skill === 'judgment') ? 3600 : effects.some(e => ['osiris', 'revive', 'judgment', 'anubis', 'hades'].includes(e.skill)) ? 2600 : effects.some(e => e.skill === 'cleopatra') ? 1900 : effects.some(e => e.skill === 'poseidon') ? POSEIDON_EFFECT_MS : 1250);
+    const timer = setTimeout(() => { setPlaying(current => current.filter(e => !effects.some(next => next.id === e.id))); timers.current.delete(timer); }, effects.some(e => e.skill === 'guard-block') ? 1700 : effects.some(e => e.skill === 'judgment') ? 3600 : effects.some(e => ['osiris', 'revive', 'judgment', 'anubis', 'hades'].includes(e.skill)) ? 2600 : effects.some(e => e.skill === 'cleopatra') ? 1900 : effects.some(e => e.skill === 'poseidon') ? POSEIDON_EFFECT_MS : 1250);
     timers.current.add(timer);
   }, [game, count, flipped]);
   useLayoutEffect(() => () => { timers.current.forEach(clearTimeout); timers.current.clear(); }, []);
@@ -143,6 +150,7 @@ function screenDirection(direction: number | undefined, flipped: boolean) {
 function Effect({ effect: e, flipped, ghostSrc, soulSrcs }: { effect: SkillEffect; flipped: boolean; ghostSrc?: string; soulSrcs?: string[] }) {
   const from = boardPoint(e.from, flipped), to = boardPoint(e.to, flipped);
   const color = colors[e.skill] ?? '#f6d58d';
+  if (e.skill === 'guard-block') return <GuardBlock effect={e} flipped={flipped} attacker={ghostSrc}/>;
   if (e.skill === 'shield') return <ShieldBreak x={to.x} y={to.y} dark={e.shieldOwner==='b'} roman={e.shieldStyle==='praetorian'}/>;
   if (e.skill === 'hades') return <HadesPortal souls={soulSrcs ?? []}/>;
   if (e.skill === 'osiris' || e.skill === 'revive') return <ResurrectionBurst x={to.x} y={to.y}/>;
@@ -264,5 +272,17 @@ function ShieldBreak({x,y,dark,roman=false}:{x:number;y:number;dark:boolean;roma
     <defs>{shards.map((s,i)=><clipPath key={i} id={`${id}-shield-${i}`}><path d={s.d}/></clipPath>)}</defs>
     {shards.map((s,i)=><g key={i} className="sparta-shield-shard" style={{'--shield-x':`${s.x}px`,'--shield-y':`${s.y}px`,'--shield-r':`${s.r}deg`} as CSSProperties}><g clipPath={`url(#${id}-shield-${i})`}>{roman?<><path d="M-15 -18Q0 -23 15 -18V17Q0 23 -15 17Z" fill={dark?'#730F17':'#A11111'} stroke="#79302D" strokeWidth="2.1"/><path d="M0 -17V17M-11 0H11M-9 -12L9 12M9 -12L-9 12" stroke="#C8A758" strokeWidth="2.5"/></>:<><ellipse rx="17" ry="18.5" fill={dark?'#7fb6b0':'#2f6f7e'} stroke={dark?'#173f4a':'#2f6f7e'} strokeWidth="2.1"/><path d="M-9 8L0 -10 9 8" fill="none" stroke="#d9b98c" strokeWidth="3.5"/></>}</g></g>)}
     <path className="sparta-shield-crack" d="M1 -18L-4 -8 3 -2 -1 10 3 18 M3 -2L-6 3 -17 -1 M3 -2L8 5 17 0"/>
+  </g>;
+}
+
+function GuardBlock({effect,flipped,attacker}:{effect:SkillEffect;flipped:boolean;attacker?:string}) {
+  const a=boardPoint(effect.from,flipped),k=boardPoint(effect.to,flipped),g=boardPoint(effect.squares[0],flipped);
+  const length=Math.hypot(k.x-a.x,k.y-a.y),ux=(k.x-a.x)/length,uy=(k.y-a.y)/length;
+  const hit={x:k.x-ux*30,y:k.y-uy*30};
+  return <g className="guard-block-fx">
+    <g transform={`translate(${k.x} ${k.y})`}><g className="guard-target"><circle r="39"/><path d="M-47 0H-29M29 0H47M0 -47V-29M0 29V47"/></g></g>
+    {attacker&&<g transform={`translate(${a.x} ${a.y})`}><g className="guard-attacker" style={{'--lunge-x':`${hit.x-a.x}px`,'--lunge-y':`${hit.y-a.y}px`} as CSSProperties}><image href={attacker} x="-43" y="-43" width="86" height="86"/></g></g>}
+    <g transform={`translate(${hit.x} ${hit.y})`}><g className="guard-intercept" style={{'--guard-x':`${g.x-hit.x}px`,'--guard-y':`${g.y-hit.y}px`} as CSSProperties}><ShieldBreak x={12} y={-15} dark={effect.shieldOwner==='b'} roman/></g><circle className="guard-impact-ring" r="32"/>{Array.from({length:8},(_,i)=><g key={i} transform={`rotate(${i*45})`}><path className="guard-impact-spark" d="M0 -22L0 -57"/></g>)}</g>
+    <g transform={`translate(${k.x} ${Math.max(28,k.y-43)})`}><text className="guard-protected" textAnchor="middle">{translateUi('보호됨')}</text></g>
   </g>;
 }

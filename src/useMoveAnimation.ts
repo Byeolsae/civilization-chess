@@ -30,7 +30,8 @@ export function useMoveAnimation(board: RefObject<HTMLDivElement | null>, game: 
     const moving = wave ? Object.entries(positions).flatMap(([id, to]) => {
       const from = old.positions[id]; return from && to && from !== to ? [{ from, to }] : [];
     }) : movingSquares(move);
-    const cleanups = moving.map(({ from, to }) => {
+    const actualMoving = game instanceof AbilityGame ? moving.filter(m=>Object.entries(positions).some(([id,to])=>old.positions[id]===m.from&&to===m.to)) : moving;
+    const cleanups = actualMoving.map(({ from, to }) => {
       const origin = board.current!.querySelector<HTMLElement>(`[data-square="${from}"]`);
       const target = board.current!.querySelector<HTMLElement>(`[data-square="${to}"]`);
       const piece = target?.querySelector<HTMLElement>('.piece');
