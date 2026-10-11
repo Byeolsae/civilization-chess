@@ -1,11 +1,28 @@
 import { translateUi } from './i18n';
 import { createPortal } from 'react-dom';
-import { useEffect, useState } from 'react';
-import { Music2, Volume2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Image, Music2, Volume2, X } from 'lucide-react';
 import { civilizations, type Civilization } from './civilizations';
 import { MEDIA_SETTINGS_KEY, mediaForCivilization, parseMediaPreferences } from './civilizationMedia';
 import { useBackgroundMusic } from './useBackgroundMusic';
 import './atmosphere.css';
+
+function BackgroundViewer({ src, name, onClose }: { src: string; name: string; onClose: () => void }) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    const element = dialog.current!;
+    const overflow = document.body.style.overflow;
+    element.showModal();
+    document.body.style.overflow = 'hidden';
+    return () => { element.close(); document.body.style.overflow = overflow; };
+  }, []);
+  return createPortal(<dialog ref={dialog} className="background-viewer" aria-label={translateUi(`${name} 배경`)} onCancel={onClose}>
+    <img src={src} alt={translateUi(`${name} 배경`)} draggable={false} onError={() => setFailed(true)} />
+    {failed && <p role="alert">{translateUi('배경을 불러오지 못했어요.')}</p>}
+    <button type="button" autoFocus className="background-viewer-close" onClick={onClose}><X size={19}/>{translateUi('대전으로 돌아가기')}</button>
+  </dialog>, document.body);
+}
 
 export default function MatchAtmosphere({ civilization }: { civilization: Civilization }) {
   const media = mediaForCivilization(civilization);
@@ -17,6 +34,7 @@ export default function MatchAtmosphere({ civilization }: { civilization: Civili
   const [failedBackground, setFailedBackground] = useState<string | null>(null);
   const [loadedBackground, setLoadedBackground] = useState<string | null>(null);
   const [backgroundRetry, setBackgroundRetry] = useState(0);
+  const [viewing, setViewing] = useState<{ src: string; name: string } | null>(null);
   const music = useBackgroundMusic(media.bgm, preferences.music, preferences.volume);
   useEffect(() => {
     try { localStorage.setItem(MEDIA_SETTINGS_KEY, JSON.stringify(preferences)); }
@@ -24,6 +42,7 @@ export default function MatchAtmosphere({ civilization }: { civilization: Civili
   }, [preferences]);
   const background = preferences.background && media.background !== failedBackground ? media.background : null;
   return <section className="match-atmosphere" aria-label={translateUi("상대 문명 배경과 음악")} data-civilization={civilization}>
+    {viewing && <BackgroundViewer {...viewing} onClose={() => setViewing(null)} />}
     {translateUi(background && createPortal(<div className="civilization-backdrop" aria-hidden="true">
       <img key={`${background}-${backgroundRetry}`} src={background} alt="" draggable={false} onLoad={() => setLoadedBackground(background)} onError={() => setFailedBackground(background)} />
     </div>, document.body))}
@@ -44,6 +63,9 @@ export default function MatchAtmosphere({ civilization }: { civilization: Civili
       <button type="button" aria-pressed={!!media.background && preferences.background} disabled={!media.background}
         onClick={() => setPreferences(value => ({ ...value, background: !value.background }))}>
         {translateUi(!media.background ? '배경 준비 중' : preferences.background ? '배경 켜짐' : '배경 꺼짐')}
+      </button>
+      <button type="button" className="background-preview-button" disabled={!media.background} onClick={() => media.background && setViewing({ src: media.background, name })}>
+        <Image size={16}/>{translateUi('배경만 보기')}
       </button>
     </div>
     {translateUi(!media.background && <p>{translateUi("상대 문명(")}{translateUi(name)}{translateUi(")의 배경은 준비 중입니다. 현재 그리스·이집트·로마·아즈텍·조선·청나라 배경을 사용할 수 있어요.")}</p>)}

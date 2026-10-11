@@ -21,3 +21,11 @@
 .music-credit{display:grid;gap:5px;margin:0 0 13px;padding-bottom:12px;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
 .music-credit strong{font-size:12px;font-weight:600;line-height:1.5;color:var(--ui-text,#e6eae5)}
 .music-credit span{font-size:10px;line-height:1.6;color:var(--muted)}
+.background-preview-button{display:inline-flex;align-items:center;gap:6px}
+dialog.background-viewer{position:fixed;inset:0;width:100vw;max-width:none;height:100vh;height:100dvh;max-height:none;margin:0;padding:0;border:0;background:#0b0e0d;overflow:hidden;color:#fff}
+.background-viewer::backdrop{background:#0b0e0d}
+.background-viewer>img{display:block;width:100%;height:100%;object-fit:contain;user-select:none}
+.background-viewer-close{position:absolute;top:max(16px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));display:flex;align-items:center;gap:8px;min-height:44px;padding:10px 16px;border:1px solid #ffffff65;border-radius:24px;background:#101814df;color:#fff;cursor:pointer;font:inherit;font-size:13px;box-shadow:0 3px 20px #0005}
+.background-viewer-close:hover{background:#25392eef}
+.background-viewer-close:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.background-viewer>p{position:absolute;inset:45% 10% auto;text-align:center;color:#fff}
