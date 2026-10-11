@@ -277,7 +277,7 @@ test("legion absorbs one shock per pawn and Minotaur stuns neighboring enemies",
   assert.equal(m.moves({ square: "d4", verbose: true }).length, 0);
   assert.equal(m.unit("d3")?.cooldownUntil, 6);
 });
-test("Praetorian protects a royal king by spending its shield and survives", () => {
+test("Praetorian blocks a king attack without killing either participant", () => {
   const g = create(
     { piece: "praetorian" },
     {},
@@ -287,8 +287,11 @@ test("Praetorian protects a royal king by spending its shield and survives", () 
   assert.equal(g.get("e1")?.type, "k");
   assert.equal(g.get("d2")?.type, "n");
   assert.equal(g.unit("d2")?.lives,1);
-  assert.deepEqual(g.moves({square:"d2",verbose:true}).map(m=>m.to),["d3"]);
-  assert.equal(g.get("e3"), undefined);
+  assert.equal(g.get("e3")?.type,"r");
+  assert.equal(g.turn(),"w");
+  assert.equal(g.isCheck(),true);
+  assert.equal(g.graves("w").length,0);
+  assert.equal(g.graves("b").length,0);
 });
 test("sandstorm starts at four deaths and lasts two opponent turns", () => {
   const g = create({ passive: "sandstorm" });

@@ -1040,7 +1040,6 @@ export class AbilityGame extends Chess {
         const guard = this.guard(q.owner, q.square!);
         if (!guard) throw Error("Royal king is not capturable");
         guard.lives--;
-        this.kill(p);
         return;
       }
       if (q.type === "n" && this.has(q.owner, "sphinx") && a.quiz === false)

@@ -50,7 +50,7 @@ export function createSkillScenario(id: string): SkillScenario | null {
     case 'sparta': pieces={a1:'K',h8:'k',d4:'P',d6:'r'};turn='b';add('첫 공격을 견디며 방패가 사라집니다.',move('d6','d4'));add('상대 차례를 진행합니다.',move('a1','b1'));add('방패가 없는 폰이 두 번째 공격에 잡힙니다.',move('d6','d4'));break;
     case 'mummy': pieces={a1:'K',h8:'k',d4:'P',d6:'r'};turn='b';add('미라가 잡힙니다. 사망 칸이 점유되어 바로 부활하지 못합니다.',move('d6','d4'));add('다음 부활 기회를 기다립니다.',move('a1','b1'));add('공격자가 떠나면 미라가 원래 칸에서 붕대를 벗고 부활합니다.',move('d4','e4'));break;
     case 'sphinx': pieces={a1:'K',h8:'k',d4:'N',d6:'r'};turn='b';intro='공격자가 구구단을 틀린 상황을 시연합니다.';add('오답으로 공격이 취소되고 실제 스핑크스 방어 효과가 나옵니다.',move('d6','d4',false));break;
-    case 'praetorian':pieces={d4:'K',h8:'k',c4:'N',d6:'r'};turn='b';add('킹을 공격하면 공격자는 사망하고, 근위병은 방패가 깨진 채 생존합니다.',move('d6','d4'));add('방패 없는 근위병은 폰처럼 앞으로 한 칸 움직입니다.',move('c4','c5'));break;
+    case 'praetorian':pieces={d4:'K',h8:'k',c4:'N',d6:'r'};turn='b';add('킹을 노린 공격을 근위병의 방패가 막습니다. 공격자와 킹은 제자리에 남고 방패만 깨집니다.',move('d6','d4'));add('공격자가 살아 있으므로 킹을 안전한 칸으로 피합니다.',move('d4','e4'));add('상대가 한 수를 둡니다.',move('h8','g8'));add('방패 없는 근위병은 폰처럼 앞으로 한 칸 움직입니다.',move('c4','c5'));break;
     case 'democracy':pieces={d4:'K',h8:'k',b2:'P',d6:'r'};turn='b';add('킹이 잡혀도 폰이 살아 있으므로 대전이 계속됩니다.',move('d6','d4'));break;
     case 'olympics':pieces={a1:'K',h8:'k',d3:'R',d6:'p'};intro='영광 두 개를 쌓은 룩으로 시작합니다.';add('세 번째 포획으로 실제 트로피가 채워지고 같은 기물에 추가 행동이 생깁니다.',move('d3','d6'));add('상대 턴 전에 같은 룩으로 한 번 더 움직입니다.',move('d6','e6'));break;
     case 'nile':pieces={a1:'K',h8:'k',d3:'P',d4:'p'};intro='앞이 막힌 폰도 강의 흐름을 따라 옆으로 움직일 수 있습니다.';add('폰이 좌우 빈칸으로 한 칸 이동하며 차례를 사용합니다.',move('d3','e3'));add('상대가 한 수를 둡니다.',move('h8','g8'));add('옆으로 이동한 폰은 다음 턴에 평소처럼 전진할 수 있습니다.',move('e3','e4'));break;
