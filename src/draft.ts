@@ -62,7 +62,7 @@ export const skills: Record<Civilization, Record<Category, Skill[]>> = {
     piece: [
       { id: 'gladiator', name: '글라디아토르', subtitle: '비숍의 변신', description: '본 게임을 멈추고 적 하나와 별도 콜로세움에서 총 8행동 동안 결투합니다.', detail: '비숍마다 게임당 2회입니다. 8×8에서 시작해 4행동 후 6×6으로 축소됩니다. 글라는 퀸처럼 움직이며 8행동 안에 잡지 못하면 사망합니다.', symbol: 'swords' },
       { id: 'ballista', name: '발리스타', subtitle: '룩의 변신', description: '이동 대신 8방향으로 최대 5칸 사격합니다. 아군은 관통합니다.', detail: '처음 맞은 적을 잡고 자기 턴 3번 동안 재장전합니다.', symbol: 'crosshair' },
-      { id: 'praetorian', name: '프라이토리아니', subtitle: '나이트의 변신', description: '킹 곁에서 킹을 노리는 공격을 대신 받고 공격자와 함께 사망합니다.', detail: '킹 주변 8칸에서 근위 상태가 됩니다. 킹은 생존하고 근위 기물은 제거됩니다.', symbol: 'shield' },
+      { id: 'praetorian', name: '프라이토리아니', subtitle: '나이트의 변신', description: '방패가 있을 때는 나이트처럼 움직이며 킹을 한 번 보호합니다. 방패가 깨지면 폰처럼 움직입니다.', detail: '킹 주변 8칸에서 공격자를 제거하고 방패만 소모합니다. 방패를 잃으면 목숨 1개로 전방 한 칸 이동·대각선 포획만 가능합니다.', symbol: 'shield' },
     ],
   },
 };

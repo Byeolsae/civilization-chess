@@ -8,5 +8,5 @@ export function specialPieceSkill(type: PieceSymbol, skill?: string) {
 export function specialPieceVariant(type: PieceSymbol, skill?: string, lives?: number, revived = false) {
   const special = specialPieceSkill(type, skill);
   if (special === 'mummy' && revived) return 'mummy-unwrapped';
-  return special === 'sparta' && lives !== undefined && lives <= 1 ? 'sparta-unshielded' : special;
+  return (special === 'sparta' || special === 'praetorian') && lives !== undefined && lives <= 1 ? `${special}-unshielded` : special;
 }

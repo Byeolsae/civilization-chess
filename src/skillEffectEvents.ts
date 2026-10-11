@@ -4,7 +4,7 @@ import type { AbilityState } from './abilityState';
 import { activeArea } from './activeTargeting';
 import { adjacentSquares } from './abilityState';
 
-export type SkillEffect = { skill: string; from: Square; to: Square; squares: Square[]; direction?: number; shieldOwner?: Color; stunned?: Square[]; souls?: { type: PieceSymbol; owner: Color; lives: number; revived: boolean }[]; victim?: { type: PieceSymbol; owner: Color; lives: number; revived: boolean } };
+export type SkillEffect = { skill: string; from: Square; to: Square; squares: Square[]; direction?: number; shieldOwner?: Color; shieldStyle?: string; stunned?: Square[]; souls?: { type: PieceSymbol; owner: Color; lives: number; revived: boolean }[]; victim?: { type: PieceSymbol; owner: Color; lives: number; revived: boolean } };
 export function boardPoint(square: Square, flipped: boolean) {
   const x = square.charCodeAt(0) - 97, y = 8 - Number(square[1]);
   return { x: ((flipped ? 7 - x : x) + .5) * 100, y: ((flipped ? 7 - y : y) + .5) * 100 };
@@ -25,7 +25,7 @@ export function skillEffects(action: AbilityAction, before: AbilityState, after:
     if (!old) continue;
     const sentence = p.judgment?.executedAt;
     if (sentence && sentence !== old.judgment?.executedAt) result.push({ skill: 'judgment', from: sentence, to: sentence, squares: [sentence], victim: { type: p.type, owner: p.owner, lives: p.lives, revived: p.revived } });
-    if (old.lives > p.lives && p.square) result.push({ skill: 'shield', from: p.square, to: p.square, squares: [p.square], shieldOwner: p.owner });
+    if (old.lives > p.lives && p.square) result.push({ skill: 'shield', from: p.square, to: p.square, squares: [p.square], shieldOwner: p.owner, shieldStyle: p.type==='n'?'praetorian':'sparta' });
     if (!old.square && p.square && p.revived && !old.revived && action.skill !== 'osiris') result.push({ skill: 'revive', from: p.square, to: p.square, squares: [p.square] });
   }
   if (action.quiz === false) result.push({ skill: 'sphinx', from: action.to, to: action.to, squares: [action.to] });

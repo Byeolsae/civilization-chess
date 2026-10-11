@@ -132,7 +132,7 @@ export class AbilityGame extends Chess {
     this.state.turns =
       this.state.turn === "w" ? { w: 1, b: 0 } : { w: 0, b: 1 };
     for (const p of Object.values(this.state.pieces))
-      if (p.type === "p" && this.has(p.owner, "sparta")) p.lives = 2;
+      if ((p.type === "p" && this.has(p.owner, "sparta")) || (p.type === "n" && this.has(p.owner, "praetorian"))) p.lives = 2;
     for (const c of ["w", "b"] as Color[])
       if (this.has(c, "pyramid")) {
         const center = (c === "w" ? "d2" : "d7") as Square;
@@ -378,21 +378,21 @@ export class AbilityGame extends Chess {
           ...(promotion ? { promotion } : {}),
         });
     };
-    if (p.type === "p") {
+    if (p.type === "p" || this.spentGuard(p)) {
       const dy = p.owner === "w" ? 1 : -1;
       for (const dx of [-1, 1]) {
         const to = at(x + dx, y + dy);
-        if (to && (attacks || this.unit(to) || to === this.state.ep))
+        if (to && (attacks || this.unit(to) || (p.type === "p" && to === this.state.ep)))
           add(to, true);
       }
       if (!attacks) {
-        if (this.has(p.owner, "nile") && (p.owner === "w" ? y <= 3 : y >= 4)) {
+        if (p.type === "p" && this.has(p.owner, "nile") && (p.owner === "w" ? y <= 3 : y >= 4)) {
           for (const dx of [-1, 1]) {
             const to = at(x + dx, y);
             if (to && !this.unit(to)) add(to);
           }
         }
-        const max = y === (p.owner === "w" ? 1 : 6) && !this.lawApplies(p.owner, "march-law") ? 2 : 1;
+        const max = p.type === "p" && y === (p.owner === "w" ? 1 : 6) && !this.lawApplies(p.owner, "march-law") ? 2 : 1;
         for (let d = 1; d <= max; d++) {
           const to = at(x, y + dy * d);
           if (!to || this.unit(to) || this.zoneBlocks(p, from, to)) break;
@@ -466,12 +466,16 @@ export class AbilityGame extends Chess {
     }
     return result;
   }
+  private spentGuard(p: ExtraPiece) {
+    return p.type === "n" && this.has(p.owner,"praetorian") && p.lives <= 1;
+  }
   private guard(c: Color, s: Square) {
     return this.has(c, "praetorian")
       ? this.units().find(
           (p) =>
             p.owner === c &&
             p.type === "n" &&
+            p.lives > 1 &&
             p.square &&
             distance(p.square, s) === 1 &&
             !this.disabled(p),
@@ -786,7 +790,7 @@ export class AbilityGame extends Chess {
               ? !dx || !dy
               : p.type === "q"
                 ? !dx || !dy || dx === dy
-                : p.type === "n"
+                : p.type === "n" && !this.spentGuard(p)
                   ? dx * dy === 2
                   : p.type === "k"
                     ? Math.max(dx, dy) === 1
@@ -1035,7 +1039,7 @@ export class AbilityGame extends Chess {
       if (q.type === "k" && !this.has(q.owner, "democracy")) {
         const guard = this.guard(q.owner, q.square!);
         if (!guard) throw Error("Royal king is not capturable");
-        this.kill(guard);
+        guard.lives--;
         this.kill(p);
         return;
       }

@@ -143,7 +143,7 @@ function screenDirection(direction: number | undefined, flipped: boolean) {
 function Effect({ effect: e, flipped, ghostSrc, soulSrcs }: { effect: SkillEffect; flipped: boolean; ghostSrc?: string; soulSrcs?: string[] }) {
   const from = boardPoint(e.from, flipped), to = boardPoint(e.to, flipped);
   const color = colors[e.skill] ?? '#f6d58d';
-  if (e.skill === 'shield') return <ShieldBreak x={to.x} y={to.y} dark={e.shieldOwner==='b'}/>;
+  if (e.skill === 'shield') return <ShieldBreak x={to.x} y={to.y} dark={e.shieldOwner==='b'} roman={e.shieldStyle==='praetorian'}/>;
   if (e.skill === 'hades') return <HadesPortal souls={soulSrcs ?? []}/>;
   if (e.skill === 'osiris' || e.skill === 'revive') return <ResurrectionBurst x={to.x} y={to.y}/>;
   if (e.skill === 'anubis' || e.skill === 'judgment') return <g>{e.squares.map(square => { const point = boardPoint(square, flipped); return <g key={square}>{e.skill === 'judgment'&&<JudgmentDeath x={point.x} y={point.y} src={ghostSrc}/>}<JudgmentScales x={point.x} y={point.y} sentence={e.skill === 'judgment'}/></g>; })}</g>;
@@ -252,7 +252,7 @@ function HadesPortal({souls}:{souls:string[]}) {
   </g>;
 }
 
-function ShieldBreak({x,y,dark}:{x:number;y:number;dark:boolean}) {
+function ShieldBreak({x,y,dark,roman=false}:{x:number;y:number;dark:boolean;roman?:boolean}) {
   const id=useId().replace(/:/g,'');
   const shards=[
     {d:'M-23 -24H1L-4 -8 3 -2 -6 3 -23 -2Z',x:-15,y:13,r:-32},
@@ -262,7 +262,7 @@ function ShieldBreak({x,y,dark}:{x:number;y:number;dark:boolean}) {
   ];
   return <g transform={`translate(${x-12} ${y+15})`}>
     <defs>{shards.map((s,i)=><clipPath key={i} id={`${id}-shield-${i}`}><path d={s.d}/></clipPath>)}</defs>
-    {shards.map((s,i)=><g key={i} className="sparta-shield-shard" style={{'--shield-x':`${s.x}px`,'--shield-y':`${s.y}px`,'--shield-r':`${s.r}deg`} as CSSProperties}><g clipPath={`url(#${id}-shield-${i})`}><ellipse rx="17" ry="18.5" fill={dark?'#7fb6b0':'#2f6f7e'} stroke={dark?'#173f4a':'#2f6f7e'} strokeWidth="2.1"/><path d="M-9 8L0 -10 9 8" fill="none" stroke="#d9b98c" strokeWidth="3.5"/></g></g>)}
+    {shards.map((s,i)=><g key={i} className="sparta-shield-shard" style={{'--shield-x':`${s.x}px`,'--shield-y':`${s.y}px`,'--shield-r':`${s.r}deg`} as CSSProperties}><g clipPath={`url(#${id}-shield-${i})`}>{roman?<><path d="M-15 -18Q0 -23 15 -18V17Q0 23 -15 17Z" fill={dark?'#730F17':'#A11111'} stroke="#79302D" strokeWidth="2.1"/><path d="M0 -17V17M-11 0H11M-9 -12L9 12M9 -12L-9 12" stroke="#C8A758" strokeWidth="2.5"/></>:<><ellipse rx="17" ry="18.5" fill={dark?'#7fb6b0':'#2f6f7e'} stroke={dark?'#173f4a':'#2f6f7e'} strokeWidth="2.1"/><path d="M-9 8L0 -10 9 8" fill="none" stroke="#d9b98c" strokeWidth="3.5"/></>}</g></g>)}
     <path className="sparta-shield-crack" d="M1 -18L-4 -8 3 -2 -1 10 3 18 M3 -2L-6 3 -17 -1 M3 -2L8 5 17 0"/>
   </g>;
 }

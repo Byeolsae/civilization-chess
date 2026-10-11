@@ -13,7 +13,7 @@ const timing: Record<string, string> = {
   sparta: '첫 피격 때 목숨만 소모하고 제자리 유지 · 함정은 방어 불가',
   mummy: '사망 후 내 턴 시작마다 최대 3번 확인 · 사망 칸이 비면 1회 부활',
   sphinx: '공격받을 때 발동 · 공격자가 5초 안에 문제를 풀지 못하면 생존',
-  praetorian: '킹 주변 8칸에서 행동 가능한 상태일 때 킹 대신 희생',
+  praetorian: '방패 보유: 나이트 이동·킹 1회 보호 / 방패 소모: 전방 1칸·대각선 포획',
 };
 export function pieceSkillInfo(game: AbilityGame, square: Square) {
   const p = game.unit(square);

@@ -277,7 +277,7 @@ test("legion absorbs one shock per pawn and Minotaur stuns neighboring enemies",
   assert.equal(m.moves({ square: "d4", verbose: true }).length, 0);
   assert.equal(m.unit("d3")?.cooldownUntil, 6);
 });
-test("Praetorian substitutes for a royal king and dies with the attacker", () => {
+test("Praetorian protects a royal king by spending its shield and survives", () => {
   const g = create(
     { piece: "praetorian" },
     {},
@@ -285,7 +285,9 @@ test("Praetorian substitutes for a royal king and dies with the attacker", () =>
   );
   g.move({ from: "e3", to: "e1" });
   assert.equal(g.get("e1")?.type, "k");
-  assert.equal(g.get("d2"), undefined);
+  assert.equal(g.get("d2")?.type, "n");
+  assert.equal(g.unit("d2")?.lives,1);
+  assert.deepEqual(g.moves({square:"d2",verbose:true}).map(m=>m.to),["d3"]);
   assert.equal(g.get("e3"), undefined);
 });
 test("sandstorm starts at four deaths and lasts two opponent turns", () => {
@@ -392,4 +394,29 @@ test("variant checkmate remains checkmate and failed captures do not animate the
 });
 test('a democracy pawn remains alive while participating in a duel',()=>{
  const g=create({piece:'gladiator'}, {passive:'democracy'},'4k3/8/8/8/3p4/2B5/8/4K3 w - - 0 1');skill(g,'gladiator','c3','d4');assert.equal(g.winner(),null);assert.ok(g.actions().length);
+});
+
+test('unshielded guards move forward and capture diagonally for both colors',()=>{
+ const white=create({piece:'praetorian'}, {}, '7k/8/8/8/8/2p1p3/3N4/K7 w - - 0 1');
+ assert.ok(white.moves({square:'d2',verbose:true}).some(m=>m.to==='f3'));
+ white.unit('d2')!.lives=1;
+ assert.deepEqual(white.moves({square:'d2',verbose:true}).map(m=>m.to).sort(),['c3','d3','e3']);
+ const black=create({}, {piece:'praetorian'}, 'k7/3n4/2P1P3/8/8/8/8/7K b - - 0 1');
+ black.unit('d7')!.lives=1;
+ assert.deepEqual(black.moves({square:'d7',verbose:true}).map(m=>m.to).sort(),['c6','d6','e6']);
+});
+test('direct hit spends guard shield; snapshot and undo preserve its movement form',()=>{
+ const g=create({piece:'praetorian'}, {}, '7k/8/8/8/3r4/8/3N4/K7 b - - 0 1');
+ g.move({from:'d4',to:'d2'});
+ assert.equal(g.unit('d2')!.lives,1);assert.equal(g.get('d4')?.type,'r');
+ const restored=create({piece:'praetorian'});restored.restore(g.snapshot());
+ assert.equal(restored.unit('d2')!.lives,1);
+ assert.deepEqual(restored.moves({square:'d2',verbose:true}).map(m=>m.to),['d3']);
+ g.undo();assert.equal(g.unit('d2')!.lives,2);
+});
+test('spent guard cannot protect the king a second time',()=>{
+ const g=create({piece:'praetorian'}, {}, '4k3/8/8/8/8/4r3/3N4/4K3 w - - 0 1');
+ assert.equal(g.isCheck(),false);
+ g.unit('d2')!.lives=1;
+ assert.equal(g.isCheck(),true);
 });
