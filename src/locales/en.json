@@ -819,5 +819,8 @@
   "생존자의 차례": "Survivor’s turn",
   "이동·공격은 퀸처럼. 제한 안에 상대를 잡으세요.": "Move and capture like a queen. Catch the opponent before time runs out.",
   "원래 기물의 이동으로 버티세요. 외곽에 남으면 즉사합니다.": "Survive using your normal movement. The collapsing outer ring kills instantly.",
-  "상대의 결투 행동을 기다리는 중": "Waiting for the opponent’s duel action"
+  "상대의 결투 행동을 기다리는 중": "Waiting for the opponent’s duel action",
+  "대전 시작 전 12개의 법 슬롯에서 하나를 선택합니다. 현재 세 가지 법을 사용할 수 있습니다.": "Before the match, choose one of twelve law slots. Three laws are currently available.",
+  "군율법 카드를 선택합니다. 선택한 법을 확인한 뒤 확정합니다.": "Select Military Code, review the selected law, then confirm.",
+  "체스판 위에서 이번 대전에 적용할 법을 선택하세요.": "Choose the law for this match in the panel over the board."
 }

@@ -58,7 +58,7 @@ export function createSkillScenario(id: string): SkillScenario | null {
     case 'pyramid':loadouts.b.active='zeus';add('시작 배치로 중심 칸과 주변에 실제 축복 영역을 만듭니다.',g => g.placePassive('w',{square:'d4',axis:'row'}));add('배치를 마치고 백이 한 수를 둡니다.',move('a1','b1'));add('영역 안의 아군은 상태이상 면역을 얻습니다. 이 장면에서는 상대의 감전을 막습니다.',cast('zeus','d4'));break;
     case 'roads':pieces={a1:'K',h8:'k',c2:'R',c3:'P'};add('시작 전에 두 행을 도로로 지정합니다.',g=>g.placePassive('w',{square:'a4',axis:'row'}));add('룩이 아군 폰을 뛰어넘어 실제 도로 위에 착지합니다.',move('c2','c4'));break;
     case 'legion':pieces={a1:'K',h8:'k',c4:'P',d4:'P',e4:'P'};loadouts.b.active='zeus';turn='b';add('군단의 세 폰이 실제로 연쇄 감전을 한 번씩 막습니다.',cast('zeus','d4'));break;
-    case 'twelve-tables':pieces={a1:'K',h8:'k',d6:'n'};turn='b';loadouts.b.piece='minotaur';add('군율법을 선택하면 상대 기물 스킬의 쿨타임이 1턴 늘어납니다.',g=>g.placePassive('w',{law:'military-code'}));add('상대 미노타우르스의 쿨타임이 5턴에서 6턴으로 늘어납니다.',cast('minotaur'));break;
+    case 'twelve-tables':pieces={a1:'K',h8:'k',d6:'n'};turn='b';loadouts.b.piece='minotaur';intro='대전 시작 전 12개의 법 슬롯에서 하나를 선택합니다. 현재 세 가지 법을 사용할 수 있습니다.';add('군율법 카드를 선택합니다. 선택한 법을 확인한 뒤 확정합니다.',()=>{});add('군율법을 선택하면 상대 기물 스킬의 쿨타임이 1턴 늘어납니다.',g=>g.placePassive('w',{law:'military-code'}));add('상대 미노타우르스의 쿨타임이 5턴에서 6턴으로 늘어납니다.',cast('minotaur'));break;
     case 'philosophy':pieces={a1:'K',h8:'k',d4:'P',d6:'r',f3:'N'};turn='b';loadouts.w.piece='minotaur';intro='스킬 재사용을 기다리는 나이트로 반격합니다.';add('아군 폰을 잡은 적 룩에 질문 표식이 붙습니다.',move('d6','d4'));add('바로 다음 내 턴에 나이트로 되잡으면 남은 스킬 쿨타임이 1턴 줄어듭니다.',move('f3','d4'));break;
   }
   const game = new AbilityGame(loadouts, fen(pieces,turn));

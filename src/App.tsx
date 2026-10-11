@@ -421,13 +421,14 @@ export default function App() {
               {translateUi(game instanceof AbilityGame && <Sandstorm game={game} viewer={settings.mode !== 'local' ? settings.humanColor : game.turn()} flipped={flipped} />)}
               <SkillEffects game={game} flipped={flipped} players={players} />
             </div>
-          </div>
-          </div>
-          {placementOwner && choosingLaw && game instanceof AbilityGame && <LawSelection key={placementOwner} enabled={placementHuman && !confirm} onSelect={law => {
+            <div className="board-law-overlay">          {placementOwner && choosingLaw && game instanceof AbilityGame && <LawSelection key={placementOwner} enabled={placementHuman && !confirm} onSelect={law => {
             if (!placementHuman || confirm) return;
             if (settings.mode === 'online') void online.send({kind:'place',placement:{law}});
             else { game.placePassive(placementOwner,{law}); setRevision(value=>value+1); }
-          }}/>}
+          }}/>}</div>
+          </div>
+          </div>
+
           {translateUi(placementOwner && !choosingLaw && game instanceof AbilityGame && <section className="placement-guide placement-toolbar" aria-label={translateUi("시작 지형 배치")}>
             <div role="status"><strong>{translateUi(colorNames[placementOwner])} · {translateUi(game.loadouts[placementOwner].passive === 'pyramid' ? '피라미드' : '로마길')}</strong><p>{translateUi(!placementHuman ? '상대의 시작 배치를 기다리고 있어요.' : !placementArmed ? '왼쪽 시작 배치 버튼을 눌러주세요.' : placementSquare ? `${placementSquare} 선택됨 · 강조된 영역을 확인하고 확정하세요.` : '보드에서 배치할 칸을 누르세요. 기물이 있는 칸도 선택할 수 있어요.')}</p></div>
             {translateUi(placementHuman && placementArmed && <div className="placement-controls">{translateUi(game.loadouts[placementOwner].passive === 'roads' && (['row','column'] as const).map(axis => <button key={axis} aria-pressed={placementAxis === axis} onClick={() => setPlacementAxis(axis)}>{translateUi(axis === 'row' ? '가로 2행' : '세로 2열')}</button>))}<button className="primary-button" disabled={!placementSquare || !!confirm} onClick={confirmPlacement}>{translateUi("배치 확정")}</button><button onClick={() => {setPlacementArmed(false);setPlacementSquare(null);}}>{translateUi("취소")}</button></div>)}
@@ -443,7 +444,7 @@ export default function App() {
 
         <aside className="side-panel">
           <>
-            <section className={`status-panel ${status.kind}`} aria-live="polite"><div className="panel-kicker">{translateUi(placementOwner ? 'PLACEMENT' : status.over ? 'GAME OVER' : aiTurn ? 'AI TURN' : 'YOUR MOVE')}</div><div className="status-title">{translateUi(status.over ? <Crown size={25} /> : <span className={`side-dot large ${game.turn()}`} />)}<h2>{translateUi(placementOwner ? choosingLaw ? '12표법 선택' : `${colorNames[placementOwner]} 지형 배치` : aiTurn ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : status.title)}</h2></div><p>{translateUi(placementOwner ? choosingLaw ? '보드 아래에서 이번 대전에 적용할 법을 선택하세요.' : placementArmed ? '보드에서 위치를 선택하고 보드 아래에서 배치를 확정하세요.' : '보드 왼쪽의 시작 배치 버튼을 눌러주세요.' : aiTurn ? ai.error ?? `${difficultyNames[settings.difficulty]} AI가 다음 수를 고르고 있어요.` : status.detail)}</p>{translateUi(aiTurn && ai.error && <button className="secondary-button" onClick={ai.retry}>{translateUi("AI 다시 시도")}</button>)}{translateUi(status.over && <button className="primary-button" onClick={() => setConfirm('new')}>{translateUi("새로운 대전 ")}<ArrowRight size={17} /></button>)}</section>
+            <section className={`status-panel ${status.kind}`} aria-live="polite"><div className="panel-kicker">{translateUi(placementOwner ? 'PLACEMENT' : status.over ? 'GAME OVER' : aiTurn ? 'AI TURN' : 'YOUR MOVE')}</div><div className="status-title">{translateUi(status.over ? <Crown size={25} /> : <span className={`side-dot large ${game.turn()}`} />)}<h2>{translateUi(placementOwner ? choosingLaw ? '12표법 선택' : `${colorNames[placementOwner]} 지형 배치` : aiTurn ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : status.title)}</h2></div><p>{translateUi(placementOwner ? choosingLaw ? '체스판 위에서 이번 대전에 적용할 법을 선택하세요.' : placementArmed ? '보드에서 위치를 선택하고 보드 아래에서 배치를 확정하세요.' : '보드 왼쪽의 시작 배치 버튼을 눌러주세요.' : aiTurn ? ai.error ?? `${difficultyNames[settings.difficulty]} AI가 다음 수를 고르고 있어요.` : status.detail)}</p>{translateUi(aiTurn && ai.error && <button className="secondary-button" onClick={ai.retry}>{translateUi("AI 다시 시도")}</button>)}{translateUi(status.over && <button className="primary-button" onClick={() => setConfirm('new')}>{translateUi("새로운 대전 ")}<ArrowRight size={17} /></button>)}</section>
             <MatchHistory moves={history} players={players} listRef={historyRef} onReview={setReviewPly} waiting={placementOwner ? '먼저 시작 준비를 완료하세요.' : aiTurn ? 'AI가 첫 수를 고르고 있어요.' : '체스판에서 기물을 움직여 보세요.'}/>
             <div className="match-actions"><button onClick={() => setConfirm('new')}><RotateCcw size={16} />{translateUi(" 새 대전")}</button><button onClick={() => setConfirm('resign')} disabled={status.over}><Flag size={16} />{translateUi(" 기권")}</button></div>
             {translateUi(game instanceof AbilityGame && <AbilityPanel game={game} players={players} enabled={humanTurn && !confirm} onAction={performAbility} onUndo={settings.mode === 'online' ? undefined : undo} undoEnabled={started && !confirm && canUndoTurn(game, settings)} undoLabel={settings.mode === 'ai' ? '내 차례로 무르기' : '한 수 무르기'} />)}<MatchAtmosphere civilization={opponentCivilization(players, settings, game.turn())} />

@@ -4,9 +4,10 @@ import { ScrollText, LockKeyhole, Check } from 'lucide-react';
 import { translateUi } from './i18n';
 import './lawSelection.css';
 
-export default function LawSelection({enabled,onSelect}:{enabled:boolean;onSelect:(law:RomanLaw)=>void}) {
-  const [selected,setSelected]=useState<RomanLaw | null>(null);
-  return <section id="law-selection" className="law-selection" aria-label={translateUi('12표법 선택')}>
+export default function LawSelection({enabled,onSelect,previewSelection}:{enabled:boolean;onSelect:(law:RomanLaw)=>void;previewSelection?:RomanLaw|null}) {
+  const [choice,setSelected]=useState<RomanLaw | null>(null);
+  const selected=previewSelection===undefined?choice:previewSelection;
+  return <section id="law-selection" className={`law-selection ${previewSelection!==undefined?'law-preview':''}`} aria-label={translateUi('12표법 선택')}>
     <header><ScrollText size={23}/><div><h2>{translateUi('12표법')}</h2><p>{translateUi(enabled?'대전 시작 전, 적용할 법 하나를 선택하세요.':'상대가 법을 선택하고 있습니다.')}</p></div></header>
     <div className="law-grid">
       {romanLaws.map((law,index)=><button key={law.id} disabled={!enabled} className={`law-card ${selected===law.id?'selected':''}`} aria-pressed={selected===law.id} onClick={()=>setSelected(law.id)}>

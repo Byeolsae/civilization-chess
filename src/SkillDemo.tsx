@@ -29,7 +29,7 @@ export default function SkillDemo({skill,civilization,onClose}:{skill:Skill;civi
   return <aside className="skill-demo" role="region" aria-labelledby={title}>
     <header><div><small>{translateUi("인게임 시연 · 백 진영 예시")}</small><h3 id={title}>{translateUi(skill.name)}</h3></div><button onClick={onClose} aria-label={translateUi("시연 닫기")}><X size={19}/></button></header>
     {translateUi(scenario?<>
-      <div className="demo-visual"><SkillDemoBoard game={scenario.game} civilization={civilization} storm={skill.id==='sandstorm'}/></div><div className="demo-explanation">
+      <div className="demo-visual"><SkillDemoBoard game={scenario.game} civilization={civilization} storm={skill.id==='sandstorm'} step={step}/></div><div className="demo-explanation">
       <div className="demo-timeline"><button onClick={()=>setPlaying(p=>!p)} aria-label={translateUi(playing?'시연 일시정지':'시연 재생')}>{translateUi(playing?<Pause size={15}/>:<Play size={15}/>)}</button><button onClick={restart} aria-label={translateUi("시연 처음부터")}><RotateCcw size={15}/></button><button onClick={()=>{setPlaying(false);next();}} aria-label={translateUi("다음 장면")}><ChevronRight size={18}/></button><span>{translateUi(step)} / {translateUi(scenario.steps.length)} · {translateUi(playing?'반복 재생':'일시정지')}</span></div>
       <p className="demo-caption" aria-live="polite">{translateUi(error?'시연을 다시 시작해 주세요.':step?scenario.steps[step-1].text:scenario.intro)}</p>
       <div className="demo-rules"><strong>{translateUi("사용 방법과 효과")}</strong><p>{translateUi(skill.description)}</p><p>{translateUi(skill.detail)}</p></div>
