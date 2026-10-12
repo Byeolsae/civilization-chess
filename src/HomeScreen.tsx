@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Crown, Pause, Play, Globe2, Bot, Users, ScrollText } from 'lucide-react';
 import { civilizations, type Civilization } from './civilizations';
 import { civilizationMedia, MEDIA_SETTINGS_KEY, parseMediaPreferences } from './civilizationMedia';
@@ -20,7 +20,7 @@ const history: Partial<Record<Civilization, {ko:string;en:string;source:string}>
   goryeo: {ko:'고려의 불교 건축을 이해하는 중요한 사례인 부석사 무량수전은 주심포와 배흘림기둥으로 알려져 있습니다. 1376년 중수설과 11세기 중창설이 함께 전해집니다. 배경은 고려 산사의 건축을 참고한 창작 풍경입니다.',en:'Buseoksa’s Muryangsujeon is an important example of Goryeo Buddhist architecture, known for pillar-top brackets and subtly swelling columns. Scholarship discusses both an 11th-century rebuilding and a 1376 renovation.',source:'https://contents.history.go.kr/mobile/kc/view.do?code=kc_age_20&levelId=kc_r200327'},
 };
 
-export default function HomeScreen({onPlay,onResume,canResume}:{onPlay:(settings:MatchSettings)=>void;onResume:()=>void;canResume:boolean}) {
+export default function HomeScreen({onPlay,onResume,canResume,draft}:{draft?:ReactNode;onPlay:(settings:MatchSettings)=>void;onResume:()=>void;canResume:boolean}) {
   const locale=useLocale(); const text=(ko:string,en:string)=>locale==='ko'?ko:en;
   const [page,setPage]=useState<Page>('main');
   const [scene,setScene]=useState(()=>Math.max(0,scenes.findIndex(c=>c.id==='greece'))); const [cycling,setCycling]=useState(()=>{try{const saved=localStorage.getItem('civilization-chess.home-cycle');if(saved!==null)return saved==='true';}catch{}return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;});
@@ -52,7 +52,9 @@ export default function HomeScreen({onPlay,onResume,canResume}:{onPlay:(settings
   const [saveError,setSaveError]=useState(false);
   useEffect(()=>{try{localStorage.setItem('civilization-chess.home-cycle',String(cycling));}catch{setSaveError(true);}},[cycling]);
   useEffect(()=>{if(!cycling||(page==='civilizations'||page==='civilization-detail'))return;const timer=setInterval(()=>setScene(v=>(v+1)%scenes.length),10000);return()=>clearInterval(timer);},[cycling,page]);
-  useEffect(()=>{const listener=(e:KeyboardEvent)=>{if(e.key==='Escape'){if(demoSkill)setDemoSkill(null);else if(pending)setPending(null);else setPage(page==='civilization-detail'?'civilizations':'main');}};window.addEventListener('keydown',listener);return()=>window.removeEventListener('keydown',listener);},[pending,page,demoSkill]);
+  useEffect(()=>{const listener=(e:KeyboardEvent)=>{if(e.key==='Escape'){if(draft)return;if(demoSkill)setDemoSkill(null);else if(pending)setPending(null);else setPage(page==='civilization-detail'?'civilizations':'main');}};window.addEventListener('keydown',listener);return()=>window.removeEventListener('keydown',listener);},[pending,page,demoSkill,draft]);
+  const drafting=!!draft;
+  useEffect(()=>{if(drafting)window.scrollTo(0,0);else setPending(null);},[drafting]);
   const background=scenes[scene]; const civ=civilizations.find(c=>c.id===selected)!;
   const menus:[Page,string,string][]=[['play','플레이하기','PLAY'],['civilizations','문명','CIVILIZATIONS'],['novel','소설','STORIES'],['profile','프로필','PROFILE'],['settings','설정','SETTINGS']];
   function choose(id:Civilization){setSelected(id);setTab('history');setPage('civilization-detail');window.scrollTo(0,0);const index=scenes.findIndex(c=>c.id===id);if(index>=0)setScene(index);}
@@ -63,7 +65,7 @@ export default function HomeScreen({onPlay,onResume,canResume}:{onPlay:(settings
     <div className="home-scenery" aria-hidden="true">{scenes.map((c,index)=><div key={c.id} className={`home-scene ${index===scene?'visible':''}`}><img className="home-scene-art" src={civilizationMedia[c.id]!.background!} alt="" draggable={false}/></div>)}</div>
     <div className="home-shade"/>
     <header className="home-header"><a className="home-brand" href="/" aria-label={t('문명체스 홈')}><Crown/><span>{t('문명체스')}<small>CIVILIZATION CHESS</small></span></a><LanguageSwitch/></header>
-    <div className={`home-content ${page==='main'?'home-content-main':page==='play'?'home-content-play':page==='civilizations'||page==='civilization-detail'?'home-content-archive':''}`}>
+    {draft ? <div className="home-content home-content-play home-draft-stage">{draft}</div> : <div className={`home-content ${page==='main'?'home-content-main':page==='play'?'home-content-play':page==='civilizations'||page==='civilization-detail'?'home-content-archive':''}`}>
       <nav hidden={page==='play'||page==='civilizations'||page==='civilization-detail'} className="home-nav" aria-label={text('메인 메뉴','Main menu')}><span className="home-eyebrow">WRITE YOUR HISTORY</span>
         {menus.map(([id,ko,en],index)=><button key={id} className={`${page===id?'active':''} ${index===0?'home-play':''}`} onClick={()=>setPage(id)} aria-current={page===id?'page':undefined}><span>{text(ko,en)}</span><ArrowRight/></button>)}
         {canResume&&<button className="home-resume" onClick={onResume}>{text('이어서 플레이','RESUME')}<Play size={16}/></button>}
@@ -78,7 +80,7 @@ export default function HomeScreen({onPlay,onResume,canResume}:{onPlay:(settings
         {page==='settings'&&<><span className="home-eyebrow">MAKE IT YOURS</span><h1>{text('설정','Settings')}</h1><div className="home-settings"><label>{text('언어','Language')}<LanguageSwitch/></label><label>{text('대전 배경음악','Match music')}<input type="checkbox" checked={preferences.music} onChange={e=>save({...preferences,music:e.target.checked})}/></label><label>{text('배경음악 음량','Music volume')}<input type="range" min="0" max="100" value={Math.round(preferences.volume*100)} onChange={e=>save({...preferences,volume:Number(e.target.value)/100})}/></label><label>{text('대전 배경화면','Match backgrounds')}<input type="checkbox" checked={preferences.background} onChange={e=>save({...preferences,background:e.target.checked})}/></label><label>{text('시작 화면 배경 자동 전환','Rotate menu backgrounds')}<input type="checkbox" checked={cycling} onChange={e=>setCycling(e.target.checked)}/></label>{saveError&&<p role="alert">{text('설정을 저장하지 못했어요.','Could not save settings.')}</p>}</div></>}
         {(['novel','profile','campaign'] as Page[]).includes(page)&&<div className="home-coming"><span className="home-eyebrow">COMING SOON</span><h1>{page==='novel'?text('소설','Stories'):page==='profile'?text('프로필','Profile'):text('캠페인','Campaign')}</h1><p>{text('새로운 이야기를 준비하고 있습니다.','A new chapter is on its way.')}</p><button onClick={()=>setPage('play')}>{text('플레이하기','Play')}<ArrowRight size={18}/></button></div>}
       </section>}
-    </div>
+    </div>}
     <div className="home-scene-controls"><div><small>THE WORLD OF</small><strong>{t(background.name)}</strong></div><button aria-label={text('이전 배경','Previous background')} onClick={()=>setScene(v=>(v+scenes.length-1)%scenes.length)}><ChevronLeft/></button><button aria-label={text(cycling?'배경 자동 전환 멈춤':'배경 자동 전환 시작',cycling?'Pause background rotation':'Start background rotation')} onClick={()=>setCycling(v=>!v)}>{cycling?<Pause size={16}/>:<Play size={16}/>}</button><button aria-label={text('다음 배경','Next background')} onClick={()=>setScene(v=>(v+1)%scenes.length)}><ChevronRight/></button></div>
     <div className="home-version">ALPHA 0.3 <span>·</span> {text('같은 체스판, 서로 다른 문명의 시작.','One board. Countless histories.')}</div>
   </main>;
