@@ -8,24 +8,13 @@ import Piece from './Piece';
 import { specialPieceTypes } from './specialPieces';
 import { difficultyNames, type MatchSettings } from './matchSettings';
 import CivilizationIcon, { hasCivilizationIcon } from './CivilizationIcon';
-import { countries, belongsToCountry, civilizationAppearance } from './civilizations';
-import { civilizationEras, filterCivilizations } from './civilizationFilters';
+import { civilizationAppearance } from './civilizations';
+import CivilizationPicker from './CivilizationPicker';
 import { ArrowLeft, ArrowRight, Check, ChevronRight, Crown, Crosshair, Fence, Flame, Heart, HelpCircle, Hourglass, Pyramid, Route, ScrollText, Shield, Scale, Skull, Sparkles, Sun, Swords, Trophy, Waves, Wind, Zap, Hammer, type LucideIcon } from 'lucide-react';
 import { civilizations, colorNames, type Civilization, type Players } from './game';
 import { categories, completeDraft, confirmPick, DRAFT_KEY, draftSteps, previousPick, previousHumanPick, optionsAt, restoreDraft, skills, type Loadouts, type Skill } from './draft';
 
 const icons: Record<string, LucideIcon> = { crown: Crown, hourglass: Hourglass, trophy: Trophy, zap: Zap, waves: Waves, skull: Skull, scale: Scale, shield: Shield, hammer: Hammer, wind: Wind, pyramid: Pyramid, sun: Sun, heart: Heart, question: HelpCircle, route: Route, scroll: ScrollText, fence: Fence, flame: Flame, swords: Swords, crosshair: Crosshair };
-const civilizationCopy: Partial<Record<string, { headline: string; detail: string; traits: string }>> = {
-  joseon: { headline: '진홍과 금빛, 조선의 색', detail: '백은 흰색·진홍·황색, 흑은 진홍·흰색·황색 순서로 배색했습니다.', traits: '스킬 구현 중 · 기본 체스 대전' },
-  aztec: { headline: '청록과 진홍, 선명한 황금빛', detail: '백은 황금 바탕·진홍 띠·청록 받침, 흑은 청록 바탕·황금 띠·진홍 받침으로 배색했습니다.', traits: '스킬 구현 중 · 기본 체스 대전' },
-  qing: { headline: '황룡기의 황색과 청색', detail: '백은 황색, 흑은 청색 바탕에 붉은 여의주를 닮은 장식을 더했습니다.', traits: '스킬 구현 중 · 기본 체스 대전' },
-  china: { headline: '백옥과 비취, 은은한 금빛', detail: '백옥과 비취 바탕에 금색 장식을 더한 기물로 대전을 시작하세요.', traits: '스킬 준비 중 · 기본 체스 대전' },
-  korea: { headline: '옥빛 하늘색, 고운 꽃분홍', detail: '옥빛 하늘색과 연한 꽃분홍을 교차 배색한 기물로 대전을 시작하세요.', traits: '스킬 준비 중 · 기본 체스 대전' },
-  japan: { headline: '하얀 꽃잎, 벚꽃의 분홍', detail: '흰색과 벚꽃 분홍으로 물든 기물로 대전을 시작하세요.', traits: '스킬 준비 중 · 기본 체스 대전' },
-  greece: { headline: '신들의 힘, 인간의 지혜', detail: '번개와 파도를 부르고, 영광으로 한 번 더 전진하세요.', traits: '영광 · 신의 권능 · 추가 생존' },
-  egypt: { headline: '모래 아래 잠든 영원', detail: '사막으로 전장을 바꾸고, 쓰러진 기물을 다시 일으키세요.', traits: '부활 · 지형 · 매혹' },
-  rome: { headline: '질서로 완성하는 승리', detail: '군단의 진형을 갖추고, 포위와 결투로 전장을 장악하세요.', traits: '진형 · 보호 · 결투' },
-};
 
 function SkillSymbol({ skill }: { skill: Skill }) {
   if (hasGreekSkillIcon(skill.id)) return <GreekSkillIcon skill={skill.id}/>;
@@ -63,7 +52,6 @@ export default function Draft({ onStart, settings, onSettings, network, initialP
   const currentCards = civilization && category ? skills[civilization][category.id] : null;
   const stageIndex = !step ? 4 : step.category === 'civilization' ? 0 : categories.findIndex(c => c.id === step.category) + 1;
   const currentCivilization = civilizations.find(c => c.id === civilization);
-  const visibleCivilizations = filterCivilizations();
 
   useEffect(() => {
     try { if (!network) localStorage.setItem(DRAFT_KEY, JSON.stringify(picks)); setSaveFailed(false); }
@@ -98,7 +86,7 @@ export default function Draft({ onStart, settings, onSettings, network, initialP
     setPicks(previous);
   }
 
-  return <section className={`draft-screen ${civilization ? `theme-${civilizationAppearance[civilization]}` : 'theme-neutral'}`} aria-label={translateUi("대전 준비")}>
+  return <section className={`draft-screen draft-selection-room ${civilization ? `theme-${civilizationAppearance[civilization]}` : 'theme-neutral'}`} aria-label={translateUi("대전 준비")}>
     <div className="draft-mode-bar"><span>{translateUi(network ? `온라인 PvP · 나 ${colorNames[network.color]}` : settings.mode === 'ai' ? `AI 대전 · ${difficultyNames[settings.difficulty]} · 나 ${colorNames[settings.humanColor]}` : '로컬 2인 대전')}</span><button onClick={onSettings}>{translateUi(network ? '방 나가기' : '대전 설정 변경')}</button></div>
     <nav className="draft-progress" aria-label={translateUi("선택 진행 상황")}>{translateUi(['문명', '패시브', '액티브', '기물 스킬', '대전 준비'].map((name, index) => <div key={name} aria-current={stageIndex === index ? 'step' : undefined} className={`${index === stageIndex ? 'current' : ''} ${index < stageIndex ? 'done' : ''}`}><span>{translateUi(index < stageIndex ? <Check size={12} /> : `0${index + 1}`)}</span><b>{translateUi(name)}</b>{translateUi(index < 4 && <ChevronRight size={14} />)}</div>))}</nav>
     <div className="draft-players">{translateUi((['w', 'b'] as Color[]).map((color, index) => {
@@ -124,20 +112,10 @@ export default function Draft({ onStart, settings, onSettings, network, initialP
     </div> : <>
       <div className="draft-intro" aria-live="polite"><span className="draft-eyebrow">{translateUi(currentCivilization ? `${currentCivilization.english} / ${category?.english}` : 'CHOOSE YOUR CIVILIZATION')}</span><h1 key={`title-${picks.length}`} ref={titleRef} tabIndex={-1}>{translateUi(colorNames[step.color])}, {translateUi(category ? `${category.name}${category.id === 'piece' ? '을' : '를'} 선택하세요` : '문명을 선택하세요')}</h1><p>{translateUi(onlineWaiting ? '상대의 선택 또는 서버 연결을 기다리고 있어요.' : aiTurn ? 'AI가 문명과 스킬을 고르고 있어요.' : category?.description ?? '당신의 문명이 전투의 시작을 결정합니다.')}</p></div>
       <div className={category ? "skill-selection-layout" : undefined}>
-      <div className={`draft-card-grid ${!category ? 'civilization-grid' : ''} ${locking ? 'is-locking' : ''}`} key={`cards-${picks.length}`} role="group" aria-label={translateUi(`${colorNames[step.color]} ${category?.name ?? '문명'} 카드 ${currentCards?.length ?? visibleCivilizations.length}장`)}>
+      <div className={`draft-card-grid ${!category ? 'civilization-picker-host' : ''} ${locking ? 'is-locking' : ''}`} key={`cards-${picks.length}`} role="group" aria-label={translateUi(`${colorNames[step.color]} ${category?.name ?? '문명'} 카드 ${currentCards?.length ?? civilizations.length}장`)}>
         {translateUi(currentCards ? currentCards.map((skill, index) => <div className="skill-card-wrap" key={skill.id} onPointerMove={event => { if (event.pointerType === 'mouse') setPreview(skill); }}><button onFocus={() => setPreview(skill)} className={`draft-card skill-card ${choice === skill.id ? 'is-selected' : ''} ${choice && choice !== skill.id ? 'not-selected' : ''}`} style={{ '--card-index': index } as CSSProperties} aria-pressed={choice === skill.id} aria-label={translateUi(`${skill.name} 선택`)} disabled={locking || aiTurn || onlineWaiting} onClick={() => setChoice(skill.id)}>
           <div className="card-topline"><span>{translateUi(category?.english)}</span><span>0{translateUi(index + 1)}</span></div><div className="card-symbol">{translateUi(civilization && specialPieceTypes[skill.id] ? <Piece type={specialPieceTypes[skill.id]} color={step.color} civilization={civilization} skill={skill.id} /> : <SkillSymbol skill={skill} />)}</div><span className="card-subtitle">{translateUi(skill.subtitle)}</span><h2>{translateUi(skill.name)}</h2><p className="card-description">{translateUi(skill.description)}</p><p className="card-detail">{translateUi(skill.detail)}</p>{translateUi(skill.pending && <span className="pending-tag">{translateUi("세부 효과 기획 중")}</span>)}<div className="card-select-label">{translateUi(choice === skill.id ? <><Check size={15} />{translateUi(locking ? '선택 확정' : '선택됨')}</> : <>{translateUi("카드 선택 ")}<ArrowRight size={14} /></>)}</div>
-        </button><button className="skill-demo-trigger" onClick={() => setPreview(skill)}>{translateUi("▷ 시연 보기")}</button></div>) : countries.flatMap(group => {
-          const members = visibleCivilizations.filter(civ => belongsToCountry(civ, group));
-          if (!members.length) return [];
-          return [<div className="civilization-country-heading" key={group}><h2>{translateUi(group)}</h2><span>{translateUi(members.length)}{translateUi("개 문명")}</span></div>, ...members.map((civ, index) => {
-          const copy = civilizationCopy[civilizationAppearance[civ.id]] ?? { headline: civ.region, detail: '기본 백·흑 기물로 대전을 시작하세요. 문명별 색상은 추후 추가됩니다.', traits: '스킬 준비 중 · 기본 체스 대전' };
-          return <button key={`${group}-${civ.id}`} className={`draft-card civilization-card theme-${civilizationAppearance[civ.id]} ${hasCivilizationIcon(civ.id) ? '' : 'no-emblem'} ${choice === civ.id ? 'is-selected' : ''} ${choice && choice !== civ.id ? 'not-selected' : ''}`} style={{ '--card-index': Math.min(index, 5) } as CSSProperties} aria-pressed={choice === civ.id} aria-label={translateUi(`${civ.name} 선택`)} disabled={locking || aiTurn || onlineWaiting} onClick={() => setChoice(civ.id)}>
-            <span className="civilization-classification" title={translateUi(civ.countries.join(' · '))}>{translateUi(civ.region)} · {translateUi(civilizationEras[civ.id].join(' / '))}</span>
-            <div className="card-topline"><span>{translateUi(civ.english)}</span><span>{translateUi(civ.mark)}</span></div>{translateUi(hasCivilizationIcon(civ.id) && <div className="card-symbol"><CivilizationIcon civilization={civ.id} color={step.color} size={66} /></div>)}<span className="card-subtitle">{translateUi(copy.headline)}</span><h2>{translateUi(civ.name)}</h2><span className={`readiness-badge ${civilizationReadiness(civ.id)}`}>{translateUi(readinessLabels[civilizationReadiness(civ.id)])}</span><p className="card-description">{translateUi(copy.detail)}</p><span className="civilization-traits">{translateUi(skills[civ.id].passive.length ? copy.traits : `${readinessLabels[civilizationReadiness(civ.id)]} · 기본 체스 대전`)}</span><div className="piece-color-preview" aria-label={translateUi(`${civ.name} 백과 흑 기물 미리보기`)}>{translateUi((['w', 'b'] as Color[]).map(color => <span className="piece-color-side" key={color}><small>{translateUi(colorNames[color])}</small>{translateUi((['n', 'k', 'p'] as const).map(type => <Piece key={type} type={type} color={color} civilization={civ.id} />))}</span>))}</div><div className="card-select-label">{translateUi(choice === civ.id ? <><Check size={15} />{translateUi(locking ? '선택 확정' : '선택됨')}</> : <>{translateUi("문명 선택 ")}<ArrowRight size={14} /></>)}</div>
-          </button>;
-        })];
-        }))}
+        </button><button className="skill-demo-trigger" onClick={() => setPreview(skill)}>{translateUi("▷ 시연 보기")}</button></div>) : <CivilizationPicker choice={choice} color={step.color} disabled={locking || aiTurn || onlineWaiting} onChoose={setChoice}/>)}
       </div>
       {translateUi(category && <div className="skill-preview-slot">{translateUi(preview && civilization ? <SkillDemo key={preview.id} skill={preview} civilization={civilization} color={step.color} onClose={() => setPreview(null)}/> : <div className="skill-preview-empty"><Sparkles size={28}/><strong>{translateUi("스킬 시연")}</strong><p>{translateUi("카드에 마우스를 올리거나")}<br/>{translateUi("시연 보기를 누르세요.")}</p></div>)}</div>)}
       </div>
