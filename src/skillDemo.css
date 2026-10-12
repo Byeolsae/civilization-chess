@@ -25,3 +25,19 @@
 .demo-graves{height:44px;overflow:auto;flex-wrap:nowrap;align-items:center}.demo-graves>span{flex-shrink:0}.demo-graves>small{font-size:11px;color:#97a6a7;white-space:nowrap;margin-right:8px}
 .skill-preview-empty{min-height:160px;border:1px dashed #91a18b44;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#9bac9b;text-align:center}.skill-preview-empty p{font-size:13px;line-height:1.8;margin:0}
 @media(max-width:800px){.skill-preview-slot .skill-demo{padding:16px;gap:16px;grid-template-columns:minmax(0,1fr)}.demo-visual{width:100%;max-width:480px;margin:auto}.demo-explanation{max-height:none;overflow:visible}.demo-caption{font-size:17px;min-height:110px}.skill-preview-slot .skill-demo h3{font-size:23px}}
+
+/* Demo squares are much smaller than the live board: size overlays by their
+   containing square, never by the browser viewport or a live-board minimum. */
+.live-demo-stage .board{container-type:inline-size}
+.live-demo-stage .glory-trophies,.live-demo-stage .judgment-status,.live-demo-stage .trojan-passengers{gap:2cqw;padding:2cqw 3cqw;border-radius:5cqw}
+.live-demo-stage .piece-status-effects .glory-trophies svg,
+.live-demo-stage .piece-status-effects .judgment-status svg{width:18cqw;height:18cqw;flex-shrink:0}
+.live-demo-stage .judgment-status{font-size:18cqw}
+.live-demo-stage .judgment-status b{gap:1cqw}
+.live-demo-stage .piece-status-effects .trojan-passengers svg{width:13cqw;height:19cqw;flex-shrink:0}
+.live-demo-stage .philosophy-question{font-size:18cqw;border-width:1cqw}
+.live-demo-stage .board-cooldown .cooldown-badge{width:32cqw;height:auto;aspect-ratio:1}
+.live-demo-stage .status-hearts i{font-size:27cqw;animation-name:demo-status-heart}
+@keyframes demo-status-heart{0%{opacity:0;transform:translateY(10cqw) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translateY(-30cqw) scale(1.05)}}
+.live-demo-stage .judgment-chosen::after{inset:5cqw;border-width:4cqw;border-radius:10cqw;box-shadow:inset 0 0 18cqw #f8bb4a66,0 0 16cqw #ffd98e}
+.live-demo-stage .skill-fx-title{font-size:3cqw;padding:1cqw 2.5cqw}
