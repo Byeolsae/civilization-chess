@@ -3,9 +3,8 @@
 .home-scenery{overflow:hidden}
 .home-scene{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transition:opacity 1.8s ease}
 .home-scene.visible{opacity:1}
-.home-scene-fill{position:absolute;inset:-32px;width:calc(100% + 64px);height:calc(100% + 64px);object-fit:cover;filter:blur(24px) saturate(.75) brightness(.7)}
-.home-scene-art{position:relative;display:block;width:auto;height:auto;max-width:94%;max-height:94%;object-fit:contain;filter:saturate(.85);mask-image:linear-gradient(to bottom,transparent,#000 3%,#000 97%,transparent)}
-.home-shade{z-index:-1;background:linear-gradient(90deg,#0c1719e8 0%,#0d171b98 35%,#121b2220 75%),linear-gradient(0deg,#071313b3,transparent 30%,#10191933)}
+.home-scene-art{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:50% 50%;filter:saturate(.85)}
+.home-shade{z-index:-1;background:linear-gradient(90deg,#0c1719b8 0%,#0d171b78 30%,#121b2210 65%),linear-gradient(0deg,#07131399,transparent 25%,#10191920)}
 .home-header{display:flex;align-items:center;justify-content:space-between;padding:36px 5vw;gap:24px}
 .home-brand{display:flex;align-items:center;gap:13px;text-decoration:none;color:#fff;font-size:25px;font-weight:850;letter-spacing:-1px}
 .home-brand>svg{width:38px;height:38px;color:#efd29a}

@@ -39,7 +39,7 @@ export default function HomeScreen({onPlay,onResume,canResume}:{onPlay:(settings
   function launch(next:MatchSettings){if(canResume)setPending(next);else onPlay(next);}
   function start(mode:MatchSettings['mode']){setPending(null);setAiOptions(mode==='ai');if(mode!=='ai')launch({...defaultSettings,mode});}
   return <main className="home-screen">
-    <div className="home-scenery" aria-hidden="true">{scenes.map((c,index)=><div key={c.id} className={`home-scene ${index===scene?'visible':''}`}><img className="home-scene-fill" src={civilizationMedia[c.id]!.background!} alt="" draggable={false}/><img className="home-scene-art" src={civilizationMedia[c.id]!.background!} alt="" draggable={false}/></div>)}</div>
+    <div className="home-scenery" aria-hidden="true">{scenes.map((c,index)=><div key={c.id} className={`home-scene ${index===scene?'visible':''}`}><img className="home-scene-art" src={civilizationMedia[c.id]!.background!} alt="" draggable={false}/></div>)}</div>
     <div className="home-shade"/>
     <header className="home-header"><a className="home-brand" href="/" aria-label={t('문명체스 홈')}><Crown/><span>{t('문명체스')}<small>CIVILIZATION CHESS</small></span></a><LanguageSwitch/></header>
     <div className={`home-content ${page==='main'?'home-content-main':''}`}>
