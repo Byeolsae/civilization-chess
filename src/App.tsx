@@ -20,6 +20,7 @@ import { civilizations, colorNames, decodeMatch, encodeMatch, gameStatus, legalM
 import Draft, { LoadoutList } from './DraftScreen';
 import { DRAFT_KEY, restoreDraft, type Loadouts } from './draft';
 import MatchSetup from './MatchSetup';
+import HomeScreen from './HomeScreen';
 import { defaultSettings, localSettings, isMatchSettings, SETUP_KEY, difficultyNames, type MatchSettings } from './matchSettings';
 import { canUndoTurn, undoTurn } from './aiMatch';
 import { useAiTurn } from './useAiTurn';
@@ -61,6 +62,7 @@ export default function App() {
   useLocale();
   const online = useOnlineRoom();
   const [onlineRequested] = useState(() => !!online.session || new URL(location.href).searchParams.has('room'));
+  const [home, setHome] = useState(!onlineRequested);
   const onlineApplied = useRef('');
   const onlineRound = useRef('');
   const [restored] = useState(() => { try { return onlineRequested ? null : decodeMatch(localStorage.getItem(STORAGE_KEY)); } catch { return null; } });
@@ -107,13 +109,13 @@ export default function App() {
   const placementArea = game instanceof AbilityGame && placementOwner && placementArmed && placementSquare ? game.placementSquares(placementOwner, {square:placementSquare,axis:placementAxis}) : [];
   useEffect(() => { setPlacementArmed(false); setPlacementSquare(null); setPlacementAxis('row'); }, [game, placementOwner]);
   useEffect(() => {
-    if (!(game instanceof AbilityGame) || !placementOwner || settings.mode !== 'ai' || placementOwner === settings.humanColor) return;
+    if (home || !(game instanceof AbilityGame) || !placementOwner || settings.mode !== 'ai' || placementOwner === settings.humanColor) return;
     const timer = setTimeout(() => {
       game.placePassive(placementOwner, game.loadouts[placementOwner].passive === 'twelve-tables' ? {law:romanLaws[Math.floor(Math.random()*romanLaws.length)].id} : {square:placementOwner === 'w' ? 'd2' : game.loadouts.b.passive === 'roads' ? 'd6' : 'd7',axis:'row'});
       setRevision(value => value + 1);
     }, 650);
     return () => clearTimeout(timer);
-  }, [game, placementOwner, settings.mode, settings.humanColor]);
+  }, [home, game, placementOwner, settings.mode, settings.humanColor]);
   useEffect(() => {
     if (!online.session) return;
     setSettings({...defaultSettings,mode:'online',humanColor:online.session.color});
@@ -148,7 +150,7 @@ export default function App() {
   const aiTurn = !placementOwner && started && settings.mode === 'ai' && game.turn() !== settings.humanColor && !status.over;
   const humanTurn = !placementOwner && started && !status.over && !aiTurn && !quiz && (settings.mode !== 'online' || (!!online.room && online.connected && !online.busy && game.turn() === settings.humanColor && !online.room.quiz));
   const resigningColor = settings.mode !== 'local' ? settings.humanColor : game.turn();
-  const ai = useAiTurn(game, revision, aiTurn && !confirm, settings.difficulty, setRevision);
+  const ai = useAiTurn(game, revision, aiTurn && !confirm && !home, settings.difficulty, setRevision);
   const modeLabel = settings.mode === 'online' ? '온라인 PvP' : settings.mode === 'ai' ? `AI 대전 · ${difficultyNames[settings.difficulty]}` : '로컬 2인 대전';
   const activeOwner = settings.mode !== 'local' ? settings.humanColor : game.turn();
   const activeTarget = useActiveTargeting(game, humanTurn && !confirm && !promotion && !(game instanceof AbilityGame && game.state.duel), revision, flipped, activeOwner, performAbility);
@@ -188,7 +190,7 @@ export default function App() {
   const bottomColor = opposite(topColor);
 
   useEffect(() => {
-    if (placementOwner || !started || status.over || !(game instanceof AbilityGame) || !game.state.clocks) return;
+    if (home || placementOwner || !started || status.over || !(game instanceof AbilityGame) || !game.state.clocks) return;
     let last = performance.now();
     const timer = setInterval(() => {
       const now = performance.now(); const ended = game.tick(now - last); last = now;
@@ -197,7 +199,7 @@ export default function App() {
       try { if (settings.mode !== 'online') localStorage.setItem(STORAGE_KEY, encodeMatch(game, players, resigned, loadouts, settings)); } catch { /* Main save reports errors. */ }
     }, 250);
     return () => clearInterval(timer);
-  }, [game, started, status.over, players, resigned, loadouts, settings, placementOwner]);
+  }, [home, game, started, status.over, players, resigned, loadouts, settings, placementOwner]);
 
   function performAbility(action: AbilityAction) {
     if (settings.mode === 'online') { if (humanTurn && !confirm) {void online.send({kind:'action',action});setSelected(null);} return; }
@@ -373,6 +375,10 @@ export default function App() {
     </div>;
   }
 
+  if (home) return <HomeScreen canResume={started || setupReady} onResume={() => setHome(false)} onPlay={mode => {
+    reset(); setSettings({ ...defaultSettings, mode }); setHome(false);
+    if (mode === 'online') setSetupReady(true);
+  }}/>;
   return <div className="app-shell" data-ui-theme={started ? opponentCivilization(players, settings, game.turn()) : undefined}>
     <header className="site-header">
       <a href="/" className="brand" aria-label={translateUi("문명체스 홈")}><span className="brand-icon"><Crown size={25} /></span><span>{translateUi("문명체스")}<small>CIVILIZATION CHESS</small></span></a>
