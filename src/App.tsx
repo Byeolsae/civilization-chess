@@ -19,7 +19,6 @@ import { civilizations, colorNames, decodeMatch, encodeMatch, gameStatus, legalM
 
 import Draft, { LoadoutList } from './DraftScreen';
 import { DRAFT_KEY, restoreDraft, type Loadouts } from './draft';
-import MatchSetup from './MatchSetup';
 import HomeScreen from './HomeScreen';
 import { defaultSettings, localSettings, isMatchSettings, SETUP_KEY, difficultyNames, type MatchSettings } from './matchSettings';
 import { canUndoTurn, undoTurn } from './aiMatch';
@@ -375,9 +374,9 @@ export default function App() {
     </div>;
   }
 
-  if (home) return <HomeScreen canResume={started || setupReady} onResume={() => setHome(false)} onPlay={mode => {
-    reset(); setSettings({ ...defaultSettings, mode }); setHome(false);
-    if (mode === 'online') setSetupReady(true);
+  if (home || (!started && !setupReady)) return <HomeScreen canResume={started || setupReady} onResume={() => setHome(false)} onPlay={next => {
+    reset(); setSettings(next); setSetupReady(true); setHome(false);
+    try { localStorage.setItem(SETUP_KEY, JSON.stringify(next)); } catch { setStorageError(true); }
   }}/>;
   return <div className="app-shell" data-ui-theme={started ? opponentCivilization(players, settings, game.turn()) : undefined}>
     <header className="site-header">
@@ -387,13 +386,7 @@ export default function App() {
 
     <main>
       {translateUi(settings.mode === 'online' && online.session && <OnlineBanner online={online} onLeave={()=>void leaveOnline()}/>)}
-      {translateUi(!started ? !setupReady ? <MatchSetup initial={settings} onContinue={next => {
-        try {
-          if (JSON.stringify(next) !== JSON.stringify(settings)) localStorage.removeItem(DRAFT_KEY);
-          localStorage.setItem(SETUP_KEY, JSON.stringify(next));
-        } catch { setStorageError(true); }
-        setSettings(next); setSetupReady(true);
-      }} /> : settings.mode === 'online' ? !online.session ? <OnlineLobby online={online} onBack={()=>setSetupReady(false)}/> : !online.room?.joined || !online.room.colorsChosen ? <OnlineWaitingRoom online={online}/> : <Draft settings={settings} network={{picks:online.room.picks,color:online.session.color,busy:online.busy,connected:online.connected,onPick:choice=>online.send({kind:'pick',choice})}} onSettings={()=>void leaveOnline()} onStart={()=>{}}/> : <Draft initialPicks={rematchPicks} settings={settings} onSettings={() => {setRematchPicks(undefined);setSetupReady(false);}} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts).beginPlacement() : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} /> : <>
+      {translateUi(!started ? settings.mode === 'online' ? !online.session ? <OnlineLobby online={online} onBack={()=>setSetupReady(false)}/> : !online.room?.joined || !online.room.colorsChosen ? <OnlineWaitingRoom online={online}/> : <Draft settings={settings} network={{picks:online.room.picks,color:online.session.color,busy:online.busy,connected:online.connected,onPick:choice=>online.send({kind:'pick',choice})}} onSettings={()=>void leaveOnline()} onStart={()=>{}}/> : <Draft initialPicks={rematchPicks} settings={settings} onSettings={() => {setRematchPicks(undefined);setSetupReady(false);}} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts).beginPlacement() : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} /> : <>
       {translateUi(reviewPly !== null && <Modal title={translateUi("대전 복기")} onClose={() => setReviewPly(null)}><MatchReview game={game} players={players} initialPly={reviewPly} flipped={flipped} viewer={settings.mode === 'local' ? game.turn() : settings.humanColor} live={!status.over}/></Modal>)}
       <div className="page-heading"><div><div className="eyebrow">THE FIRST AGE</div><h1>{translateUi("한 수로 시작하는 문명")}</h1></div><span className="rules-badge"><Shield size={15} /> {translateUi(game instanceof AbilityGame ? '문명 능력 대전' : '기본 체스')}</span></div>
       <div className="game-layout">
