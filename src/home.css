@@ -120,7 +120,7 @@
 @media(max-width:800px){.archive-demo-slot.skill-preview-slot .skill-demo{grid-template-columns:minmax(0,1fr);padding:14px}.archive-skill-preview{flex-wrap:wrap}.archive-skill-preview>span{flex-basis:calc(100% - 35px)}.archive-skill-preview em{margin-left:auto}}
 /* Drafting stays inside the home scene instead of switching to the match shell. */
 .home-draft-stage{animation:play-menu-enter .4s cubic-bezier(.16,1,.3,1) both}
-.home-draft-stage .draft-selection-room{max-width:1400px;margin:0 auto;background:transparent;border:0;padding:0;border-radius:0;color:#edf1f3}
+.home-draft-stage .draft-selection-room{max-width:1800px;margin:0 auto;background:transparent;border:0;padding:0;border-radius:0;color:#edf1f3}
 .home-draft-stage .draft-player{background:#101e2be6;backdrop-filter:blur(12px)}
 .home-draft-stage .draft-player.is-picking{background:linear-gradient(115deg,#39434be8,#101e2bed)}
 .home-draft-stage .civ-pick-roster{background:#0b1723d9;backdrop-filter:blur(12px)}
@@ -130,3 +130,7 @@
 .home-draft-stage .draft-progress>div{color:#c2cbd0}.home-draft-stage .draft-progress .current{color:#ffe1a4}
 @media(max-width:620px){.home-draft-stage .draft-controls{padding:12px}.home-draft-stage .draft-progress{gap:8px}.home-draft-stage .draft-progress>div>svg{margin-left:0}}
 @media(prefers-reduced-motion:reduce){.home-draft-stage{animation:none}}
+
+/* Give the draft the full stage instead of the main menu's narrow content width. */
+.home-content.home-draft-stage{display:block;width:calc(100% - 48px);max-width:1800px;margin:18px auto 35px}
+@media(max-width:760px){.home-content.home-draft-stage{width:calc(100% - 24px);margin-top:12px}}

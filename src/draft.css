@@ -178,3 +178,17 @@
 @media(prefers-reduced-motion:reduce){
  .draft-selection-room>.draft-intro,.draft-selection-room .theater-center,.draft-selection-room>.draft-controls{transition:none;animation:none;translate:none}
 }
+
+/* Larger pick stage; share one height so changing categories never resizes it. */
+@media(min-width:1100px){
+ .draft-theater{--pick-height:680px;height:var(--pick-height)}
+ .draft-theater .theater-card,.draft-theater .theater-center,.theater-center>.passive-pick-center{height:var(--pick-height)}
+ .theater-center>.passive-pick-center{grid-template-rows:120px minmax(0,1fr)}
+ .theater-center .civ-pick-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
+ .theater-center .passive-symbol-option{grid-template-columns:56px minmax(0,1fr);padding:12px}
+ .theater-center .passive-option-symbol{width:56px;height:56px}
+ .theater-center .passive-option-symbol>svg,.theater-center .passive-option-symbol>.piece{width:52px;height:52px}
+ .theater-center .passive-symbol-option strong{font-size:16px}
+ .theater-center .passive-demo-slot .skill-demo-compact{grid-template-rows:42px 334px minmax(0,1fr)}
+ .theater-center .passive-demo-slot .skill-demo-compact .demo-visual{width:300px;height:334px}
+}
