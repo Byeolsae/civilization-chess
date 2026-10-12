@@ -4,12 +4,13 @@ import { civilizations, type Civilization } from './civilizations';
 import { civilizationMedia, MEDIA_SETTINGS_KEY, parseMediaPreferences } from './civilizationMedia';
 import { civilizationReadiness, readinessLabels } from './civilizationReadiness';
 import { categories, skills, type Skill } from './draft';
-import SkillDemo from './SkillDemo';
+import SkillDemo from './LazySkillDemo';
 import { translateUi as t, useLocale } from './i18n';
 import LanguageSwitch from './LanguageSwitch';
 import CivilizationIcon, { hasCivilizationIcon } from './CivilizationIcon';
 import { defaultSettings, difficultyNames, type MatchSettings, type Difficulty } from './matchSettings';
 import './home.css';
+import SceneImage from './SceneImage';
 
 const scenes = civilizations.filter(c => civilizationMedia[c.id]?.background);
 type Page = 'main' | 'play' | 'civilization-detail' | 'civilizations' | 'novel' | 'profile' | 'settings' | 'campaign';
@@ -63,7 +64,7 @@ export default function HomeScreen({onPlay,onResume,canResume,draft,draftCiviliz
   function launch(next:MatchSettings){if(canResume)setPending(next);else onPlay(next);}
   function start(mode:MatchSettings['mode']){setPending(null);setAiOptions(mode==='ai');if(mode!=='ai')launch({...defaultSettings,mode});}
   return <main className={`home-screen ${draft?'is-drafting':''}`}>
-    <div className="home-scenery" aria-hidden="true">{scenes.map((c,index)=><div key={c.id} className={`home-scene ${index===displayScene?'visible':''}`}><img className="home-scene-art" src={civilizationMedia[c.id]!.background!} alt="" draggable={false}/></div>)}</div>
+    <div className="home-scenery" aria-hidden="true">{scenes.map((c,index)=><div key={c.id} className={`home-scene ${index===displayScene?'visible':''}`}><SceneImage className="home-scene-art" src={civilizationMedia[c.id]!.background!} visible={index===displayScene}/></div>)}</div>
     <div className="home-shade"/>
     <header className="home-header"><a className="home-brand" href="/" aria-label={t('문명체스 홈')}><Crown/><span>{t('문명체스')}<small>CIVILIZATION CHESS</small></span></a><LanguageSwitch/></header>
     {draft ? <div className="home-content home-content-play home-draft-stage">{draft}</div> : <div className={`home-content ${page==='main'?'home-content-main':page==='play'?'home-content-play':page==='civilizations'||page==='civilization-detail'?'home-content-archive':''}`}>

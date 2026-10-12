@@ -8,6 +8,7 @@ import { civilizationReadiness, readinessLabels } from './civilizationReadiness'
 import { translateUi as t, useLocale } from './i18n';
 import { categories, skills } from './draft';
 import Piece from './Piece';
+import SceneImage from './SceneImage';
 import { filterCivilizations, type RegionFilter } from './civilizationFilters';
 import type { MatchSettings } from './matchSettings';
 
@@ -43,7 +44,7 @@ export function DraftCivilizationCard({side,color,choice,picks,settings,skillSta
     const locked=!!picks[index];
     const owner=settings.mode==='local'?text(`플레이어 ${index+1}`,`Player ${index+1}`):side===settings.humanColor?text('나','You'):settings.mode==='ai'?'AI':text('상대','Opponent');
     return <aside className={`duel-civ-card side-${side} ${active?'is-picking':''} ${locked?'is-locked':''} ${skillStage?'in-skill-stage':''} ${selected?`theme-${civilizationAppearance[selected.id]}`:''}`} aria-label={`${owner} ${text('문명 카드','civilization card')}`}>
-      <div className="duel-card-art" aria-hidden="true">{civilizations.filter(c=>civilizationMedia[c.id]?.background).map(c=><img key={c.id} className={selected?.id===c.id?'visible':''} src={civilizationMedia[c.id]!.background!} alt=""/>)}</div>
+      <div className="duel-card-art" aria-hidden="true">{civilizations.filter(c=>civilizationMedia[c.id]?.background).map(c=><SceneImage key={c.id} visible={selected?.id===c.id} className={selected?.id===c.id?'visible':''} src={civilizationMedia[c.id]!.background!}/>)}</div>
       <div className="duel-card-owner"><span className={`side-dot ${side}`}/><b>{owner}</b><small>{text(side==='w'?'백':'흑',side==='w'?'WHITE':'BLACK')}</small></div>
       <span className="duel-card-state">{skillStage?(active?text('패시브 선택 중','CHOOSING PASSIVE'):text('상대 선택 대기','WAITING')):locked?<><Check size={14}/>{text('선택 확정','LOCKED IN')}</>:active?text('문명 선택 중','CHOOSING'):text('선택 대기','WAITING')}</span>
       <div className="duel-card-identity" key={selected?.id??'empty'}><div className="civ-pick-hero">{selected&&hasCivilizationIcon(selected.id)?<CivilizationIcon civilization={selected.id} color={side} size={128}/>:<Crown size={80} strokeWidth={1}/>}</div><small>{selected?.english??'YOUR CIVILIZATION'}</small><h2>{selected?t(selected.name):text('당신의 문명','Your civilization')}</h2>

@@ -1,6 +1,6 @@
 import GreekSkillIcon, { hasGreekSkillIcon } from './GreekSkillIcon';
 import { translateUi } from './i18n';
-import SkillDemo from './SkillDemo';
+import SkillDemo from './LazySkillDemo';
 import { civilizationReadiness, readinessLabels, chooseAiDraftPick } from './civilizationReadiness';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Color } from 'chess.js';
