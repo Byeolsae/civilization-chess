@@ -6,7 +6,7 @@ import CivilizationIcon, { hasCivilizationIcon } from './CivilizationIcon';
 import { civilizationMedia } from './civilizationMedia';
 import { civilizationReadiness, readinessLabels } from './civilizationReadiness';
 import { translateUi as t, useLocale } from './i18n';
-import { categories, skills } from './draft';
+import { categories, skills, type Category } from './draft';
 import Piece from './Piece';
 import SceneImage from './SceneImage';
 import { filterCivilizations, type RegionFilter } from './civilizationFilters';
@@ -35,7 +35,7 @@ export default function CivilizationPicker({choice,color,disabled,onChoose,picks
   </div>;
 }
 
-export function DraftCivilizationCard({side,color,choice,picks,settings,skillStage=false}:{side:Color;color:Color;choice:string|null;picks:string[];settings:MatchSettings;skillStage?:boolean}) {
+export function DraftCivilizationCard({side,color,choice,picks,settings,skillStage=false}:{side:Color;color:Color;choice:string|null;picks:string[];settings:MatchSettings;skillStage?:Category|false}) {
     const locale=useLocale();
     const text=(ko:string,en:string)=>locale==='ko'?ko:en;
     const index=side==='w'?0:1;
@@ -46,7 +46,7 @@ export function DraftCivilizationCard({side,color,choice,picks,settings,skillSta
     return <aside className={`duel-civ-card side-${side} ${active?'is-picking':''} ${locked?'is-locked':''} ${skillStage?'in-skill-stage':''} ${selected?`theme-${civilizationAppearance[selected.id]}`:''}`} aria-label={`${owner} ${text('문명 카드','civilization card')}`}>
       <div className="duel-card-art" aria-hidden="true">{civilizations.filter(c=>civilizationMedia[c.id]?.background).map(c=><SceneImage key={c.id} visible={selected?.id===c.id} className={selected?.id===c.id?'visible':''} src={civilizationMedia[c.id]!.background!}/>)}</div>
       <div className="duel-card-owner"><span className={`side-dot ${side}`}/><b>{owner}</b><small>{text(side==='w'?'백':'흑',side==='w'?'WHITE':'BLACK')}</small></div>
-      <span className="duel-card-state">{skillStage?(active?text('패시브 선택 중','CHOOSING PASSIVE'):text('상대 선택 대기','WAITING')):locked?<><Check size={14}/>{text('선택 확정','LOCKED IN')}</>:active?text('문명 선택 중','CHOOSING'):text('선택 대기','WAITING')}</span>
+      <span className="duel-card-state">{skillStage?(active?text(`${categories.find(c=>c.id===skillStage)?.name} 선택 중`,`CHOOSING ${categories.find(c=>c.id===skillStage)?.english}`):text('상대 선택 대기','WAITING')):locked?<><Check size={14}/>{text('선택 확정','LOCKED IN')}</>:active?text('문명 선택 중','CHOOSING'):text('선택 대기','WAITING')}</span>
       <div className="duel-card-identity" key={selected?.id??'empty'}><div className="civ-pick-hero">{selected&&hasCivilizationIcon(selected.id)?<CivilizationIcon civilization={selected.id} color={side} size={128}/>:<Crown size={80} strokeWidth={1}/>}</div><small>{selected?.english??'YOUR CIVILIZATION'}</small><h2>{selected?t(selected.name):text('당신의 문명','Your civilization')}</h2>
       {selected?<><span className={`readiness-badge ${civilizationReadiness(selected.id)}`}>{t(readinessLabels[civilizationReadiness(selected.id)])}</span><div className="civ-pick-pieces">{(['r','n','b','q','k','p'] as const).map(type=><Piece key={type} type={type} color={side} civilization={selected.id}/>)}</div><div className="civ-pick-skill-summary">{categories.map((category,categoryIndex)=>{
         const picked=skills[selected.id][category.id].find(skill=>skill.id===picks[2+categoryIndex*2+index]);

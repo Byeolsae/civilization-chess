@@ -143,3 +143,5 @@
 .duel-card-art img.visible{animation:scene-image-enter .8s ease both}
 @keyframes scene-image-enter{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){.duel-card-art img.visible{animation:none}}
+.passive-option-symbol>.piece{width:46px;height:46px;filter:drop-shadow(0 2px 3px #0004)}
+@media(max-width:760px){.passive-pick-layout{grid-template-rows:320px 620px}.passive-pick-layout>.duel-civ-card{height:320px}.passive-pick-layout .duel-card-identity>.civ-pick-skill-summary{gap:4px}.passive-pick-layout .civ-pick-skill-summary>span{display:grid!important;min-height:38px;padding:4px 8px}.passive-pick-layout .civ-pick-skill-summary .is-filled{padding:4px 8px}.passive-pick-layout .civ-pick-skill-summary small{font-size:11px}.passive-option-symbol>.piece{width:40px;height:40px}}
