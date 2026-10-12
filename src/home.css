@@ -87,7 +87,8 @@
 .home-archive-stage>h1{font-size:42px;margin-bottom:12px}
 .home-archive-intro{font-size:14px;color:#e0e7e4;margin-bottom:30px;text-shadow:0 2px 8px #000}
 .home-emblem-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:16px}
-.home-emblem-grid>button{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:205px;padding:25px 14px;border:1px solid #e6d8b633;background:linear-gradient(150deg,#20323ae6,#0c171fe8);border-radius:4px;color:#f5f2e9;cursor:pointer;transition:transform .22s,border-color .22s,background .22s}
+.home-emblem-grid>button{animation:archive-card-enter .55s cubic-bezier(.16,1,.3,1) both;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:205px;padding:25px 14px;border:1px solid #e6d8b633;background:linear-gradient(150deg,#20323ae6,#0c171fe8);border-radius:4px;color:#f5f2e9;cursor:pointer;transition:transform .22s,border-color .22s,background .22s}
+@keyframes archive-card-enter{from{opacity:0;translate:-45px 12px;scale:.9}to{opacity:1;translate:0 0;scale:1}}
 .home-emblem-grid>button:hover{transform:translateY(-5px) scale(1.025);border-color:#e7c88d;background:linear-gradient(150deg,#384448f5,#15232df5)}
 .home-emblem{display:grid;place-items:center;min-height:85px;margin-bottom:15px;filter:drop-shadow(0 5px 12px #0005)}
 .home-emblem img{display:block;object-fit:contain}
@@ -108,7 +109,7 @@
 .home-civilization-body .home-skill-category summary{font-size:17px;padding:6px 0}
 .home-screen:has(.home-content-archive) .home-scene-controls{position:relative;right:auto;bottom:auto;width:fit-content;margin:-90px 5vw 24px auto}
 @media(max-width:620px){.home-content.home-content-archive{margin:20px 6vw 125px}.home-emblem-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.home-emblem-grid>button{min-height:180px;padding:18px 10px}.home-emblem-grid strong{font-size:16px}.home-emblem-grid small{font-size:8px;letter-spacing:1px}.home-civilization-heading{gap:18px}.home-civilization-heading .home-emblem{min-width:75px}.home-civilization-heading .home-emblem img{width:75px;height:75px}.home-civilization-heading h1{font-size:34px}.home-civilization-body{padding:20px}.home-civilization-body .home-history{font-size:14px}.home-civilization-body .home-tabs button{font-size:15px}}
-@media(prefers-reduced-motion:reduce){.home-archive-stage,.home-civilization-body{animation:none!important}.home-emblem-grid>button{transition:none}.home-emblem-grid>button:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.home-archive-stage,.home-civilization-body{animation:none!important}.home-emblem-grid>button{animation:none!important;transition:none}.home-emblem-grid>button:hover{transform:none}}
 .archive-skill-preview{width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:15px 12px;margin:8px 0;background:#ffffff06;border:1px solid #ffffff20;border-radius:5px;color:#eee;cursor:pointer}
 .archive-skill-preview>span{flex:1;min-width:0}.archive-skill-preview strong{display:block;font-size:16px}.archive-skill-preview small{display:block;font-size:12px;color:#bdcdcd;line-height:1.7;margin-top:6px}.archive-skill-preview em{font-size:11px;font-style:normal;color:#efd29a;white-space:nowrap}.archive-skill-preview>svg{color:#efd29a}
 .archive-skill-preview:hover,.archive-skill-preview[aria-pressed=true]{border-color:#efd29a;background:#efd29a14}
