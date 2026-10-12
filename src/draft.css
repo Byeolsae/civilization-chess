@@ -167,3 +167,14 @@
 @media(max-width:1000px) and (min-width:761px){.draft-theater .duel-card-identity h2{font-size:21px}.draft-theater .theater-card>.duel-civ-card{padding:18px 10px}.theater-skills .theater-white{transform:translateX(-6px) scale(1.015)}.theater-skills .theater-black{transform:translateX(6px) scale(1.015)}}
 @media(max-width:760px){.draft-theater{height:960px}.draft-theater .theater-card{width:46%;height:310px}.theater-white{transform:scale(.95)}.theater-black{transform:scale(.95)}.theater-skills .theater-white{transform:scale(1)}.theater-skills .theater-black{transform:scale(1)}.theater-center{left:0;top:340px;width:100%;height:620px}.draft-theater .theater-card>.duel-civ-card{padding:12px}.draft-theater .duel-card-identity>.civ-pick-hero{min-height:68px}.draft-theater .duel-card-identity>.civ-pick-hero .civilization-icon{width:62px;height:62px}.draft-theater .duel-card-state{display:none}.draft-theater .duel-card-identity h2{font-size:20px;margin:5px 0 9px}.draft-theater .duel-card-identity>.civ-pick-skill-summary{min-height:0;gap:3px}.draft-theater .civ-pick-skill-summary>span{min-height:36px;padding:3px 6px}.draft-theater .duel-card-identity>p{height:110px}.theater-ready .theater-white{left:3%;transform:translateY(120px) rotate(-4deg)}.theater-ready .theater-black{right:3%;transform:translateY(120px) rotate(4deg)}.theater-ready .theater-versus{height:550px}.draft-theater.theater-ready{height:550px;transition:height .85s}.theater-versus span{font-size:52px}}
 @media(prefers-reduced-motion:reduce){.draft-theater .theater-card,.theater-versus,.draft-theater.theater-ready{transition:none!important}.theater-center>.passive-pick-center,.theater-ready+.draft-controls,.theater-ready:before{animation:none}.draft-theater .theater-card{will-change:auto}}
+
+/* Fade the current choice out before replacing it; keep the stage geometry stable. */
+.draft-selection-room>.draft-intro{height:130px;min-height:130px;padding:18px 0;display:flex;flex-direction:column;justify-content:center}
+.draft-selection-room .theater-center>.passive-pick-center{animation:none}
+.draft-selection-room>.draft-intro,.draft-selection-room .theater-center,.draft-selection-room>.draft-controls{transition:opacity 180ms ease,translate 180ms ease}
+.draft-transition-exit>.draft-intro,.draft-transition-exit .theater-center,.draft-transition-exit>.draft-controls{opacity:0;translate:0 -6px;pointer-events:none}
+.draft-transition-enter>.draft-intro,.draft-transition-enter .theater-center,.draft-transition-enter>.draft-controls{animation:draft-choice-arrive 320ms cubic-bezier(.22,1,.36,1) both;pointer-events:none}
+@keyframes draft-choice-arrive{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
+@media(prefers-reduced-motion:reduce){
+ .draft-selection-room>.draft-intro,.draft-selection-room .theater-center,.draft-selection-room>.draft-controls{transition:none;animation:none;translate:none}
+}
