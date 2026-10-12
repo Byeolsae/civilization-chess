@@ -118,10 +118,10 @@ export default function Draft({ onStart, settings, onSettings, network, initialP
         <div className="passive-pick-center">
           <div className="passive-symbol-options" role="group" aria-label={translateUi(`${colorNames[step.color]} 패시브 선택`)}>
             {currentCards.map(skill=><button key={skill.id} className={`passive-symbol-option ${choice===skill.id?'is-selected':''}`} aria-pressed={choice===skill.id} aria-label={translateUi(`${skill.name} 선택`)} disabled={locking||aiTurn||onlineWaiting} onPointerEnter={event=>{if(event.pointerType==='mouse'&&!locking)setPreview(skill);}} onFocus={()=>{if(!locking)setPreview(skill);}} onClick={()=>{setChoice(skill.id);setPreview(skill);}}>
-              <span className="passive-option-symbol"><SkillSymbol skill={skill}/></span><strong>{translateUi(skill.name)}</strong><small>{translateUi(skill.description)}</small><span className="passive-choice-indicator">{choice===skill.id?<Check size={14}/>:null}{translateUi(choice===skill.id?'선택됨':'시연 보기')}</span>
+              <span className="passive-option-symbol"><SkillSymbol skill={skill}/></span><strong>{translateUi(skill.name)}</strong><span className="passive-choice-indicator">{choice===skill.id?<Check size={14}/>:null}{translateUi(choice===skill.id?'선택됨':'시연 보기')}</span>
             </button>)}
           </div>
-          <div className="skill-preview-slot passive-demo-slot">{preview?<SkillDemo key={`${picks.length}-${preview.id}`} skill={preview} civilization={civilization} color={step.color} onClose={()=>setPreview(null)}/>:<div className="passive-demo-placeholder"><Sparkles size={32}/><strong>{translateUi('스킬 시연')}</strong><p>{translateUi('카드에 마우스를 올리거나')}<br/>{translateUi('시연 보기를 누르세요.')}</p></div>}</div>
+          <div className="skill-preview-slot passive-demo-slot">{preview?<SkillDemo compact key={`${picks.length}-${preview.id}`} skill={preview} civilization={civilization} color={step.color} onClose={()=>setPreview(null)}/>:<div className="passive-demo-placeholder"><Sparkles size={32}/><strong>{translateUi('스킬 시연')}</strong><p>{translateUi('카드에 마우스를 올리거나')}<br/>{translateUi('시연 보기를 누르세요.')}</p></div>}</div>
         </div>
         <DraftCivilizationCard side="b" color={step.color} choice={null} picks={picks} settings={settings} skillStage/>
       </div> : <div className={category ? "skill-selection-layout" : undefined}>
