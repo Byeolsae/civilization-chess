@@ -61,6 +61,7 @@ export default function App() {
   useLocale();
   const online = useOnlineRoom();
   const [onlineRequested] = useState(() => !!online.session || new URL(location.href).searchParams.has('room'));
+  const [draftCivilization,setDraftCivilization]=useState<Civilization|null>(null);
   const [home, setHome] = useState(!onlineRequested);
   const onlineApplied = useRef('');
   const onlineRound = useRef('');
@@ -374,9 +375,9 @@ export default function App() {
     </div>;
   }
 
-  const localDraft = <Draft initialPicks={rematchPicks} settings={settings} onSettings={() => {setRematchPicks(undefined);setSetupReady(false);}} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts).beginPlacement() : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} />;
+  const localDraft = <Draft onBackgroundChange={setDraftCivilization} initialPicks={rematchPicks} settings={settings} onSettings={() => {setRematchPicks(undefined);setSetupReady(false);}} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts).beginPlacement() : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} />;
 
-  if (home || (!started && (!setupReady || settings.mode !== 'online'))) return <HomeScreen draft={!home && setupReady && !started ? localDraft : undefined} canResume={started || setupReady} onResume={() => setHome(false)} onPlay={next => {
+  if (home || (!started && (!setupReady || settings.mode !== 'online'))) return <HomeScreen draftCivilization={draftCivilization} draft={!home && setupReady && !started ? localDraft : undefined} canResume={started || setupReady} onResume={() => setHome(false)} onPlay={next => {
     reset(); setSettings(next); setSetupReady(true); setHome(false);
     try { localStorage.setItem(SETUP_KEY, JSON.stringify(next)); } catch { setStorageError(true); }
   }}/>;

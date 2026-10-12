@@ -1,24 +1,40 @@
 import { useState } from 'react';
 import type { Color } from 'chess.js';
-import { Search, Check, Crown } from 'lucide-react';
-import { civilizations, civilizationAppearance } from './civilizations';
+import { Search, Check, Crown, Globe2 } from 'lucide-react';
+import { civilizations, civilizationAppearance, regions } from './civilizations';
 import CivilizationIcon, { hasCivilizationIcon } from './CivilizationIcon';
 import { civilizationMedia } from './civilizationMedia';
 import { civilizationReadiness, readinessLabels } from './civilizationReadiness';
 import { translateUi as t, useLocale } from './i18n';
 import { categories, skills } from './draft';
 import Piece from './Piece';
+import { filterCivilizations, type RegionFilter } from './civilizationFilters';
+import type { MatchSettings } from './matchSettings';
 
-export default function CivilizationPicker({choice,color,disabled,onChoose}:{choice:string|null;color:Color;disabled:boolean;onChoose:(id:string)=>void}) {
+export default function CivilizationPicker({choice,color,disabled,onChoose,picks,settings}:{picks:string[];settings:MatchSettings;choice:string|null;color:Color;disabled:boolean;onChoose:(id:string)=>void}) {
   const locale=useLocale();
   const text=(ko:string,en:string)=>locale==='ko'?ko:en;
   const [query,setQuery]=useState('');
-  const normalize=(value:string)=>value.normalize('NFKC').toLocaleLowerCase().replace(/\s/g,'');
-  const visible=[...civilizations].sort((a,b)=>t(a.name).localeCompare(t(b.name),locale)).filter(c=>normalize(`${c.name} ${c.english} ${t(c.name)}`).includes(normalize(query)));
-  const selected=civilizations.find(c=>c.id===choice);
-  const background=selected&&civilizationMedia[selected.id]?.background;
-  return <div className="civ-pick-layout">
+  const [region,setRegion]=useState<RegionFilter>('전체');
+  const visible=filterCivilizations(query,region);
+  function playerCard(side:Color) {
+    const index=side==='w'?0:1;
+    const active=color===side;
+    const selected=civilizations.find(c=>c.id===(active&&choice?choice:picks[index]));
+    const locked=!!picks[index];
+    const owner=settings.mode==='local'?text(`플레이어 ${index+1}`,`Player ${index+1}`):side===settings.humanColor?text('나','You'):settings.mode==='ai'?'AI':text('상대','Opponent');
+    return <aside className={`duel-civ-card side-${side} ${active?'is-picking':''} ${locked?'is-locked':''} ${selected?`theme-${civilizationAppearance[selected.id]}`:''}`} aria-label={`${owner} ${text('문명 카드','civilization card')}`}>
+      <div className="duel-card-art" aria-hidden="true">{civilizations.filter(c=>civilizationMedia[c.id]?.background).map(c=><img key={c.id} className={selected?.id===c.id?'visible':''} src={civilizationMedia[c.id]!.background!} alt=""/>)}</div>
+      <div className="duel-card-owner"><span className={`side-dot ${side}`}/><b>{owner}</b><small>{text(side==='w'?'백':'흑',side==='w'?'WHITE':'BLACK')}</small></div>
+      <span className="duel-card-state">{locked?<><Check size={14}/>{text('선택 확정','LOCKED IN')}</>:active?text('문명 선택 중','CHOOSING'):text('선택 대기','WAITING')}</span>
+      <div className="duel-card-identity" key={selected?.id??'empty'}><div className="civ-pick-hero">{selected&&hasCivilizationIcon(selected.id)?<CivilizationIcon civilization={selected.id} color={side} size={128}/>:<Crown size={80} strokeWidth={1}/>}</div><small>{selected?.english??'YOUR CIVILIZATION'}</small><h2>{selected?t(selected.name):text('당신의 문명','Your civilization')}</h2>
+      {selected?<><span className={`readiness-badge ${civilizationReadiness(selected.id)}`}>{t(readinessLabels[civilizationReadiness(selected.id)])}</span><div className="civ-pick-pieces">{(['r','n','b','q','k','p'] as const).map(type=><Piece key={type} type={type} color={side} civilization={selected.id}/>)}</div><div className="civ-pick-skill-summary">{categories.map(category=><span key={category.id}><b>{t(category.name)}</b><small>{skills[selected.id][category.id].map(skill=>t(skill.name)).join(' · ')||text('준비 중','Coming soon')}</small></span>)}</div></>:<p>{text('문명을 선택하고 역사를 시작하세요.','Choose a civilization. Begin your history.')}</p>}</div>
+    </aside>;
+  }
+  return <div className="civ-pick-layout duel-pick-layout">
+    {playerCard('w')}
     <div className="civ-pick-roster">
+      <div className="civ-continent-filter" role="group" aria-label={text('대륙별 문명 필터','Filter by continent')}>{(['전체',...regions] as RegionFilter[]).map(item=><button key={item} aria-pressed={region===item} onClick={()=>setRegion(item)}>{item==='전체'&&<Globe2 size={15}/>}<span>{t(item)}</span></button>)}</div>
       <div className="civ-pick-search"><Search size={18} aria-hidden="true"/><input aria-label={text('문명 이름 검색','Search civilizations')} placeholder={text('문명 이름 검색','Search civilizations')} value={query} onChange={e=>setQuery(e.target.value)}/>{query&&<button onClick={()=>setQuery('')} aria-label={text('검색 지우기','Clear search')}>×</button>}<span aria-live="polite">{visible.length} / {civilizations.length}</span></div>
       <div className="civ-pick-grid" role="group" aria-label={text('문명 목록','Civilizations')}>
         {visible.map(c=><button key={c.id} className={`civ-pick-tile theme-${civilizationAppearance[c.id]}`} aria-label={`${t(c.name)} ${text('선택','select')}`} aria-pressed={choice===c.id} disabled={disabled} onClick={()=>onChoose(c.id)}>
@@ -28,13 +44,6 @@ export default function CivilizationPicker({choice,color,disabled,onChoose}:{cho
         {!visible.length&&<p className="civ-pick-empty">{text('일치하는 문명이 없어요. 다른 이름으로 검색해 보세요.','No civilizations found. Try another name.')}</p>}
       </div>
     </div>
-    <aside className={`civ-pick-preview ${selected?`theme-${civilizationAppearance[selected.id]}`:''}`} aria-label={text('선택한 문명 미리보기','Selected civilization preview')}>
-      {background&&<img className="civ-pick-scenery" src={background} alt=""/>}
-      <span className="civ-pick-preview-label">{text('당신의 문명','YOUR CIVILIZATION')}</span>
-      <div className="civ-pick-hero">{selected&&hasCivilizationIcon(selected.id)?<CivilizationIcon civilization={selected.id} color={color} size={130}/>:<Crown size={90} strokeWidth={1}/>}</div>
-      <small>{selected?.english??'CHOOSE YOUR CIVILIZATION'}</small>
-      <h2>{selected?t(selected.name):text('문명을 선택하세요','Choose a civilization')}</h2>
-      {selected?<><span className={`readiness-badge ${civilizationReadiness(selected.id)}`}>{t(readinessLabels[civilizationReadiness(selected.id)])}</span><div className="civ-pick-pieces" aria-label={text('선택 진영 기물 미리보기','Your pieces')}>{(['r','n','b','q','k','p'] as const).map(type=><Piece key={type} type={type} color={color} civilization={selected.id}/>)}</div><p>{text('두 진영의 문명을 확정한 뒤, 스킬을 번갈아 선택합니다.','Lock in both civilizations, then take turns choosing skills.')}</p><div className="civ-pick-skill-summary">{categories.map(category=><span key={category.id}><b>{t(category.name)}</b><small>{skills[selected.id][category.id].map(skill=>t(skill.name)).join(' · ')||text('준비 중','Coming soon')}</small></span>)}</div></>:<p>{text('왼쪽 목록에서 문명을 고르세요. 같은 문명끼리도 대전할 수 있습니다.','Choose from the roster. Both players can use the same civilization.')}</p>}
-    </aside>
+    {playerCard('b')}
   </div>;
 }
