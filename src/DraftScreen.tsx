@@ -1,5 +1,5 @@
 import VersusScene from './VersusScene';
-import GreekSkillIcon, { hasGreekSkillIcon } from './GreekSkillIcon';
+import SkillSymbol from './SkillSymbol';
 import { translateUi } from './i18n';
 import SkillDemo from './LazySkillDemo';
 import { chooseAiDraftPick } from './civilizationReadiness';
@@ -10,17 +10,9 @@ import { specialPieceTypes } from './specialPieces';
 import { difficultyNames, type MatchSettings } from './matchSettings';
 import { civilizationAppearance } from './civilizations';
 import CivilizationPicker, { DraftCivilizationCard } from './CivilizationPicker';
-import { ArrowLeft, ArrowRight, Check, ChevronRight, Crown, Crosshair, Fence, Flame, Heart, HelpCircle, Hourglass, Pyramid, Route, ScrollText, Shield, Scale, Skull, Sparkles, Sun, Swords, Trophy, Waves, Wind, Zap, Hammer, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, ChevronRight, Sparkles, Swords } from 'lucide-react';
 import { civilizations, colorNames, type Civilization, type Players } from './game';
 import { categories, completeDraft, confirmPick, DRAFT_KEY, draftSteps, previousPick, previousHumanPick, optionsAt, restoreDraft, skills, type Loadouts, type Skill } from './draft';
-
-const icons: Record<string, LucideIcon> = { crown: Crown, hourglass: Hourglass, trophy: Trophy, zap: Zap, waves: Waves, skull: Skull, scale: Scale, shield: Shield, hammer: Hammer, wind: Wind, pyramid: Pyramid, sun: Sun, heart: Heart, question: HelpCircle, route: Route, scroll: ScrollText, fence: Fence, flame: Flame, swords: Swords, crosshair: Crosshair };
-
-function SkillSymbol({ skill }: { skill: Skill }) {
-  if (hasGreekSkillIcon(skill.id)) return <GreekSkillIcon skill={skill.id}/>;
-  const Icon = icons[skill.symbol] ?? Sparkles;
-  return skill.symbol === 'horse' ? <span className="draft-horse" aria-hidden="true">♞</span> : <Icon size={54} strokeWidth={1.15} aria-hidden="true" />;
-}
 
 export function LoadoutList({ players, loadouts }: { players: Players; loadouts: Loadouts | null }) {
   if (!loadouts) return <p className="legacy-loadout">{translateUi("이전 버전에서 시작한 대전입니다. 새 대전에서 스킬을 선택할 수 있어요.")}</p>;
