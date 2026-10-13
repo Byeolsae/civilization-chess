@@ -1,5 +1,5 @@
 import { createPortal } from 'react-dom';
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Crown } from 'lucide-react';
 import { civilizations, type Players } from './game';
 import CivilizationIcon, { hasCivilizationIcon } from './CivilizationIcon';
@@ -10,8 +10,10 @@ import './versusScene.css';
 
 export const MATCH_ENTRY_MS = 2400;
 export default function VersusScene({players,loadouts,opening=false,children}:{players:Players;loadouts:Loadouts|null;opening?:boolean;children?:ReactNode}) {
+  const [arriving,setArriving]=useState(()=>!opening&&!matchMedia('(prefers-reduced-motion: reduce)').matches);
+  useEffect(()=>{if(!arriving)return;const timer=setTimeout(()=>setArriving(false),1200);return()=>clearTimeout(timer);},[arriving]);
   useEffect(()=>{const previous=document.body.style.overflow;document.body.style.overflow='hidden';return()=>{document.body.style.overflow=previous;};},[]);
-  return createPortal(<section className={`versus-scene ${opening?'is-opening':''}`} aria-label={t('대전 준비')}>
+  return createPortal(<section className={`versus-scene ${opening?'is-opening':'is-arriving'}`} aria-label={t('대전 준비')}>
     {(['w','b'] as const).map(side=>{
       const id=players[side],civ=civilizations.find(c=>c.id===id)!;
       const background=civilizationMedia[id]?.background;
@@ -27,6 +29,6 @@ export default function VersusScene({players,loadouts,opening=false,children}:{p
     })}
     <div className="versus-seam" aria-hidden="true"/><div className="versus-mark" aria-hidden="true">VS</div>
     <div className="versus-heading"><small>CIVILIZATION CHESS</small><h1>{t('두 문명, 하나의 전장')}</h1></div>
-    {children&&<div className="versus-actions">{children}</div>}
+    {children&&<div className="versus-actions" inert={arriving}>{children}</div>}
   </section>,document.body);
 }

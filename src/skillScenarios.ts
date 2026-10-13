@@ -72,3 +72,12 @@ export function createSkillScenario(id: string): SkillScenario | null {
   if (id === 'pyramid' || id === 'roads' || id === 'twelve-tables') game.beginPlacement();
   return {game,steps,intro};
 }
+
+// Rebuild the complete state (including placements, deaths and skill stacks),
+// since one demonstration chapter may contain multiple game actions.
+export function skillScenarioAtStep(id:string,step:number):SkillScenario|null {
+  const scenario=createSkillScenario(id);
+  if(!scenario)return null;
+  for(let i=0;i<Math.min(Math.max(0,Math.floor(step)),scenario.steps.length);i++) scenario.steps[i].run(scenario.game);
+  return scenario;
+}
