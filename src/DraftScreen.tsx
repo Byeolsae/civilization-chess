@@ -1,3 +1,4 @@
+import VersusScene from './VersusScene';
 import GreekSkillIcon, { hasGreekSkillIcon } from './GreekSkillIcon';
 import { translateUi } from './i18n';
 import SkillDemo from './LazySkillDemo';
@@ -112,7 +113,11 @@ export default function Draft({ onStart, settings, onSettings, network, initialP
     setPicks(previous);
   }
 
-  return <section className={`draft-screen draft-selection-room draft-transition-${transition} ${step?.category==='civilization'?'is-civilization-picking':category?'is-passive-picking':''} ${civilization ? `theme-${civilizationAppearance[civilization]}` : 'theme-neutral'}`} aria-label={translateUi("대전 준비")}>
+  return <section inert={!!complete} aria-hidden={complete?true:undefined} className={`draft-screen draft-selection-room draft-transition-${transition} ${step?.category==='civilization'?'is-civilization-picking':category?'is-passive-picking':''} ${civilization ? `theme-${civilizationAppearance[civilization]}` : 'theme-neutral'}`} aria-label={translateUi("대전 준비")}>
+    {complete&&<VersusScene players={complete.players} loadouts={complete.loadouts}>
+      <button className="draft-back" onClick={back} disabled={!previous||transitioning}><ArrowLeft size={16}/>{translateUi('이전 선택')}</button>
+      <button className="primary-button" disabled={transitioning} onClick={()=>{try{localStorage.removeItem(DRAFT_KEY);}catch{}onStart(complete.players,complete.loadouts);}}>{translateUi('체스 대전 시작')}<Swords size={18}/></button>
+    </VersusScene>}
     <div className="draft-mode-bar"><span>{translateUi(network ? `온라인 PvP · 나 ${colorNames[network.color]}` : settings.mode === 'ai' ? `AI 대전 · ${difficultyNames[settings.difficulty]} · 나 ${colorNames[settings.humanColor]}` : '로컬 2인 대전')}</span><button onClick={onSettings}>{translateUi(network ? '방 나가기' : '대전 설정 변경')}</button></div>
     <nav className="draft-progress" aria-label={translateUi("선택 진행 상황")}>{translateUi(['문명', '패시브', '액티브', '기물 스킬', '대전 준비'].map((name, index) => <div key={name} aria-current={stageIndex === index ? 'step' : undefined} className={`${index === stageIndex ? 'current' : ''} ${index < stageIndex ? 'done' : ''}`}><span>{translateUi(index < stageIndex ? <Check size={12} /> : `0${index + 1}`)}</span><b>{translateUi(name)}</b>{translateUi(index < 4 && <ChevronRight size={14} />)}</div>))}</nav>
     {complete?<div className="draft-intro theater-intro"><span className="draft-eyebrow">READY TO PLAY</span><h1 ref={titleRef} tabIndex={-1}>{translateUi('두 문명, 하나의 전장')}</h1><p>{translateUi('선택이 끝났습니다. 서로의 조합을 확인하세요.')}</p></div>:<div className="draft-intro" aria-live="polite"><span className="draft-eyebrow">{translateUi(currentCivilization ? `${currentCivilization.english} / ${category?.english}` : 'CHOOSE YOUR CIVILIZATION')}</span><h1 key={`title-${picks.length}`} ref={titleRef} tabIndex={-1}>{translateUi(colorNames[step.color])}, {translateUi(category ? `${category.name}${category.id === 'piece' ? '을' : '를'} 선택하세요` : '문명을 선택하세요')}</h1><p>{translateUi(onlineWaiting ? '상대의 선택 또는 서버 연결을 기다리고 있어요.' : aiTurn ? 'AI가 문명과 스킬을 고르고 있어요.' : category?.description ?? '당신의 문명이 전투의 시작을 결정합니다.')}</p></div>}

@@ -1,3 +1,4 @@
+import VersusScene, { MATCH_ENTRY_MS } from './VersusScene';
 import { romanLaws } from './romanLaws';
 import LawSelection from './LawSelection';
 import { POSEIDON_EFFECT_MS } from './skillTiming';
@@ -79,6 +80,8 @@ export default function App() {
   const [game, setGame] = useState(() => restored?.game ?? new Chess());
   const [players, setPlayers] = useState<Players>(() => restored?.players ?? { w: 'greece', b: 'egypt' });
   const [loadouts, setLoadouts] = useState<Loadouts | null>(restored?.loadouts ?? null);
+  const [entering,setEntering]=useState(false);
+  useEffect(()=>{if(!entering)return;const timer=setTimeout(()=>setEntering(false),MATCH_ENTRY_MS);return()=>clearTimeout(timer);},[entering]);
   const [started, setStarted] = useState(!!restored);
   const [rematchPicks,setRematchPicks] = useState<string[] | undefined>();
   const [resigned, setResigned] = useState<Color | null>(restored?.resigned ?? null);
@@ -105,17 +108,17 @@ export default function App() {
   const [placementArmed, setPlacementArmed] = useState(false);
   const [placementSquare, setPlacementSquare] = useState<Square | null>(null);
   const [placementAxis, setPlacementAxis] = useState<'row' | 'column'>('row');
-  const placementHuman = !!placementOwner && (settings.mode === 'local' || placementOwner === settings.humanColor) && (settings.mode !== 'online' || (online.connected && !online.busy));
+  const placementHuman = !entering && !!placementOwner && (settings.mode === 'local' || placementOwner === settings.humanColor) && (settings.mode !== 'online' || (online.connected && !online.busy));
   const placementArea = game instanceof AbilityGame && placementOwner && placementArmed && placementSquare ? game.placementSquares(placementOwner, {square:placementSquare,axis:placementAxis}) : [];
   useEffect(() => { setPlacementArmed(false); setPlacementSquare(null); setPlacementAxis('row'); }, [game, placementOwner]);
   useEffect(() => {
-    if (home || !(game instanceof AbilityGame) || !placementOwner || settings.mode !== 'ai' || placementOwner === settings.humanColor) return;
+    if (home || entering || !(game instanceof AbilityGame) || !placementOwner || settings.mode !== 'ai' || placementOwner === settings.humanColor) return;
     const timer = setTimeout(() => {
       game.placePassive(placementOwner, game.loadouts[placementOwner].passive === 'twelve-tables' ? {law:romanLaws[Math.floor(Math.random()*romanLaws.length)].id} : {square:placementOwner === 'w' ? 'd2' : game.loadouts.b.passive === 'roads' ? 'd6' : 'd7',axis:'row'});
       setRevision(value => value + 1);
     }, 650);
     return () => clearTimeout(timer);
-  }, [home, game, placementOwner, settings.mode, settings.humanColor]);
+  }, [home, entering, game, placementOwner, settings.mode, settings.humanColor]);
   useEffect(() => {
     if (!online.session) return;
     setSettings({...defaultSettings,mode:'online',humanColor:online.session.color});
@@ -148,9 +151,9 @@ export default function App() {
   }, [online.room,online.session]);
   const status = gameStatus(game, resigned);
   const aiTurn = !placementOwner && started && settings.mode === 'ai' && game.turn() !== settings.humanColor && !status.over;
-  const humanTurn = !placementOwner && started && !status.over && !aiTurn && !quiz && (settings.mode !== 'online' || (!!online.room && online.connected && !online.busy && game.turn() === settings.humanColor && !online.room.quiz));
+  const humanTurn = !entering && !placementOwner && started && !status.over && !aiTurn && !quiz && (settings.mode !== 'online' || (!!online.room && online.connected && !online.busy && game.turn() === settings.humanColor && !online.room.quiz));
   const resigningColor = settings.mode !== 'local' ? settings.humanColor : game.turn();
-  const ai = useAiTurn(game, revision, aiTurn && !confirm && !home, settings.difficulty, setRevision);
+  const ai = useAiTurn(game, revision, aiTurn && !confirm && !home && !entering, settings.difficulty, setRevision);
   const modeLabel = settings.mode === 'online' ? '온라인 PvP' : settings.mode === 'ai' ? `AI 대전 · ${difficultyNames[settings.difficulty]}` : '로컬 2인 대전';
   const activeOwner = settings.mode !== 'local' ? settings.humanColor : game.turn();
   const activeTarget = useActiveTargeting(game, humanTurn && !confirm && !promotion && !(game instanceof AbilityGame && game.state.duel), revision, flipped, activeOwner, performAbility);
@@ -190,7 +193,7 @@ export default function App() {
   const bottomColor = opposite(topColor);
 
   useEffect(() => {
-    if (home || placementOwner || !started || status.over || !(game instanceof AbilityGame) || !game.state.clocks) return;
+    if (home || entering || placementOwner || !started || status.over || !(game instanceof AbilityGame) || !game.state.clocks) return;
     let last = performance.now();
     const timer = setInterval(() => {
       const now = performance.now(); const ended = game.tick(now - last); last = now;
@@ -199,7 +202,7 @@ export default function App() {
       try { if (settings.mode !== 'online') localStorage.setItem(STORAGE_KEY, encodeMatch(game, players, resigned, loadouts, settings)); } catch { /* Main save reports errors. */ }
     }, 250);
     return () => clearInterval(timer);
-  }, [home, game, started, status.over, players, resigned, loadouts, settings, placementOwner]);
+  }, [home, entering, game, started, status.over, players, resigned, loadouts, settings, placementOwner]);
 
   function performAbility(action: AbilityAction) {
     if (settings.mode === 'online') { if (humanTurn && !confirm) {void online.send({kind:'action',action});setSelected(null);} return; }
@@ -375,13 +378,14 @@ export default function App() {
     </div>;
   }
 
-  const localDraft = <Draft onBackgroundChange={setDraftCivilization} initialPicks={rematchPicks} settings={settings} onSettings={() => {setRematchPicks(undefined);setSetupReady(false);}} onStart={(nextPlayers, nextLoadouts) => { setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts).beginPlacement() : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} />;
+  const localDraft = <Draft onBackgroundChange={setDraftCivilization} initialPicks={rematchPicks} settings={settings} onSettings={() => {setRematchPicks(undefined);setSetupReady(false);}} onStart={(nextPlayers, nextLoadouts) => { window.scrollTo(0,0); setEntering(!matchMedia('(prefers-reduced-motion: reduce)').matches); setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts).beginPlacement() : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} />;
 
   if (home || (!started && (!setupReady || settings.mode !== 'online'))) return <HomeScreen draftCivilization={draftCivilization} draft={!home && setupReady && !started ? localDraft : undefined} canResume={started || setupReady} onResume={() => setHome(false)} onPlay={next => {
     reset(); setSettings(next); setSetupReady(true); setHome(false);
     try { localStorage.setItem(SETUP_KEY, JSON.stringify(next)); } catch { setStorageError(true); }
   }}/>;
-  return <div className="app-shell" data-ui-theme={started ? opponentCivilization(players, settings, game.turn()) : undefined}>
+  return <div inert={entering} className={`app-shell ${entering?'match-entering':''}`} data-ui-theme={started ? opponentCivilization(players, settings, game.turn()) : undefined}>
+    {entering&&<VersusScene players={players} loadouts={loadouts} opening/>}
     <header className="site-header">
       <a href="/" className="brand" aria-label={translateUi("문명체스 홈")}><span className="brand-icon"><Crown size={25} /></span><span>{translateUi("문명체스")}<small>CIVILIZATION CHESS</small></span></a>
       <div className="header-right"><LanguageSwitch /><span className="mode-label"><Swords size={15} /> {translateUi(setupReady || started ? modeLabel : '대전 준비')}</span><span className="version">ALPHA 0.3</span></div>
