@@ -1,0 +1,62 @@
+[
+  {
+    "civilization": "greece",
+    "dimensions": [
+      1672,
+      941
+    ],
+    "bytes": 297236,
+    "original": "art\\backgrounds\\greece\\background-v2.png",
+    "asset": "public\\media\\greece\\background-v2.webp"
+  },
+  {
+    "civilization": "egypt",
+    "dimensions": [
+      1672,
+      941
+    ],
+    "bytes": 258176,
+    "original": "art\\backgrounds\\egypt\\background-v2.png",
+    "asset": "public\\media\\egypt\\background-v2.webp"
+  },
+  {
+    "civilization": "rome",
+    "dimensions": [
+      1672,
+      941
+    ],
+    "bytes": 322788,
+    "original": "art\\backgrounds\\rome\\background-v2.png",
+    "asset": "public\\media\\rome\\background-v2.webp"
+  },
+  {
+    "civilization": "aztec",
+    "dimensions": [
+      1672,
+      941
+    ],
+    "bytes": 272366,
+    "original": "art\\backgrounds\\aztec\\background-v2.png",
+    "asset": "public\\media\\aztec\\background-v2.webp"
+  },
+  {
+    "civilization": "korea",
+    "dimensions": [
+      1672,
+      941
+    ],
+    "bytes": 392296,
+    "original": "art\\backgrounds\\korea\\background-v2.png",
+    "asset": "public\\media\\korea\\background-v2.webp"
+  },
+  {
+    "civilization": "qing",
+    "dimensions": [
+      1672,
+      941
+    ],
+    "bytes": 263598,
+    "original": "art\\backgrounds\\qing\\background-v2.png",
+    "asset": "public\\media\\qing\\background-v2.webp"
+  }
+]
