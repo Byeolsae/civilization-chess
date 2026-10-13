@@ -192,3 +192,18 @@
  .theater-center .passive-demo-slot .skill-demo-compact{grid-template-rows:42px 334px minmax(0,1fr)}
  .theater-center .passive-demo-slot .skill-demo-compact .demo-visual{width:300px;height:334px}
 }
+
+/* Side cards keep a quiet, stable footer throughout civilization and skill picks. */
+.duel-card-identity>p.civ-card-intro,.draft-theater .duel-card-identity>p.civ-card-intro{display:flex;align-items:center;justify-content:center;min-height:150px;height:190px;margin:0;padding:18px 8px;color:#ead9b8;font-size:16px;line-height:1.95;word-break:keep-all;text-wrap:balance;font-family:Georgia,'Noto Serif KR',serif;text-shadow:0 2px 12px #000}
+.civ-card-skill-icons{display:flex;align-items:center;justify-content:center;gap:clamp(6px,1vw,14px);height:190px}
+.civ-card-skill{position:relative;display:grid;place-items:center;flex:0 1 62px;min-width:0;aspect-ratio:1;padding:6px;border:1px solid #c9b68744;border-radius:50%;background:#071523aa;color:#f4d7a0;cursor:help}
+.civ-card-skill.is-filled{border-color:#ecd09799;background:#dec48a15}
+.civ-card-skill:hover,.civ-card-skill:focus-visible{outline:2px solid #ecd097;outline-offset:3px;z-index:2}
+.civ-card-skill-art{display:grid;place-items:center;width:100%;height:100%;min-width:0;min-height:0}
+.civ-card-skill-art>svg,.civ-card-skill-art>.piece{position:static;width:100%;height:100%;margin:0;transform:none;object-fit:contain}
+.civ-card-skill-art>.draft-horse{font-size:32px;line-height:1}
+.civ-card-skill-empty{font-size:15px;color:#d8cdb566}
+.civ-card-skill-caption{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);display:grid;gap:4px;width:max-content;max-width:140px;padding:8px 10px;border-radius:6px;background:#081420f5;border:1px solid #ecd09755;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s,visibility .18s}
+.civ-card-skill-caption small{font-size:10px;color:#b9b3a5}.civ-card-skill-caption strong{font-size:12px;color:#ffe9ba}
+.civ-card-skill:hover .civ-card-skill-caption,.civ-card-skill:focus .civ-card-skill-caption{visibility:visible;opacity:1}
+@media(max-width:760px){.duel-card-identity>p.civ-card-intro,.draft-theater .duel-card-identity>p.civ-card-intro{min-height:80px;height:110px;padding:8px 2px;font-size:12px;line-height:1.8}.civ-card-skill-icons{height:110px;gap:6px}.civ-card-skill{flex-basis:42px;padding:5px}.civ-card-skill-art>.draft-horse{font-size:26px}}

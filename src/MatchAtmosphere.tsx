@@ -24,7 +24,8 @@ function BackgroundViewer({ src, name, onClose }: { src: string; name: string; o
   </dialog>, document.body);
 }
 
-export default function MatchAtmosphere({ civilization }: { civilization: Civilization }) {
+export default function MatchAtmosphere({ civilization, entering=false }: { civilization: Civilization; entering?:boolean }) {
+  const [fadeEntry] = useState(entering);
   const settingsDialog=useRef<HTMLDialogElement>(null);
   const media = mediaForCivilization(civilization);
   const name = civilizations.find(civ => civ.id === civilization)!.name;
@@ -45,8 +46,8 @@ export default function MatchAtmosphere({ civilization }: { civilization: Civili
   return <>
     <button type="button" className="match-settings-button" aria-label={translateUi('대전 설정')} title={translateUi('대전 설정')} aria-haspopup="dialog" onClick={()=>settingsDialog.current?.showModal()}><Settings size={21}/></button>
     {viewing && <BackgroundViewer {...viewing} onClose={() => setViewing(null)} />}
-    {translateUi(background && createPortal(<div className="civilization-backdrop" aria-hidden="true">
-      <img key={`${background}-${backgroundRetry}`} src={background} alt="" draggable={false} onLoad={() => setLoadedBackground(background)} onError={() => setFailedBackground(background)} />
+    {translateUi(background && createPortal(<div className={`civilization-backdrop ${fadeEntry?'has-entry-fade':''}`} aria-hidden="true">
+      <img key={`${background}-${backgroundRetry}`} src={background} className={loadedBackground===background?'is-loaded':''} alt="" draggable={false} onLoad={() => setLoadedBackground(background)} onError={() => setFailedBackground(background)} />
     </div>, document.body))}
     <dialog ref={settingsDialog} className="match-settings-dialog" aria-labelledby="match-settings-title">
       <div className="match-settings-heading"><h2 id="match-settings-title">{translateUi('대전 설정')}</h2><button type="button" aria-label={translateUi('닫기')} onClick={()=>settingsDialog.current?.close()}><X size={20}/></button></div>

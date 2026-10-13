@@ -389,7 +389,7 @@ export default function App() {
     {entering&&<VersusScene players={players} loadouts={loadouts} opening/>}
     <header className="site-header">
       <a href="/" className="brand" aria-label={translateUi("문명체스 홈")}><span className="brand-icon"><Crown size={25} /></span><span>{translateUi("문명체스")}<small>CIVILIZATION CHESS</small></span></a>
-      <div className="header-right"><LanguageSwitch /><span className="mode-label"><Swords size={15} /> {translateUi(setupReady || started ? modeLabel : '대전 준비')}</span><span className="version">ALPHA 0.3</span>{started&&<MatchAtmosphere civilization={opponentCivilization(players, settings, game.turn())}/>}</div>
+      <div className="header-right"><LanguageSwitch /><span className="mode-label"><Swords size={15} /> {translateUi(setupReady || started ? modeLabel : '대전 준비')}</span><span className="version">ALPHA 0.3</span>{started&&<MatchAtmosphere entering={entering} civilization={opponentCivilization(players, settings, game.turn())}/>}</div>
     </header>
 
     <main>
