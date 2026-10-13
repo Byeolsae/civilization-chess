@@ -1,5 +1,9 @@
 # Visual direction
 
+## Civilization selection introductory copy
+
+User-confirmed 2026-10-13: follow `CIVILIZATION_INTRO_STANDARD.md` when creating or revising civilization selection taglines. They must be short and forceful, majestic, grounded in historical research specific to the civilization/period, and written with the compressed, rhythmic, solemn feel of classical Chinese poetry and wuxia verse. This is a prose style, not permission to impose Chinese cultural motifs on other civilizations or invent historical facts/quotations. Existing `src/civilizationIntros.ts` copy predates this standard and has not thereby passed its research requirements.
+
 Read `ART_DIRECTION.md` before artwork work. Skill icons remain simple symbols; do not restore engraved portraits.
 
 ## Background reset — latest user instruction, 2026-10-13
