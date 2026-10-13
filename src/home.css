@@ -134,3 +134,9 @@
 /* Give the draft the full stage instead of the main menu's narrow content width. */
 .home-content.home-draft-stage{display:block;width:calc(100% - 48px);max-width:1800px;margin:18px auto 35px}
 @media(max-width:760px){.home-content.home-draft-stage{width:calc(100% - 24px);margin-top:12px}}
+
+.home-emblem-grid>button.civ-player-card{border-color:transparent;box-shadow:none}
+.home-emblem-grid>button.civ-player-card:hover{border-color:transparent}
+.home-emblem-grid>button.civ-player-card:focus-visible{outline:2px solid #e7c88d;outline-offset:3px}
+.home-settings select{max-width:55%;padding:9px 12px;border:1px solid #aab7c544;border-radius:6px;background:#14212f;color:#e6edf2;font:inherit}
+.home-settings .display-mode-help{font-size:12px;line-height:1.6;color:#b7c3ce;margin:0 0 12px}
