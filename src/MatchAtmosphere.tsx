@@ -78,7 +78,7 @@ export default function MatchAtmosphere({ civilization, entering=false }: { civi
       </button>
     </div>
     </div>
-    {translateUi(!media.background && <p>{translateUi("상대 문명(")}{translateUi(name)}{translateUi(")의 배경은 준비 중입니다. 현재 그리스·이집트·로마·아즈텍·조선·청나라 배경을 사용할 수 있어요.")}</p>)}
+    {translateUi(!media.background && <p>{translateUi("상대 문명(")}{translateUi(name)}{translateUi(")의 배경은 준비 중입니다.")}</p>)}
     {translateUi(background && loadedBackground !== background && <p role="status">{translateUi(name)}{translateUi(" 배경 불러오는 중…")}</p>)}
     {translateUi(media.background && preferences.background && failedBackground === media.background && <p role="status">{translateUi("배경을 불러오지 못했어요. ")}<button onClick={() => { setFailedBackground(null); setBackgroundRetry(value => value + 1); }}>{translateUi("다시 불러오기")}</button></p>)}
     {translateUi(media.bgm && preferences.music && music.status === 'loading' && <p role="status">{translateUi('음악 불러오는 중…')}</p>)}

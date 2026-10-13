@@ -1,3 +1,5 @@
+> **보관 기록 / 2026-10-13 삭제됨:** 아래에서 언급하는 배경 이미지와 원본은 현재 프로젝트에서 제거했다. 아래 내용은 과거 제작 기록이며 현재 제작 기준은 루트의 `BACKGROUND_STANDARD.md`이다.
+
 # 현재 배경: 자료 기반 v2 — 2026-10-13
 
 기존 6개 배경은 새로 생성한 `background-v2.webp`로 교체했다. 시대와 건축 근거, 한계는 [조사 기록](../../art/backgrounds/HISTORICAL_V2.md), 실제 프롬프트는 [프롬프트 기록](../../art/backgrounds/historical-v2-prompts.json)을 참조한다. 내장 image_gen 사용, 모두 1672×941 WebP quality 84. 아래는 사용 중인 v2가 아닌 구버전의 제작 기록이다.

@@ -1,7 +1,9 @@
-# Visual continuity
+# Visual direction
 
-Before creating or changing civilization artwork, read `ART_DIRECTION.md` and inspect its referenced local assets. Latest user preference: simple symbolic skill icons, not engraved god portraits. Preserve the existing cinematic background composition for future civilizations. Later user corrections override earlier style experiments.
+Read `ART_DIRECTION.md` before artwork work. Skill icons remain simple symbols; do not restore engraved portraits.
 
-## Historical research for every civilization background
+## Background reset — latest user instruction, 2026-10-13
 
-User requirement, 2026-10-13: ALL new or replacement civilization backgrounds must be researched before generation. Fix a date/period and location; consult at least two useful institutional or scholarly sources per civilization (museum, heritage authority, excavation report, university). Record links, supported architectural details, later reconstructions to exclude, and uncertainties in `art/backgrounds/RESEARCH.md` or a linked research file. Do not treat generic civilization motifs or an image model's knowledge as research. Inspect outputs for period, geography, roofs/columns, landmark layout, modern intrusions, and invented duplicates; correct material errors before integrating. Distinguish artistic composition from verified reconstruction. Save prompts and originals. Export 1672×941 WebP quality 84 and preserve the quiet central board space. See `art/backgrounds/HISTORICAL_V2.md` for the six-background replacement and its limits.
+All civilization background images and project originals were removed at the user's request. There is no approved reference background. The current task is to establish criteria, not generate new artwork. Follow `BACKGROUND_STANDARD.md` for future background requests; it distinguishes retained user requirements from proposed defaults. Do not automatically recreate deleted artwork or reuse old prompts as approved specifications.
+
+For every future civilization, establish period and place before generation, inspect useful institutional/scholarly sources and visual evidence, record what each supports and what is uncertain, then inspect the generated result against them. Source count alone is not verification. Preserve research and correction records and avoid claiming an exact historical reconstruction without evidence. New user instructions take precedence.
