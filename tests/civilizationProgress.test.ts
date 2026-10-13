@@ -21,5 +21,12 @@ test('border follows each consecutive prerequisite',()=>{
 });
 test('shared dynasty designs and existing prose drafts are not signed off',()=>{
   const p=civilizationProgress('ming');assert.equal(p.palette,'progress');assert.equal(p.logo,'progress');
-  assert.equal(p.intro,'progress');assert.equal(p.qa,'pending');assert.equal(progressStage(p),6);
+  assert.equal(p.intro,'pending');assert.equal(p.qa,'pending');assert.equal(progressStage(p),6);
+});
+
+ test('new roster entries have no invented completion or skills', () => {
+  for (const id of ['dai-viet','khmer','byzantium','hawaii-polynesia','pirate-republic'] as const) {
+    assert.ok(Object.values(civilizationProgress(id)).every(value => value === 'pending'));
+    assert.equal(progressStage(civilizationProgress(id)), 6);
+  }
 });

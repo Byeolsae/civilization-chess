@@ -1,3 +1,4 @@
+import { additionalCivilizations } from './additionalCivilizations';
 import { translate, getLocale } from './i18n';
 import { civilizations, regions, countries, belongsToCountry, type Civilization } from './civilizations';
 
@@ -8,6 +9,7 @@ export type CountryFilter = '전체' | typeof countries[number];
 export type EraFilter = '전체' | Era;
 
 export const civilizationEras: Record<Civilization, readonly Era[]> = {
+  ...additionalCivilizations.reduce((result, civ) => { result[civ.id] = civ.eras; return result; }, {} as Record<typeof additionalCivilizations[number]['id'], readonly Era[]>),
   greece: ['고대'], rome: ['고대'], egypt: ['고대'],
   qin: ['고대'], han: ['고대'], tang: ['중세'], song: ['중세'], ming: ['중세', '근세'],
   qing: ['근세', '근대'], korea: ['중세', '근세', '근대'], heian: ['중세'], sengoku: ['중세', '근세'],
@@ -25,6 +27,6 @@ export function filterCivilizations(search = '', region: RegionFilter = '전체'
     (country === '전체' || belongsToCountry(civ, country)) &&
     (region === '전체' || civ.region === region) &&
     (era === '전체' || civilizationEras[civ.id].includes(era)) &&
-    normalize(`${civ.name}${civ.english}${civ.countries.join(' ')} ${translate(civ.name, 'en')} ${civ.countries.map(c => translate(c, 'en')).join(' ')}`).includes(query)
+    normalize(`${civ.name}${civ.english} ${'aliases' in civ ? civ.aliases : ''} ${civ.countries.join(' ')} ${translate(civ.name, 'en')} ${civ.countries.map(c => translate(c, 'en')).join(' ')}`).includes(query)
   ).sort((a, b) => translate(a.name, getLocale()).localeCompare(translate(b.name, getLocale()), getLocale()));
 }

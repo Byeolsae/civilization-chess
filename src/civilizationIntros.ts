@@ -1,7 +1,7 @@
 import type { Civilization } from './civilizations';
 
 // Original selection-screen flavor text, not historical quotations.
-export const civilizationIntros: Record<Civilization, { ko: string; en: string }> = {
+export const civilizationIntros: Partial<Record<Civilization, { ko: string; en: string }>> = {
   "ming": { ko: "장성 너머로 뜻을 세우고, 대양 너머로 위엄을 펼치다.", en: "Beyond the Great Wall, a vision. Beyond the seas, an empire." },
   "greece": { ko: "지혜로 시대를 깨우고, 영웅의 용기로 운명에 맞서다.", en: "Awaken an age with wisdom. Defy fate with heroic courage." },
   "rome": { ko: "모든 길이 로마로 향하리라. 군단이 그 운명을 새긴다.", en: "All roads shall lead to Rome. The legions will carve the way." },

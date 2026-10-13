@@ -40,7 +40,7 @@ export function civilizationProgress(id: Civilization): Progress {
     palette:unique?'done':shared?'progress':'pending', logo:unique?'done':shared?'progress':'pending',
     background:civilizationMedia[id]?.background?'done':'pending',
     icons:playable?'done':'pending', skills:readiness==='ready'?'done':playable?'progress':'pending',
-    intro:'progress', history:['sengoku','edo','ming','goryeo'].includes(id)?'progress':'pending',
+    intro:'pending', history:['sengoku','edo','ming','goryeo'].includes(id)?'progress':'pending',
     bgm:civilizationMedia[id]?.bgm?'done':'pending', sfx:'pending', animation:playable?'progress':'pending', qa:'pending',
   };
 }

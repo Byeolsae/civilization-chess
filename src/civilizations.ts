@@ -1,4 +1,7 @@
+import { additionalCivilizations } from './additionalCivilizations';
+
 export const civilizations = [
+  ...additionalCivilizations,
   {
     "id": "ming",
     "name": "명나라",
@@ -371,10 +374,11 @@ export const civilizations = [
 ] as const;
 
 export type Civilization = typeof civilizations[number]['id'];
-export const regions = ['아시아', '유럽', '아프리카', '북아메리카', '남아메리카'] as const;
+export const regions = ['아시아', '유럽', '아프리카', '북아메리카', '남아메리카', '오세아니아'] as const;
 
 // Visual assets are shared until each dynasty receives its own design.
 export const civilizationAppearance: Record<Civilization, string> = {
+  ...Object.fromEntries(additionalCivilizations.map(civ => [civ.id, 'classic'])) as Record<typeof additionalCivilizations[number]['id'], string>,
   greece: 'greece', rome: 'rome', egypt: 'egypt', heian: 'japan', edo: 'japan', meiji: 'japan', sengoku: 'japan', korea: 'joseon',
   goryeo: 'korea', goguryeo: 'korea', baekje: 'korea', silla: 'korea',
   wei: 'china', shu: 'china', wu: 'china', gojoseon: 'korea', kamakura: 'japan',
