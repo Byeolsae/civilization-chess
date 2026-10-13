@@ -9,3 +9,16 @@
 .progress-sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .home-civilization-page>.civ-progress{padding:16px;border:1px solid #aab7c533;border-radius:10px;background:#101b27d9;margin-bottom:22px}
 @media(max-width:600px){.progress-legend{padding:12px}.progress-legend-items{grid-template-columns:1fr 1fr;gap:12px 8px}.home-emblem-grid>button.civ-progress-card{padding:12px 8px}.is-compact .civ-progress-items{gap:7px 3px}}
+
+.progress-filters{margin:14px 0;padding:14px;border:1px solid #aab7c533;border-radius:10px;background:#101b27e6;color:#dbe1e8;text-align:left}
+.progress-filter-tabs{display:flex;flex-wrap:wrap;gap:6px}.progress-filter-tabs button{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid #aab7c533;border-radius:6px;background:#172431;color:#cbd6df;font:inherit;font-size:12px;cursor:pointer}
+.progress-filter-tabs button[aria-pressed=true]{background:#d9be83;color:#14202b;border-color:#f4d89c}.progress-filter-tabs small{font-size:10px;opacity:.8;font-variant-numeric:tabular-nums}
+.progress-filter-details{margin-top:12px}.progress-filter-details summary{font-size:12px;cursor:pointer}.progress-filter-controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}.progress-filter-controls label{display:grid;gap:5px;flex:1 1 145px;font-size:11px;color:#becbd8}
+.progress-filter-controls select{width:100%;min-width:0;min-height:36px;padding:7px;border:1px solid #aab7c544;border-radius:5px;background:#14212f;color:#e6edf2;font:inherit}.progress-filter-controls select:disabled{opacity:.45}
+.progress-filter-note{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:10px}.progress-filter-note span{flex:1 1 220px;font-size:10px;line-height:1.6;color:#aebdcc}.progress-filter-note button{background:transparent;color:#ebd39c;border:0;text-decoration:underline;cursor:pointer;font:inherit;font-size:11px}
+.progress-filters button:focus-visible,.progress-filters select:focus-visible,.archive-search-row input:focus-visible{outline:2px solid #f4d89c;outline-offset:3px}
+.archive-search-row{display:flex;align-items:center;gap:14px}.archive-search-row input{width:min(420px,80%);padding:12px;border:1px solid #aab7c544;border-radius:6px;background:#101b27e6;color:#e6edf2;font:inherit}.archive-search-row>span{font-size:12px;color:#bdcbd8;white-space:nowrap}
+.progress-filters.is-small{padding:9px;margin:8px 0}.is-small .progress-filter-tabs button{padding:6px 8px;font-size:11px}.is-small .progress-filter-note span{display:none}
+@media(max-width:600px){.progress-filter-tabs button{flex:1 1 auto;justify-content:center;padding:10px}.progress-filter-controls label{flex-basis:100%}}
+
+.theater-center .civ-pick-roster{overflow-y:auto}.theater-center .progress-filters{flex-shrink:0}.theater-center .civ-pick-grid{min-height:160px}

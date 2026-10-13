@@ -44,3 +44,21 @@ export function civilizationProgress(id: Civilization): Progress {
     bgm:civilizationMedia[id]?.bgm?'done':'pending', sfx:'pending', animation:playable?'progress':'pending', qa:'pending',
   };
 }
+
+export type ProgressScope = 'all' | 'playable' | 'complete' | 'working' | 'untouched';
+export type ProgressFilter = { scope: ProgressScope; stage: string; field: ProgressField | ''; state: Completion };
+export const defaultProgressFilter: ProgressFilter = { scope: 'all', stage: '', field: '', state: 'done' };
+
+export function matchesProgress(progress: Progress, filter: ProgressFilter): boolean {
+  const values = Object.values(progress);
+  const complete = values.every(value => value === 'done');
+  const untouched = values.every(value => value === 'pending');
+  const scopeMatches = filter.scope === 'all'
+    || (filter.scope === 'playable' && progress.skills !== 'pending')
+    || (filter.scope === 'complete' && complete)
+    || (filter.scope === 'working' && !complete && !untouched)
+    || (filter.scope === 'untouched' && untouched);
+  return scopeMatches
+    && (filter.stage === '' || progressStage(progress) === Number(filter.stage))
+    && (filter.field === '' || progress[filter.field] === filter.state);
+}

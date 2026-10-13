@@ -1,3 +1,5 @@
+import ProgressFilters from './ProgressFilters';
+import { civilizationProgress, defaultProgressFilter, matchesProgress } from './civilizationProgress';
 import { useState } from 'react';
 import type { Color } from 'chess.js';
 import { Search, Check, Crown, Globe2 } from 'lucide-react';
@@ -19,18 +21,21 @@ export default function CivilizationPicker({choice,color,disabled,onChoose,picks
   const text=(ko:string,en:string)=>locale==='ko'?ko:en;
   const [query,setQuery]=useState('');
   const [region,setRegion]=useState<RegionFilter>('전체');
-  const visible=filterCivilizations(query,region);
+  const [progressFilter,setProgressFilter]=useState({...defaultProgressFilter});
+  const candidates=filterCivilizations(query,region);
+  const visible=candidates.filter(c=>matchesProgress(civilizationProgress(c.id),progressFilter));
   return <div className={rosterOnly?"civ-roster-only":"civ-pick-layout duel-pick-layout"}>
     {!rosterOnly&&<DraftCivilizationCard side="w" {...{color,choice,picks,settings}}/>}
     <div className="civ-pick-roster">
       <div className="civ-continent-filter" role="group" aria-label={text('대륙별 문명 필터','Filter by continent')}>{(['전체',...regions] as RegionFilter[]).map(item=><button key={item} aria-pressed={region===item} onClick={()=>setRegion(item)}>{item==='전체'&&<Globe2 size={15}/>}<span>{t(item)}</span></button>)}</div>
       <div className="civ-pick-search"><Search size={18} aria-hidden="true"/><input aria-label={text('문명 이름 검색','Search civilizations')} placeholder={text('문명 이름 검색','Search civilizations')} value={query} onChange={e=>setQuery(e.target.value)}/>{query&&<button onClick={()=>setQuery('')} aria-label={text('검색 지우기','Clear search')}>×</button>}<span aria-live="polite">{visible.length} / {civilizations.length}</span></div>
+      <ProgressFilters compact value={progressFilter} onChange={setProgressFilter} ids={candidates.map(c=>c.id)}/>
       <div className="civ-pick-grid" role="group" aria-label={text('문명 목록','Civilizations')}>
         {visible.map(c=><button key={c.id} className={`civ-pick-tile theme-${civilizationAppearance[c.id]}`} aria-label={`${t(c.name)} ${text('선택','select')}`} aria-pressed={choice===c.id} disabled={disabled} onClick={()=>onChoose(c.id)}>
           <span className="civ-pick-emblem">{hasCivilizationIcon(c.id)?<CivilizationIcon civilization={c.id} color={color} size={58}/>:<span className="civ-pick-initial">{t(c.name).slice(0,1)}</span>}</span>
           <strong>{t(c.name)}</strong><small className={`civ-pick-status ${civilizationReadiness(c.id)}`}>{t(readinessLabels[civilizationReadiness(c.id)])}</small>{choice===c.id&&<Check className="civ-pick-check" size={15}/>}
         </button>)}
-        {!visible.length&&<p className="civ-pick-empty">{text('일치하는 문명이 없어요. 다른 이름으로 검색해 보세요.','No civilizations found. Try another name.')}</p>}
+        {!visible.length&&<p className="civ-pick-empty">{text('조건에 맞는 문명이 없어요. 검색어나 필터를 바꿔보세요.','No civilizations found. Change your search or filters.')}</p>}
       </div>
     </div>
     {!rosterOnly&&<DraftCivilizationCard side="b" {...{color,choice,picks,settings}}/>}
