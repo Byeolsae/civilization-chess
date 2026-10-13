@@ -109,7 +109,7 @@ export default function App() {
   const [placementArmed, setPlacementArmed] = useState(false);
   const [placementSquare, setPlacementSquare] = useState<Square | null>(null);
   const [placementAxis, setPlacementAxis] = useState<'row' | 'column'>('row');
-  const placementHuman = !entering && !!placementOwner && (settings.mode === 'local' || placementOwner === settings.humanColor) && (settings.mode !== 'online' || (online.connected && !online.busy));
+  const placementHuman = reviewPly === null && !entering && !!placementOwner && (settings.mode === 'local' || placementOwner === settings.humanColor) && (settings.mode !== 'online' || (online.connected && !online.busy));
   const placementArea = game instanceof AbilityGame && placementOwner && placementArmed && placementSquare ? game.placementSquares(placementOwner, {square:placementSquare,axis:placementAxis}) : [];
   useEffect(() => { setPlacementArmed(false); setPlacementSquare(null); setPlacementAxis('row'); }, [game, placementOwner]);
   useEffect(() => {
@@ -152,7 +152,7 @@ export default function App() {
   }, [online.room,online.session]);
   const status = gameStatus(game, resigned);
   const aiTurn = !placementOwner && started && settings.mode === 'ai' && game.turn() !== settings.humanColor && !status.over;
-  const humanTurn = !entering && !placementOwner && started && !status.over && !aiTurn && !quiz && (settings.mode !== 'online' || (!!online.room && online.connected && !online.busy && game.turn() === settings.humanColor && !online.room.quiz));
+  const humanTurn = reviewPly === null && !entering && !placementOwner && started && !status.over && !aiTurn && !quiz && (settings.mode !== 'online' || (!!online.room && online.connected && !online.busy && game.turn() === settings.humanColor && !online.room.quiz));
   const resigningColor = settings.mode !== 'local' ? settings.humanColor : game.turn();
   const ai = useAiTurn(game, revision, aiTurn && !confirm && !home && !entering, settings.difficulty, setRevision);
   const modeLabel = settings.mode === 'online' ? '온라인 PvP' : settings.mode === 'ai' ? `AI 대전 · ${difficultyNames[settings.difficulty]}` : '로컬 2인 대전';
@@ -222,7 +222,7 @@ export default function App() {
     } catch { setStorageError(true); }
   }, [game, players, resigned, revision, started, loadouts, settings]);
 
-  useEffect(() => { historyRef.current?.scrollTo({ top: historyRef.current.scrollHeight, behavior: 'smooth' }); }, [revision]);
+  useEffect(() => { if(reviewPly===null)historyRef.current?.scrollTo({ top: historyRef.current.scrollHeight, behavior: 'smooth' }); }, [revision]);
 
   useEffect(() => {
     function cancel() {
@@ -395,10 +395,11 @@ export default function App() {
     <main>
       {translateUi(settings.mode === 'online' && online.session && <OnlineBanner online={online} onLeave={()=>void leaveOnline()}/>)}
       {translateUi(!started ? settings.mode === 'online' ? !online.session ? <OnlineLobby online={online} onBack={()=>setSetupReady(false)}/> : !online.room?.joined || !online.room.colorsChosen ? <OnlineWaitingRoom online={online}/> : <Draft settings={settings} network={{picks:online.room.picks,color:online.session.color,busy:online.busy,connected:online.connected,onPick:choice=>online.send({kind:'pick',choice})}} onSettings={()=>void leaveOnline()} onStart={()=>{}}/> : localDraft : <>
-      {translateUi(reviewPly !== null && <Modal title={translateUi("대전 복기")} onClose={() => setReviewPly(null)}><MatchReview game={game} players={players} initialPly={reviewPly} flipped={flipped} viewer={settings.mode === 'local' ? game.turn() : settings.humanColor} live={!status.over}/></Modal>)}
+
 
       <div className="game-layout">
-        <section className="board-section" aria-label={translateUi("체스 대전")}>
+        <section className={`board-section ${reviewPly!==null?'is-reviewing':''}`} aria-label={translateUi("체스 대전")}>
+          {reviewPly!==null?<MatchReview game={game} players={players} initialPly={reviewPly} flipped={flipped} viewer={settings.mode==='local'?game.turn():settings.humanColor}/>:<>
           {translateUi(playerBar(topColor))}
           <div className={`board-with-evaluation ${game instanceof AbilityGame ? 'board-with-active' : ''}`}>
           {translateUi(game instanceof AbilityGame && <aside className="skill-rail" aria-label={translateUi("문명과 기물 능력")}>
@@ -479,14 +480,15 @@ export default function App() {
             <button onClick={undo} disabled={settings.mode === 'online' || !started || (!canUndoTurn(game, settings) && !resigned)}><RotateCcw size={16} /> {translateUi(settings.mode === 'ai' ? '내 차례로 무르기' : '한 수 무르기')}</button>
             <button onClick={() => setFlipped(value => !value)}><ArrowLeftRight size={16} />{translateUi(" 보드 뒤집기")}</button>
           </div></div>
+          </>}
         </section>
 
         <aside className="side-panel">
           <>
             <section className={`status-panel ${status.kind}`} aria-live="polite"><div className="panel-kicker">{translateUi(placementOwner ? 'PLACEMENT' : status.over ? 'GAME OVER' : aiTurn ? 'AI TURN' : 'YOUR MOVE')}</div><div className="status-title">{translateUi(status.over ? <Crown size={25} /> : <span className={`side-dot large ${game.turn()}`} />)}<h2>{translateUi(placementOwner ? choosingLaw ? '12표법 선택' : `${colorNames[placementOwner]} 지형 배치` : aiTurn ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : status.title)}</h2></div>{(!!placementOwner||status.over||status.kind==='check'||!!ai.error)&&<p>{translateUi(placementOwner ? choosingLaw ? '체스판 위에서 이번 대전에 적용할 법을 선택하세요.' : placementArmed ? '보드에서 위치를 선택하고 보드 아래에서 배치를 확정하세요.' : '보드 왼쪽의 시작 배치 버튼을 눌러주세요.' : aiTurn ? ai.error ?? `${difficultyNames[settings.difficulty]} AI가 다음 수를 고르고 있어요.` : status.detail)}</p>}{translateUi(aiTurn && ai.error && <button className="secondary-button" onClick={ai.retry}>{translateUi("AI 다시 시도")}</button>)}{translateUi(status.over && <button className="primary-button" onClick={() => setConfirm('new')}>{translateUi("새로운 대전 ")}<ArrowRight size={17} /></button>)}</section>
-            <MatchHistory moves={history} players={players} listRef={historyRef} onReview={setReviewPly} waiting={placementOwner ? '먼저 시작 준비를 완료하세요.' : aiTurn ? 'AI가 첫 수를 고르고 있어요.' : '체스판에서 기물을 움직여 보세요.'}/>
+            <MatchHistory moves={history} players={players} listRef={historyRef} onReview={ply=>{setSelected(null);setPieceMode('');activeTarget.cancel();setReviewPly(ply);}} reviewPly={reviewPly} onLive={()=>setReviewPly(null)} onFlip={()=>setFlipped(value=>!value)} live={!status.over} waiting={placementOwner ? '먼저 시작 준비를 완료하세요.' : aiTurn ? 'AI가 첫 수를 고르고 있어요.' : '체스판에서 기물을 움직여 보세요.'}/>
             <details className="match-menu"><summary>{translateUi("대전 메뉴")}</summary><div className="match-actions"><button onClick={() => setConfirm('new')}><RotateCcw size={16} />{translateUi(" 새 대전")}</button><button onClick={() => setConfirm('resign')} disabled={status.over}><Flag size={16} />{translateUi(" 기권")}</button></div></details>
-            {translateUi(game instanceof AbilityGame && <AbilityPanel compact game={game} players={players} enabled={humanTurn && !confirm} onAction={performAbility} onUndo={settings.mode === 'online' ? undefined : undo} undoEnabled={started && !confirm && canUndoTurn(game, settings)} undoLabel={settings.mode === 'ai' ? '내 차례로 무르기' : '한 수 무르기'} />)}
+            {translateUi(game instanceof AbilityGame && <AbilityPanel compact game={game} players={players} enabled={humanTurn && !confirm} onAction={performAbility} onUndo={settings.mode === 'online' ? undefined : undo} undoEnabled={reviewPly===null && started && !confirm && canUndoTurn(game, settings)} undoLabel={settings.mode === 'ai' ? '내 차례로 무르기' : '한 수 무르기'} />)}
 
           </>
           <details className="rules-details"><summary>{translateUi("플레이 안내 ")}<ChevronRight size={16} /></summary><div><p>{translateUi("기물을 클릭한 뒤 목적지를 누르거나, 마우스·터치로 기물을 끌어서 놓으세요. 둘 수 없는 칸이나 보드 밖에 놓으면 원래 자리로 돌아옵니다. Esc로 드래그를 취소할 수 있습니다.")}</p><p>{translateUi("캐슬링, 앙파상, 폰 승격을 지원합니다. 체크 상태에서는 킹을 보호해야 하며 체크메이트로 승패가 결정됩니다.")}</p><p>{translateUi(game instanceof AbilityGame ? '능력 대전은 특수 행동까지 포함해 합법적 행동이 없을 때 스테일메이트를 판정합니다. 반복·50수·기물 부족 자동 무승부는 사용하지 않습니다.' : '스테일메이트, 기물 부족, 3회 동형 반복, 50수 규칙은 자동 무승부입니다.')}</p><p>{translateUi(settings.mode === 'online' ? '온라인 방은 서버에 저장되며 같은 탭에서 새로고침하면 복원됩니다. 온라인 대전에서는 무르기를 지원하지 않습니다.' : '대전은 이 브라우저에 자동 저장됩니다.')} {translateUi(settings.mode === 'online' ? '' : settings.mode === 'ai' ? '무르기를 누르면 AI의 응수와 내 수를 되돌려 내 이전 차례로 돌아갑니다.' : '한 수 무르기는 두 플레이어가 합의하고 사용하세요.')}</p></div></details>

@@ -48,3 +48,20 @@
 .atmosphere-settings-content{margin-top:20px}.match-settings-dialog .atmosphere-controls{margin-top:16px}
 .match-settings-dialog .music-credit{line-height:1.6}.match-settings-dialog .music-credit strong{overflow-wrap:anywhere}
 @media(max-width:620px){.app-shell.is-playing .site-header .version{display:none}.app-shell.is-playing .header-right{gap:8px}.match-settings-button{width:34px;height:34px}}
+
+/* One right-hand console, with history navigation anchored below the move list. */
+.app-shell.is-playing .side-panel{gap:0;background:var(--panel);border:1px solid var(--line);border-radius:9px;overflow:hidden;align-self:start}
+.app-shell.is-playing .side-panel>.status-panel{border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;padding:16px}
+.app-shell.is-playing .side-panel>.match-history{border:0;border-radius:0;background:transparent}
+.app-shell.is-playing .side-panel>.ability-panel,.app-shell.is-playing .side-panel>.rules-details,.app-shell.is-playing .side-panel>.match-menu{margin:0 14px}
+.app-shell.is-playing .match-history-list{height:clamp(240px,38svh,440px)}
+.history-navigation{display:flex;align-items:center;justify-content:space-evenly;gap:4px;padding:10px;border-top:1px solid var(--line);background:#00000014}
+.history-navigation button{display:grid;place-items:center;width:38px;height:36px;border-radius:5px;background:transparent;color:var(--muted)}
+.history-navigation button:hover:not(:disabled){background:#ffffff10;color:var(--accent)}.history-navigation button:disabled{opacity:.25;cursor:default}
+.inline-review-status{display:grid;gap:6px;padding:10px 14px;border-block:1px solid var(--line);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.inline-review-status strong{font-size:12px;color:var(--accent)}.inline-review-status small{font-size:10px;line-height:1.6;color:var(--muted)}
+.app-shell.is-playing .inline-match-review .review-stage{width:100%;margin:0}
+.inline-match-review{padding-left:35px}.inline-match-review.has-abilities{padding-left:118px}.inline-match-review .review-player{min-height:56px;padding:8px 0}
+.inline-match-review .review-frame{padding:9px;border-radius:5px}.inline-match-review .review-square .piece{width:88%;height:88%}
+.inline-match-review .review-player small{color:var(--accent)}
+@media(max-width:600px){.inline-match-review{padding-left:27px}.inline-match-review.has-abilities{padding-left:85px}.inline-match-review .review-frame{padding:5px}.inline-match-review .review-player strong{font-size:11px}.app-shell.is-playing .match-history-list{height:210px}}
