@@ -1,0 +1,11 @@
+.progress-legend{margin:18px 0 24px;padding:16px 20px;border:1px solid #aab7c533;border-radius:10px;background:#101b27d9;color:#dbe1e8}
+.progress-legend summary{cursor:pointer;font-size:14px;font-weight:600}.progress-legend p{font-size:12px;line-height:1.7;color:#b7c3ce;margin:12px 0}
+.progress-legend-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px 20px}.progress-legend-items>span{display:grid;grid-template-columns:10px 1fr;gap:4px 9px}.progress-legend-items i{width:9px;height:9px;border-radius:50%;margin-top:4px}.progress-legend-items b{font-size:12px}.progress-legend-items small{grid-column:2;font-size:10px;color:#b1becb}
+.home-emblem-grid>button.civ-progress-card{border:2px solid var(--progress-color);box-shadow:inset 0 0 0 1px #0003;padding-bottom:16px;height:auto;min-height:290px}
+.home-emblem-grid>button.civ-progress-card:hover,.home-emblem-grid>button.civ-progress-card:focus-visible{border-color:var(--progress-color);outline:2px solid var(--progress-color);outline-offset:3px}
+.civ-progress{display:flex;flex-direction:column;gap:12px;width:100%;margin-top:14px}.civ-progress-stage{font-size:12px;font-weight:600}.civ-progress-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.progress-item{display:flex;align-items:center;gap:7px;font-size:12px;color:#c4cfda}.progress-item i{font-style:normal;width:15px;text-align:center}.progress-item.done i{color:#b6dda6}.progress-item.progress i{color:#edc88e}.progress-item.pending i{color:#9aa6b3}.progress-item small{margin-left:auto;font-size:10px;color:#b1bdca}
+.is-compact .civ-progress-items{grid-template-columns:1fr 1fr;gap:7px 8px;text-align:left}.is-compact .progress-item{font-size:10px;gap:4px}.home-emblem-grid .civ-progress-stage{font-size:10px;letter-spacing:0}.home-emblem-grid .progress-item span{letter-spacing:0}
+.progress-sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.home-civilization-page>.civ-progress{padding:16px;border:1px solid #aab7c533;border-radius:10px;background:#101b27d9;margin-bottom:22px}
+@media(max-width:600px){.progress-legend{padding:12px}.progress-legend-items{grid-template-columns:1fr 1fr;gap:12px 8px}.home-emblem-grid>button.civ-progress-card{padding:12px 8px}.is-compact .civ-progress-items{gap:7px 3px}}
