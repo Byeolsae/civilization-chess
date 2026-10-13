@@ -27,7 +27,7 @@ export default function VersusScene({players,loadouts,opening=false,children}:{p
         </div>
       </div>;
     })}
-    <div className="versus-seam" aria-hidden="true"/><div className="versus-mark" aria-hidden="true">VS</div>
+    <div className="versus-seam" aria-hidden="true"/>
     <div className="versus-heading"><small>CIVILIZATION CHESS</small><h1>{t('두 문명, 하나의 전장')}</h1></div>
     {children&&<div className="versus-actions" inert={arriving}>{children}</div>}
   </section>,document.body);
