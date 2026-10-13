@@ -9,6 +9,7 @@ import { type Players, colorNames, pieceNames } from "./game";
 import "./abilities.css";
 import Piece from './Piece';
 export function AbilityPanel({
+  compact = false,
   game,
   players,
   enabled,
@@ -17,6 +18,7 @@ export function AbilityPanel({
   undoEnabled,
   undoLabel,
 }: {
+  compact?: boolean;
   game: AbilityGame;
   players: Players;
   enabled: boolean;
@@ -55,14 +57,14 @@ export function AbilityPanel({
   if(duel)return <DuelArena game={game} players={players} enabled={enabled} onAction={onAction} onUndo={onUndo} undoEnabled={undoEnabled} undoLabel={undoLabel}/>;
   return (
     <section className="ability-panel" aria-label={translateUi("문명 능력")}>
-      <h3>
+      {!compact&&<h3>
         {translateUi(duel ? "콜로세움 결투" : "문명 능력")} <small>{translateUi("실험 규칙 v1")}</small>
-      </h3>
+      </h3>}
       {translateUi(game.state.clocks && (
         <div className="ability-clocks">{translateUi("백")}{translateUi(clock(game.state.clocks.w))}{translateUi(" · 흑 ")}{translateUi(clock(game.state.clocks.b))}
         </div>
       ))}
-      <p>
+      {(!compact||!!game.state.extraAction)&&<p>
         {translateUi(colorNames[c])} ·{translateUi(" ")}
         {translateUi(game.state.extraAction
           ? "올림픽: 방금 포획한 기물로 추가 행동"
@@ -71,8 +73,8 @@ export function AbilityPanel({
               : game.state.activeUsed[c]
                 ? "일회용 액티브 사용 완료"
                 : "액티브 1회 남음")}
-      </p>
-      {translateUi(!duel && <p>{translateUi("기물을 클릭하면 보드 아래에서 스킬과 사용 조건을 확인할 수 있습니다.")}</p>)}
+      </p>}
+      {translateUi(!compact&&!duel && <p>{translateUi("기물을 클릭하면 보드 아래에서 스킬과 사용 조건을 확인할 수 있습니다.")}</p>)}
       {translateUi(!!groups.length && <><label>{translateUi("능력 / 특수 행동")}<select
           aria-label={translateUi("능력 선택")}
           disabled={!enabled || !groups.length}

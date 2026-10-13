@@ -18,7 +18,7 @@ import { Chess, type Color, type PieceSymbol, type Square } from 'chess.js';
 import { ScrollText, Pyramid, Route, ArrowRight, ArrowLeftRight, ChevronRight, Crown, Flag, RotateCcw, Shield, Swords, X } from 'lucide-react';
 import { civilizations, colorNames, decodeMatch, encodeMatch, gameStatus, legalMoves, opposite, pieceNames, playMove, STORAGE_KEY, type Civilization, type Players, type Promotion } from './game';
 
-import Draft, { LoadoutList } from './DraftScreen';
+import Draft from './DraftScreen';
 import { DRAFT_KEY, restoreDraft, type Loadouts } from './draft';
 import HomeScreen from './HomeScreen';
 import { defaultSettings, localSettings, isMatchSettings, SETUP_KEY, difficultyNames, type MatchSettings } from './matchSettings';
@@ -28,6 +28,7 @@ import { useMoveAnimation } from './useMoveAnimation';
 import MatchAtmosphere from './MatchAtmosphere';
 import { opponentCivilization } from './civilizationMedia';
 import './boardThemes.css';
+import './matchLayout.css';
 import { AbilityGame, type AbilityAction } from './AbilityGame';
 import { AbilityPanel, SphinxChallenge } from './AbilityPanel';
 import { useActiveTargeting } from './useActiveTargeting';
@@ -384,7 +385,7 @@ export default function App() {
     reset(); setSettings(next); setSetupReady(true); setHome(false);
     try { localStorage.setItem(SETUP_KEY, JSON.stringify(next)); } catch { setStorageError(true); }
   }}/>;
-  return <div inert={entering} className={`app-shell ${entering?'match-entering':''}`} data-ui-theme={started ? opponentCivilization(players, settings, game.turn()) : undefined}>
+  return <div inert={entering} className={`app-shell ${started?'is-playing':''} ${entering?'match-entering':''}`} data-ui-theme={started ? opponentCivilization(players, settings, game.turn()) : undefined}>
     {entering&&<VersusScene players={players} loadouts={loadouts} opening/>}
     <header className="site-header">
       <a href="/" className="brand" aria-label={translateUi("문명체스 홈")}><span className="brand-icon"><Crown size={25} /></span><span>{translateUi("문명체스")}<small>CIVILIZATION CHESS</small></span></a>
@@ -395,7 +396,7 @@ export default function App() {
       {translateUi(settings.mode === 'online' && online.session && <OnlineBanner online={online} onLeave={()=>void leaveOnline()}/>)}
       {translateUi(!started ? settings.mode === 'online' ? !online.session ? <OnlineLobby online={online} onBack={()=>setSetupReady(false)}/> : !online.room?.joined || !online.room.colorsChosen ? <OnlineWaitingRoom online={online}/> : <Draft settings={settings} network={{picks:online.room.picks,color:online.session.color,busy:online.busy,connected:online.connected,onPick:choice=>online.send({kind:'pick',choice})}} onSettings={()=>void leaveOnline()} onStart={()=>{}}/> : localDraft : <>
       {translateUi(reviewPly !== null && <Modal title={translateUi("대전 복기")} onClose={() => setReviewPly(null)}><MatchReview game={game} players={players} initialPly={reviewPly} flipped={flipped} viewer={settings.mode === 'local' ? game.turn() : settings.humanColor} live={!status.over}/></Modal>)}
-      <div className="page-heading"><div><div className="eyebrow">THE FIRST AGE</div><h1>{translateUi("한 수로 시작하는 문명")}</h1></div><span className="rules-badge"><Shield size={15} /> {translateUi(game instanceof AbilityGame ? '문명 능력 대전' : '기본 체스')}</span></div>
+
       <div className="game-layout">
         <section className="board-section" aria-label={translateUi("체스 대전")}>
           {translateUi(playerBar(topColor))}
@@ -482,12 +483,11 @@ export default function App() {
 
         <aside className="side-panel">
           <>
-            <section className={`status-panel ${status.kind}`} aria-live="polite"><div className="panel-kicker">{translateUi(placementOwner ? 'PLACEMENT' : status.over ? 'GAME OVER' : aiTurn ? 'AI TURN' : 'YOUR MOVE')}</div><div className="status-title">{translateUi(status.over ? <Crown size={25} /> : <span className={`side-dot large ${game.turn()}`} />)}<h2>{translateUi(placementOwner ? choosingLaw ? '12표법 선택' : `${colorNames[placementOwner]} 지형 배치` : aiTurn ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : status.title)}</h2></div><p>{translateUi(placementOwner ? choosingLaw ? '체스판 위에서 이번 대전에 적용할 법을 선택하세요.' : placementArmed ? '보드에서 위치를 선택하고 보드 아래에서 배치를 확정하세요.' : '보드 왼쪽의 시작 배치 버튼을 눌러주세요.' : aiTurn ? ai.error ?? `${difficultyNames[settings.difficulty]} AI가 다음 수를 고르고 있어요.` : status.detail)}</p>{translateUi(aiTurn && ai.error && <button className="secondary-button" onClick={ai.retry}>{translateUi("AI 다시 시도")}</button>)}{translateUi(status.over && <button className="primary-button" onClick={() => setConfirm('new')}>{translateUi("새로운 대전 ")}<ArrowRight size={17} /></button>)}</section>
+            <section className={`status-panel ${status.kind}`} aria-live="polite"><div className="panel-kicker">{translateUi(placementOwner ? 'PLACEMENT' : status.over ? 'GAME OVER' : aiTurn ? 'AI TURN' : 'YOUR MOVE')}</div><div className="status-title">{translateUi(status.over ? <Crown size={25} /> : <span className={`side-dot large ${game.turn()}`} />)}<h2>{translateUi(placementOwner ? choosingLaw ? '12표법 선택' : `${colorNames[placementOwner]} 지형 배치` : aiTurn ? ai.error ? 'AI 계산 중단' : 'AI가 생각하는 중…' : status.title)}</h2></div>{(!!placementOwner||status.over||status.kind==='check'||!!ai.error)&&<p>{translateUi(placementOwner ? choosingLaw ? '체스판 위에서 이번 대전에 적용할 법을 선택하세요.' : placementArmed ? '보드에서 위치를 선택하고 보드 아래에서 배치를 확정하세요.' : '보드 왼쪽의 시작 배치 버튼을 눌러주세요.' : aiTurn ? ai.error ?? `${difficultyNames[settings.difficulty]} AI가 다음 수를 고르고 있어요.` : status.detail)}</p>}{translateUi(aiTurn && ai.error && <button className="secondary-button" onClick={ai.retry}>{translateUi("AI 다시 시도")}</button>)}{translateUi(status.over && <button className="primary-button" onClick={() => setConfirm('new')}>{translateUi("새로운 대전 ")}<ArrowRight size={17} /></button>)}</section>
             <MatchHistory moves={history} players={players} listRef={historyRef} onReview={setReviewPly} waiting={placementOwner ? '먼저 시작 준비를 완료하세요.' : aiTurn ? 'AI가 첫 수를 고르고 있어요.' : '체스판에서 기물을 움직여 보세요.'}/>
-            <div className="match-actions"><button onClick={() => setConfirm('new')}><RotateCcw size={16} />{translateUi(" 새 대전")}</button><button onClick={() => setConfirm('resign')} disabled={status.over}><Flag size={16} />{translateUi(" 기권")}</button></div>
-            {translateUi(game instanceof AbilityGame && <AbilityPanel game={game} players={players} enabled={humanTurn && !confirm} onAction={performAbility} onUndo={settings.mode === 'online' ? undefined : undo} undoEnabled={started && !confirm && canUndoTurn(game, settings)} undoLabel={settings.mode === 'ai' ? '내 차례로 무르기' : '한 수 무르기'} />)}<MatchAtmosphere civilization={opponentCivilization(players, settings, game.turn())} />
-            <details className="match-loadouts"><summary>{translateUi("선택한 스킬 보기")}</summary><LoadoutList players={players} loadouts={loadouts} /><p>{translateUi(game instanceof AbilityGame ? '능력 적용 중 · 12표법 준비 중' : '기본 체스 · 기존 저장 대전')}</p></details>
-            <div className="match-civilizations"><span>{translateUi(getCivilization(players.w).name)}</span><span>VS</span><span>{translateUi(getCivilization(players.b).name)}</span><small>{translateUi(game instanceof AbilityGame ? '문명 능력 적용 · 실험 규칙 v1' : '기본 체스')}</small></div>
+            <details className="match-menu"><summary>{translateUi("대전 메뉴")}</summary><div className="match-actions"><button onClick={() => setConfirm('new')}><RotateCcw size={16} />{translateUi(" 새 대전")}</button><button onClick={() => setConfirm('resign')} disabled={status.over}><Flag size={16} />{translateUi(" 기권")}</button></div></details>
+            {translateUi(game instanceof AbilityGame && <AbilityPanel compact game={game} players={players} enabled={humanTurn && !confirm} onAction={performAbility} onUndo={settings.mode === 'online' ? undefined : undo} undoEnabled={started && !confirm && canUndoTurn(game, settings)} undoLabel={settings.mode === 'ai' ? '내 차례로 무르기' : '한 수 무르기'} />)}<MatchAtmosphere civilization={opponentCivilization(players, settings, game.turn())} />
+
           </>
           <details className="rules-details"><summary>{translateUi("플레이 안내 ")}<ChevronRight size={16} /></summary><div><p>{translateUi("기물을 클릭한 뒤 목적지를 누르거나, 마우스·터치로 기물을 끌어서 놓으세요. 둘 수 없는 칸이나 보드 밖에 놓으면 원래 자리로 돌아옵니다. Esc로 드래그를 취소할 수 있습니다.")}</p><p>{translateUi("캐슬링, 앙파상, 폰 승격을 지원합니다. 체크 상태에서는 킹을 보호해야 하며 체크메이트로 승패가 결정됩니다.")}</p><p>{translateUi(game instanceof AbilityGame ? '능력 대전은 특수 행동까지 포함해 합법적 행동이 없을 때 스테일메이트를 판정합니다. 반복·50수·기물 부족 자동 무승부는 사용하지 않습니다.' : '스테일메이트, 기물 부족, 3회 동형 반복, 50수 규칙은 자동 무승부입니다.')}</p><p>{translateUi(settings.mode === 'online' ? '온라인 방은 서버에 저장되며 같은 탭에서 새로고침하면 복원됩니다. 온라인 대전에서는 무르기를 지원하지 않습니다.' : '대전은 이 브라우저에 자동 저장됩니다.')} {translateUi(settings.mode === 'online' ? '' : settings.mode === 'ai' ? '무르기를 누르면 AI의 응수와 내 수를 되돌려 내 이전 차례로 돌아갑니다.' : '한 수 무르기는 두 플레이어가 합의하고 사용하세요.')}</p></div></details>
           {translateUi(storageError && <p role="alert" className="storage-warning">{translateUi("자동 저장을 사용할 수 없습니다. 새로고침하면 대전이 사라질 수 있습니다.")}</p>)}

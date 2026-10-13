@@ -46,16 +46,19 @@ export default function MatchAtmosphere({ civilization }: { civilization: Civili
     {translateUi(background && createPortal(<div className="civilization-backdrop" aria-hidden="true">
       <img key={`${background}-${backgroundRetry}`} src={background} alt="" draggable={false} onLoad={() => setLoadedBackground(background)} onError={() => setFailedBackground(background)} />
     </div>, document.body))}
+    <div className="atmosphere-quick">
+      <button type="button" className="music-toggle" aria-label={translateUi(`BGM ${preferences.music ? '켜짐' : '꺼짐'}`)} aria-pressed={preferences.music} disabled={!media.bgm}
+        onClick={() => setPreferences(value => ({ ...value, music: !value.music }))}>
+        <span className="music-toggle-light" aria-hidden="true"/><strong>BGM {translateUi(media.bgm ? preferences.music ? '켜짐' : '꺼짐' : '준비 중')}</strong><span className="music-toggle-action">{translateUi(media.bgm ? preferences.music ? '눌러서 끄기' : '눌러서 켜기' : '')}</span>
+      </button>
+    </div>
+    <details className="atmosphere-details"><summary>{translateUi("음악 · 배경 설정")}</summary>
     <div className="atmosphere-title"><Music2 size={17} /><span>{translateUi("상대 문명 ")}<strong>{translateUi(name)}</strong></span></div>
     {translateUi(media.bgm && media.credit && <div className="music-credit" aria-label={translateUi("BGM 곡 정보")}>
       <strong>{translateUi(media.credit.title)}</strong>
       <span>{translateUi(media.credit.sourceOnly ? '음원 출처' : '아티스트')} · {translateUi(media.credit.artist)}</span>
     </div>)}
     <div className="atmosphere-controls">
-      <button type="button" className="music-toggle" aria-label={translateUi(`BGM ${preferences.music ? '켜짐' : '꺼짐'}`)} aria-pressed={preferences.music} disabled={!media.bgm}
-        onClick={() => setPreferences(value => ({ ...value, music: !value.music }))}>
-        <span className="music-toggle-light" aria-hidden="true"/><strong>BGM {translateUi(media.bgm ? preferences.music ? '켜짐' : '꺼짐' : '준비 중')}</strong><span className="music-toggle-action">{translateUi(media.bgm ? preferences.music ? '눌러서 끄기' : '눌러서 켜기' : '')}</span>
-      </button>
       <label><Volume2 size={15} /><span className="media-volume-label">{translateUi("음량")}</span>
         <input aria-label={translateUi("BGM 음량")} type="range" min="0" max="100" value={Math.round(preferences.volume * 100)}
           onChange={event => setPreferences(value => ({ ...value, volume: Number(event.target.value) / 100 }))} />
@@ -68,10 +71,11 @@ export default function MatchAtmosphere({ civilization }: { civilization: Civili
         <Image size={16}/>{translateUi('배경만 보기')}
       </button>
     </div>
+    </details>
     {translateUi(!media.background && <p>{translateUi("상대 문명(")}{translateUi(name)}{translateUi(")의 배경은 준비 중입니다. 현재 그리스·이집트·로마·아즈텍·조선·청나라 배경을 사용할 수 있어요.")}</p>)}
     {translateUi(background && loadedBackground !== background && <p role="status">{translateUi(name)}{translateUi(" 배경 불러오는 중…")}</p>)}
     {translateUi(media.background && preferences.background && failedBackground === media.background && <p role="status">{translateUi("배경을 불러오지 못했어요. ")}<button onClick={() => { setFailedBackground(null); setBackgroundRetry(value => value + 1); }}>{translateUi("다시 불러오기")}</button></p>)}
-    {translateUi(media.bgm && preferences.music && (music.status === 'loading' || music.status === 'playing') && <p role="status">{translateUi(music.status === 'playing' ? '음악 재생 중' : '음악 불러오는 중…')}</p>)}
+    {translateUi(media.bgm && preferences.music && music.status === 'loading' && <p role="status">{translateUi('음악 불러오는 중…')}</p>)}
     {translateUi(media.bgm && preferences.music && music.status === 'blocked' && <button className="music-retry" onClick={music.retry}>{translateUi("눌러서 음악 재생")}</button>)}
     {translateUi(media.bgm && preferences.music && music.status === 'error' && <p role="status">{translateUi("음악을 불러오지 못했어요. ")}<button onClick={() => setPreferences(value => ({ ...value, music: false }))}>{translateUi("음악 끄기")}</button></p>)}
   </section>;

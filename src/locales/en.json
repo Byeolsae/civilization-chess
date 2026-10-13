@@ -853,5 +853,7 @@
   "임시 규칙: 방패가 있는 근위병은 나이트처럼 움직이고 첫 피격을 버팁니다. 일반 킹 주변 8칸에서 킹을 노린 공격을 막고 방패를 소모합니다. 공격자는 원래 칸에 생존하고 차례를 소모합니다. 방패가 깨지면 다시 보호할 수 없고, 목숨 1개로 전방 빈칸 한 칸 이동·대각선 포획만 합니다. 두 칸 전진·앙파상·승급은 없습니다. 민주주의의 킹에는 적용하지 않습니다.": "Provisional rule: Shielded guards move as knights and survive their first hit. Next to a royal king, they block an attack and spend their shield. The attacker stays alive on its original square and spends its turn. Unshielded guards cannot protect again and have one life; they advance one empty square and capture diagonally. No double step, en passant or promotion. Does not protect a Democracy king.",
   "보호됨": "Protected",
   "근위 방어": "Royal Guard",
-  "근위 방어 발동": "Royal Guard activated"
+  "근위 방어 발동": "Royal Guard activated",
+  "대전 메뉴": "Match menu",
+  "음악 · 배경 설정": "Music & background settings"
 }

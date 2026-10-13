@@ -1,0 +1,38 @@
+/* Gameplay hierarchy: board and live actions first, reference information on demand. */
+.app-shell.is-playing .site-header{height:72px;border-bottom:1px solid var(--line)}
+.app-shell.is-playing>main{max-width:1240px;padding-top:20px}
+.app-shell.is-playing .game-layout{grid-template-columns:minmax(0,1fr) 290px;gap:24px}
+.app-shell.is-playing .side-panel{display:flex;flex-direction:column;gap:12px;padding-top:0}
+.app-shell.is-playing .status-panel{padding:16px 18px;margin:0;border-radius:8px}
+.app-shell.is-playing .status-panel .panel-kicker{display:none}
+.app-shell.is-playing .status-title{gap:9px}.app-shell.is-playing .status-title h2{font-size:18px;letter-spacing:-.3px}
+.app-shell.is-playing .status-title .side-dot.large{width:13px;height:13px;border-width:1px}
+.app-shell.is-playing .status-panel p{margin-top:8px;font-size:11px;line-height:1.65}
+.app-shell.is-playing .match-history{margin:0;border-radius:8px}
+.app-shell.is-playing .match-history-list{height:clamp(180px,26vh,270px)}
+.app-shell.is-playing .match-history-empty{gap:8px;padding:14px}.app-shell.is-playing .match-history-empty>svg{width:20px;height:20px}
+.app-shell.is-playing .match-history-empty p,.app-shell.is-playing .match-history-footer{display:none}
+.app-shell.is-playing .ability-panel{margin:0;padding:0;border:0;background:transparent}
+.app-shell.is-playing .ability-panel>details{margin:0;border-top:1px solid var(--line)}
+.app-shell.is-playing .ability-panel>p,.app-shell.is-playing .ability-clocks{padding:10px 12px;background:var(--panel);border-radius:6px}
+.app-shell.is-playing .match-menu{order:5;border-top:1px solid var(--line)}
+.app-shell.is-playing .rules-details{order:4;margin:0}
+.app-shell.is-playing .match-menu>summary,.app-shell.is-playing .ability-panel>details>summary,.app-shell.is-playing .rules-details>summary{font-size:12px;color:var(--muted);padding:12px 2px;cursor:pointer}
+.app-shell.is-playing .match-actions{margin:0 0 10px}
+.app-shell.is-playing .match-atmosphere{margin:0;padding:10px 12px;border-radius:8px}
+.atmosphere-quick .music-toggle{width:100%;display:flex;align-items:center;gap:9px;min-height:38px;padding:8px 10px}
+.atmosphere-quick .music-toggle strong{font-size:12px}.atmosphere-quick .music-toggle-action{margin-left:auto;font-size:10px}
+.atmosphere-details>summary{padding:12px 2px 2px;color:var(--muted);font-size:11px;cursor:pointer}
+.atmosphere-details[open]>summary{padding-bottom:14px}.atmosphere-details .music-credit strong{font-size:11px}
+.app-shell.is-playing .player-bar{min-height:56px;padding:8px 0;gap:10px}.app-shell.is-playing .player-identity strong{font-size:14px}
+.app-shell.is-playing .player-identity>span{display:none}.app-shell.is-playing .turn-tag{font-size:10px;padding:3px 7px}
+.app-shell.is-playing .board-toolbar{padding:10px 0;margin:0;gap:8px;font-size:10px}
+.app-shell.is-playing>main>footer{display:none}
+@media(max-width:1100px) and (min-width:801px){.app-shell.is-playing{padding:0 22px}.app-shell.is-playing .game-layout{grid-template-columns:minmax(0,1fr) 260px;gap:18px}}
+@media(max-width:800px){.app-shell.is-playing .site-header{height:64px}.app-shell.is-playing>main{padding-top:10px}.app-shell.is-playing .game-layout{display:flex;gap:14px}.app-shell.is-playing .side-panel{width:100%}.app-shell.is-playing .match-history-list{height:180px}.app-shell.is-playing .status-panel{padding:12px 14px}.app-shell.is-playing .board-toolbar{flex-wrap:wrap}.app-shell.is-playing .board-toolbar>div{margin-left:auto}}
+
+@media(min-width:801px){.app-shell.is-playing>main{max-width:min(1240px,calc(100svh + 180px))}}
+.app-shell.is-playing .atmosphere-quick .music-toggle{border:1px solid var(--line);border-radius:6px;background:transparent;color:var(--muted)}
+.app-shell.is-playing .atmosphere-quick .music-toggle[aria-pressed=true]{background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent)}
+.app-shell.is-playing .atmosphere-quick .music-toggle-light{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.4}
+.app-shell.is-playing .atmosphere-quick .music-toggle[aria-pressed=true] .music-toggle-light{opacity:1;box-shadow:0 0 7px currentColor}
