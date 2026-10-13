@@ -1,3 +1,4 @@
+import DeveloperModeToggle from './DeveloperModeToggle';
 import { useDeveloperMode } from './developerMode';
 import ProgressFilters from './ProgressFilters';
 import { civilizationProgress, defaultProgressFilter, matchesProgress } from './civilizationProgress';
@@ -30,6 +31,7 @@ export default function CivilizationPicker({choice,color,disabled,onChoose,picks
     {!rosterOnly&&<DraftCivilizationCard side="w" {...{color,choice,picks,settings}}/>}
     <div className="civ-pick-roster">
       <div className="civ-continent-filter" role="group" aria-label={text('대륙별 문명 필터','Filter by continent')}>{(['전체',...regions] as RegionFilter[]).map(item=><button key={item} aria-pressed={region===item} onClick={()=>setRegion(item)}>{item==='전체'&&<Globe2 size={15}/>}<span>{t(item)}</span></button>)}</div>
+      <div className="civ-pick-dev-tools"><DeveloperModeToggle/></div>
       <div className="civ-pick-search"><Search size={18} aria-hidden="true"/><input aria-label={text('문명 이름 검색','Search civilizations')} placeholder={text('문명 이름 검색','Search civilizations')} value={query} onChange={e=>setQuery(e.target.value)}/>{query&&<button onClick={()=>setQuery('')} aria-label={text('검색 지우기','Clear search')}>×</button>}<span aria-live="polite">{visible.length} / {civilizations.length}</span></div>
       {developerMode&&<ProgressFilters compact value={progressFilter} onChange={setProgressFilter} ids={candidates.map(c=>c.id)}/>}
       <div className="civ-pick-grid" role="group" aria-label={text('문명 목록','Civilizations')}>
