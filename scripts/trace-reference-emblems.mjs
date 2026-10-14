@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require=createRequire(import.meta.url);
 const sharp=require(process.argv[2]||'sharp');
-const names={ming:'ming.jpg',goryeo:'goryeo.webp',yuan:'yuan.png',han:'han.jpg'};
+const names={yuan:'yuan.png'}; // Only Yuan retains the approved reference contour.
 // Trace the actual two-color source silhouette, including enclosed background holes.
 // Pixel edges are simplified at subpixel tolerance; no invented feather or face details.
 function simplify(points,epsilon=.55){
