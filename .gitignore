@@ -9,3 +9,6 @@ dist/
 
 .audio-tools/
 tmp/audio/
+
+# User-provided source images remain local; publish only derived game assets.
+/scripts/emblem-references/
