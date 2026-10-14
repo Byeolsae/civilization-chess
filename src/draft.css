@@ -204,4 +204,4 @@
 .civ-card-skill:hover .civ-card-skill-caption,.civ-card-skill:focus .civ-card-skill-caption{visibility:visible;opacity:1}
 @media(max-width:760px){.civ-card-skill-icons{height:110px;gap:6px}.civ-card-skill{flex-basis:42px;padding:5px}.civ-card-skill-art>.draft-horse{font-size:26px}}
 
-.theme-ming{--draft-accent:#edbb65;--draft-rgb:237,187,101}.theme-goryeo{--draft-accent:#e1949a;--draft-rgb:225,148,154}.theme-yuan{--draft-accent:#8db9e8;--draft-rgb:141,185,232}.theme-song{--draft-accent:#a6cbb4;--draft-rgb:166,203,180}.theme-han{--draft-accent:#dfb986;--draft-rgb:223,185,134}
+.theme-ming{--draft-accent:#f9cb00;--draft-rgb:249,203,0}.theme-goryeo{--draft-accent:#ffdc88;--draft-rgb:255,220,136}.theme-yuan{--draft-accent:#8db9e8;--draft-rgb:141,185,232}.theme-song{--draft-accent:#a6cbb4;--draft-rgb:166,203,180}.theme-han{--draft-accent:#ffcc0a;--draft-rgb:255,204,10}

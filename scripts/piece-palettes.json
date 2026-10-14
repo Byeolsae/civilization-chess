@@ -159,34 +159,34 @@
   },
   "ming": {
     "w": {
-      "fill": "#FFF0CA",
-      "shade": "#E4CEA0",
-      "line": "#713128",
-      "accent": "#B6372D",
-      "ornament": "#D6A33C"
+      "fill": "#FFFFFF",
+      "shade": "#E0E0D8",
+      "line": "#252525",
+      "accent": "#222222",
+      "ornament": "#F9CB00"
     },
     "b": {
-      "fill": "#AE3028",
-      "shade": "#80221F",
-      "line": "#4B1D1A",
-      "accent": "#F3D47D",
-      "ornament": "#E9B849"
+      "fill": "#F9CB00",
+      "shade": "#C9A300",
+      "line": "#252525",
+      "accent": "#222222",
+      "ornament": "#FFFFFF"
     }
   },
   "goryeo": {
     "w": {
-      "fill": "#FFF0DB",
-      "shade": "#E0C7BB",
-      "line": "#202C54",
-      "accent": "#1A315F",
-      "ornament": "#C73340"
+      "fill": "#FFDC88",
+      "shade": "#DFC070",
+      "line": "#395548",
+      "accent": "#527E4D",
+      "ornament": "#D95343"
     },
     "b": {
-      "fill": "#AD283B",
-      "shade": "#7F1C30",
-      "line": "#351B32",
-      "accent": "#EDD5A0",
-      "ornament": "#172D59"
+      "fill": "#527E4D",
+      "shade": "#385C38",
+      "line": "#243C2D",
+      "accent": "#FFDC88",
+      "ornament": "#D95343"
     }
   },
   "yuan": {
@@ -223,18 +223,18 @@
   },
   "han": {
     "w": {
-      "fill": "#F0E7AF",
-      "shade": "#D3C98E",
-      "line": "#542328",
-      "accent": "#8D1821",
-      "ornament": "#292326"
+      "fill": "#FFFFFF",
+      "shade": "#E5DDD2",
+      "line": "#561B1B",
+      "accent": "#851919",
+      "ornament": "#FFCC0A"
     },
     "b": {
-      "fill": "#493238",
-      "shade": "#302229",
-      "line": "#A78069",
-      "accent": "#F0E7AF",
-      "ornament": "#B83535"
+      "fill": "#851919",
+      "shade": "#621414",
+      "line": "#321313",
+      "accent": "#FFCC0A",
+      "ornament": "#FFFFFF"
     }
   }
 }
