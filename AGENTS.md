@@ -2,7 +2,7 @@
 
 ## Civilization selection introductory copy
 
-User-confirmed 2026-10-13: follow `CIVILIZATION_INTRO_STANDARD.md` when creating or revising civilization selection taglines. They must be short and forceful, majestic, grounded in historical research specific to the civilization/period, and written with the compressed, rhythmic, solemn feel of classical Chinese poetry and wuxia verse. This is a prose style, not permission to impose Chinese cultural motifs on other civilizations or invent historical facts/quotations. Existing `src/civilizationIntros.ts` copy predates this standard and has not thereby passed its research requirements.
+User-updated 2026-10-14: follow `CIVILIZATION_INTRO_STANDARD.md` for all current and future civilization introductions. Replace the former short Chinese-poetry/wuxia style with original, majestic historical narration in the spirit of Sid Meier’s Civilization introductions: introduce the civilization’s researched legacy, address the player, and invite them to shape its future. Length is not restricted to a short slogan; use readable paragraphs (typically 3–4 sentences) in Korean and English. Do not copy game text, invent historical facts, or portray an imagined player achievement as history. Keep the card emblem centered in its own stable area above the longer text.
 
 Read `ART_DIRECTION.md` before artwork work. Skill icons remain simple symbols; do not restore engraved portraits.
 

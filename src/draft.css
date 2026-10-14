@@ -206,7 +206,12 @@
 
 .theme-ming{--draft-accent:#f9cb00;--draft-rgb:249,203,0}.theme-goryeo{--draft-accent:#ffdc88;--draft-rgb:255,220,136}.theme-yuan{--draft-accent:#8db9e8;--draft-rgb:141,185,232}.theme-song{--draft-accent:#a6cbb4;--draft-rgb:166,203,180}.theme-han{--draft-accent:#ffcc0a;--draft-rgb:255,204,10}
 
-/* Reserve the same reading space for each short, localized selection introduction. */
+/* Keep the emblem in a stable upper-center area; long introductions scroll independently. */
+.draft-theater.theater-civilizations .duel-card-identity{margin:12px 0 0;flex:1;min-height:0;display:grid;grid-template-rows:minmax(120px,1fr) auto auto minmax(0,1.35fr);justify-items:center;width:100%;align-content:stretch}
+.draft-theater.theater-civilizations .duel-card-identity>.civ-pick-hero{grid-row:1;min-height:0;display:flex;align-items:center;justify-content:center;width:100%;align-self:stretch}
+.draft-theater.theater-civilizations .duel-card-identity>small{grid-row:2}
+.draft-theater.theater-civilizations .duel-card-identity>h2{grid-row:3;margin:8px 0 14px;text-align:center}
 .duel-card-identity>.civ-selection-intro,
-.draft-theater .duel-card-identity>.civ-selection-intro{height:auto;min-height:4.8em;max-width:30ch;margin:0 auto;padding:8px 0 14px;color:#eee2c8;font-size:clamp(13px,1.05vw,16px);font-weight:500;line-height:1.6;word-break:keep-all;overflow-wrap:anywhere;text-wrap:balance;text-shadow:0 2px 8px #0009}
-@media(max-width:760px){.draft-theater .duel-card-identity>.civ-selection-intro{min-height:4.5em;font-size:12px;line-height:1.5;padding:3px 0 8px}}
+.draft-theater.theater-civilizations .duel-card-identity>p{grid-row:4;box-sizing:border-box;min-height:0;height:100%;max-width:38ch;width:100%;margin:0;padding:8px 6px 14px;color:#eee2c8;font-size:clamp(13px,1.05vw,15px);font-weight:400;line-height:1.8;word-break:keep-all;overflow-wrap:anywhere;text-align:start;text-wrap:pretty;text-shadow:0 2px 8px #0009;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#d9c49b66 transparent}
+.civ-selection-intro:focus-visible{outline:2px solid var(--draft-accent,#e8bf60);outline-offset:2px;border-radius:4px}
+@media(max-width:760px){.draft-theater.theater-civilizations .duel-card-identity{margin-top:6px;grid-template-rows:76px auto auto minmax(0,1fr)}.draft-theater.theater-civilizations .duel-card-identity>h2{margin:4px 0 8px}.draft-theater.theater-civilizations .duel-card-identity>p{font-size:12px;line-height:1.65;padding:3px 3px 6px}}
