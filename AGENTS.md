@@ -1,5 +1,9 @@
 # Visual direction
 
+## Efficient continuation
+
+User preference (2026-10-14): conserve usage while completing requested work. Read `WORK_HANDOFF.md` first for current state, then only the source and reference documents relevant to the request. Use targeted searches and bounded excerpts instead of repeatedly reading large files or conversation history. Batch independent reads. Run checks proportionate to the change; do not repeat passing checks without a new reason. Keep updates and final answers concise in Korean. Preserve historical research and visual verification when the task needs them; do not trade correctness for fewer calls. Update the handoff when project state or confirmed direction materially changes. Do not assume push success means deployment success.
+
 ## Civilization selection introductory copy
 
 User-updated 2026-10-14: follow `CIVILIZATION_INTRO_STANDARD.md` for all current and future civilization introductions. Replace the former short Chinese-poetry/wuxia style with original, majestic historical narration in the spirit of Sid Meier’s Civilization introductions: introduce the civilization’s researched legacy, address the player, and invite them to shape its future. Length is not restricted to a short slogan; use readable paragraphs (typically 3–4 sentences) in Korean and English. Do not copy game text, invent historical facts, or portray an imagined player achievement as history. Keep the card emblem centered in its own stable area above the longer text.
