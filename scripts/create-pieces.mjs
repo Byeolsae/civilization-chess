@@ -10,7 +10,7 @@ if (selected.length && !selected.includes(civilization)) continue;
 const directory = fileURLToPath(new URL(`../public/pieces/${civilization}/`, import.meta.url));
 mkdirSync(directory, { recursive: true });
 for (const color of ['w', 'b']) {
-  const { fill, shade, line, accent, ornament, trimColor } = sides[color];
+  const { fill, shade, line, accent, ornament, trimColor, heraldry } = sides[color];
   const trim = (left = 26, right = 74) => accent ? `<path d="M${left} 84.5 H${right}" fill="none" stroke="${trimColor ?? accent}" stroke-width="2.8" stroke-linecap="round"/>` : '';
   let clipIndex = 0;
   const outline = d => `<path d="${d}" fill="none"/>`;
@@ -19,7 +19,7 @@ for (const color of ['w', 'b']) {
     return `<path d="${d}" fill="${fill}" stroke="none" fill-rule="evenodd"/>` +
       `<defs><clipPath id="${id}"><path d="${d}" clip-rule="evenodd"/></clipPath></defs>` +
       (shadow ? `<path d="${shadow}" fill="${shade}" stroke="none" clip-path="url(#${id})"/>` : '') +
-      (ornament ? `<g stroke="none" clip-path="url(#${id})"><path d="M10 68 H90 V74 H10 Z" fill="${ornament}"/><path d="M10 78 H90 V82 H10 Z" fill="${accent}"/></g>` : '') +
+      (ornament ? `<g stroke="none" clip-path="url(#${id})"><path d="M10 68 H90 V74 H10 Z" fill="${ornament}"/><path d="M10 78 H90 V82 H10 Z" fill="${accent}"/>${heraldry ? Object.values(heraldry).map((color, i) => `<path d="M${24+i*10.4} 69 H${34.4+i*10.4} V73 H${24+i*10.4} Z" fill="${color}"/>`).join('') : ''}</g>` : '') +
       `<path d="${d}" fill="none"/>`;
   };
   const base = () => shape('M22 89 V84 C22 79 26 77 33 77 H67 C74 77 78 79 78 84 V89 Z', 'M21 85 H79 V90 H21 Z') + trim();

@@ -179,14 +179,28 @@
       "shade": "#DFC070",
       "line": "#395548",
       "accent": "#527E4D",
-      "ornament": "#D95343"
+      "ornament": "#D95343",
+      "heraldry": {
+        "blue": "#728EBA",
+        "purple": "#9894C2",
+        "teal": "#397C78",
+        "green": "#9EBF78",
+        "peach": "#E9AB79"
+      }
     },
     "b": {
       "fill": "#527E4D",
       "shade": "#385C38",
       "line": "#243C2D",
       "accent": "#FFDC88",
-      "ornament": "#D95343"
+      "ornament": "#D95343",
+      "heraldry": {
+        "blue": "#728EBA",
+        "purple": "#9894C2",
+        "teal": "#397C78",
+        "green": "#9EBF78",
+        "peach": "#E9AB79"
+      }
     }
   },
   "yuan": {
