@@ -156,5 +156,85 @@
       "accent": "#C53A35",
       "ornament": "#F5CF45"
     }
+  },
+  "ming": {
+    "w": {
+      "fill": "#FFF0CA",
+      "shade": "#E4CEA0",
+      "line": "#713128",
+      "accent": "#B6372D",
+      "ornament": "#D6A33C"
+    },
+    "b": {
+      "fill": "#AE3028",
+      "shade": "#80221F",
+      "line": "#4B1D1A",
+      "accent": "#F3D47D",
+      "ornament": "#E9B849"
+    }
+  },
+  "goryeo": {
+    "w": {
+      "fill": "#FFF0DB",
+      "shade": "#E0C7BB",
+      "line": "#202C54",
+      "accent": "#1A315F",
+      "ornament": "#C73340"
+    },
+    "b": {
+      "fill": "#AD283B",
+      "shade": "#7F1C30",
+      "line": "#351B32",
+      "accent": "#EDD5A0",
+      "ornament": "#172D59"
+    }
+  },
+  "yuan": {
+    "w": {
+      "fill": "#F5F8FF",
+      "shade": "#CEDFF1",
+      "line": "#123B70",
+      "accent": "#0757AD",
+      "ornament": "#8DB9E8"
+    },
+    "b": {
+      "fill": "#0752A5",
+      "shade": "#063B79",
+      "line": "#06274C",
+      "accent": "#FFFFFF",
+      "ornament": "#95C1EA"
+    }
+  },
+  "song": {
+    "w": {
+      "fill": "#F0F5E9",
+      "shade": "#C7DCC9",
+      "line": "#325F4B",
+      "accent": "#27765A",
+      "ornament": "#CBA95B"
+    },
+    "b": {
+      "fill": "#24664E",
+      "shade": "#194A3C",
+      "line": "#10382C",
+      "accent": "#CBA95B",
+      "ornament": "#E4EDD8"
+    }
+  },
+  "han": {
+    "w": {
+      "fill": "#F0E7AF",
+      "shade": "#D3C98E",
+      "line": "#542328",
+      "accent": "#8D1821",
+      "ornament": "#292326"
+    },
+    "b": {
+      "fill": "#493238",
+      "shade": "#302229",
+      "line": "#A78069",
+      "accent": "#F0E7AF",
+      "ornament": "#B83535"
+    }
   }
 }

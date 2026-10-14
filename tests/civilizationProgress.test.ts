@@ -20,7 +20,7 @@ test('border follows each consecutive prerequisite',()=>{
   fields.forEach((field,index)=>{const p=complete();p[field]='pending';assert.equal(progressStage(p),6-index);});
 });
 test('shared dynasty designs and existing prose drafts are not signed off',()=>{
-  const p=civilizationProgress('ming');assert.equal(p.palette,'progress');assert.equal(p.logo,'progress');
+  const p=civilizationProgress('tang');assert.equal(p.palette,'progress');assert.equal(p.logo,'progress');
   assert.equal(p.intro,'pending');assert.equal(p.qa,'pending');assert.equal(progressStage(p),6);
 });
 
@@ -28,5 +28,14 @@ test('shared dynasty designs and existing prose drafts are not signed off',()=>{
   for (const id of ['dai-viet','khmer','byzantium','hawaii-polynesia','pirate-republic'] as const) {
     assert.ok(Object.values(civilizationProgress(id)).every(value => value === 'pending'));
     assert.equal(progressStage(civilizationProgress(id)), 6);
+  }
+});
+
+test('new individual dynasty artwork only completes colors and emblems', () => {
+  for (const id of ['ming','goryeo','yuan','song','han'] as const) {
+    const p=civilizationProgress(id);
+    assert.equal(p.palette,'done');assert.equal(p.logo,'done');
+    assert.equal(p.skills,'pending');assert.equal(p.background,'pending');assert.equal(p.qa,'pending');
+    assert.equal(progressStage(p),4);
   }
 });

@@ -1,3 +1,4 @@
+import { dynastyMotifs, dynastyEmblems } from './dynasty-motifs.mjs';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 // Shared piece palettes keep the six emblems and both player sides in sync.
 const palettes = JSON.parse(readFileSync(new URL('./piece-palettes.json', import.meta.url), 'utf8'));
@@ -5,6 +6,7 @@ const leaf = (x,y,angle) => `<path d="M0 0C-4-3-4-8 0-12C4-8 4-3 0 0Z" transform
 const leftLeaves = [[23,46,-64],[19,39,-58],[18,31,-46],[20,23,-28],[25,17,5],[24,43,25],[22,35,38],[23,27,47]]
   .map(([x,y,angle]) => leaf(x,y,angle)).join('');
 const motifs = {
+  ...dynastyMotifs,
   japan: `<g fill="var(--main)" stroke="var(--base)" stroke-width=".8">${Array.from({length:5},(_,i)=>`<path d="M32 33C24 28 19 17 25 10Q28 7 32 13Q36 7 39 10C45 17 40 28 32 33Z" transform="rotate(${i*72} 32 32)"/>`).join('')}</g><circle cx="32" cy="32" r="4" fill="var(--detail)"/>${Array.from({length:5},(_,i)=>`<g transform="rotate(${i*72} 32 32)"><path d="M32 29V23" stroke="var(--detail)" stroke-width="1.2"/><circle cx="32" cy="22" r="1.4" fill="var(--detail)"/></g>`).join('')}`,
   korea: `<g transform="translate(64 0) scale(-1 1)"><circle cx="32" cy="32" r="19" fill="var(--blue)"/><path d="M13 32A19 19 0 0 1 51 32C51 42.5 32 42.5 32 32C32 21.5 13 21.5 13 32Z" fill="var(--main)"/></g>`,
   china: `<g transform="scale(.5)"><path fill="var(--main)" d="M10 61C19 50 31 44 43 44L33 32L50 40C44 32 43 23 45 15C49 28 54 37 64 42C58 34 57 25 60 18C62 28 69 38 78 43C85 47 94 49 97 54L99 63L111 65L116 71L113 77L113 84L108 79L106 74L101 75L98 72L95 76L90 73L86 77L81 73C74 71 72 64 68 61C65 59 62 62 63 66C65 75 75 80 88 81C96 82 103 81 108 84L107 89C98 97 80 96 66 87L69 94L58 99L48 98L58 94C53 91 50 87 48 84L40 86L46 94L33 89L22 89L30 82L17 85C21 80 28 77 35 74L17 73C24 66 33 63 41 62C30 57 20 58 10 61Z"/><path fill="var(--main)" d="M101 90C99 97 93 101 85 104C87 100 88 98 89 96C84 99 79 100 74 100C80 97 83 93 83 90Z"/><path fill="var(--base)" d="M74 57C78 56 82 58 84 61C83 65 80 67 77 66C74 64 73 60 74 57Z"/><path fill="var(--base)" d="M105 67L110 69L109 72L105 71Z"/></g>`,
@@ -31,5 +33,5 @@ for (const [id, body] of Object.entries(motifs)) {
     if (side === 'w') writeFileSync(new URL(`${id}.svg`,directory),svg);
   }
 }
-writeFileSync(new URL('./civilization-emblems.json', import.meta.url), JSON.stringify({greece:'omega',egypt:'eye-of-horus',rome:'laurel-wreath',japan:'cherry-blossom',korea:'taegeuk',china:'dragon-head',joseon:'royal-standard-concentric-taegeuk',aztec:'eight-ray-sun',qing:'dragon-head-and-red-pearl'},null,2)+'\n');
+writeFileSync(new URL('./civilization-emblems.json', import.meta.url), JSON.stringify({greece:'omega',egypt:'eye-of-horus',rome:'laurel-wreath',japan:'cherry-blossom',korea:'taegeuk',china:'dragon-head',joseon:'royal-standard-concentric-taegeuk',aztec:'eight-ray-sun',qing:'dragon-head-and-red-pearl',...dynastyEmblems},null,2)+'\n');
 console.log('Created civilization emblems with matching white and black piece palettes.');

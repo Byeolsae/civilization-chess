@@ -32,7 +32,7 @@ export function progressStage(progress: Progress): number {
 // Shared dynasty artwork is provisional, not a completed individual design.
 // Global test success is not a civilization-specific final QA sign-off.
 export function civilizationProgress(id: Civilization): Progress {
-  const unique=['greece','egypt','rome','korea','aztec','qing'].includes(id);
+  const unique=['greece','egypt','rome','korea','aztec','qing','ming','goryeo','yuan','song','han'].includes(id);
   const shared=civilizationAppearance[id]!=='classic';
   const playable=['greece','egypt','rome'].includes(id);
   const readiness=civilizationReadiness(id);
