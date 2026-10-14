@@ -19,9 +19,9 @@ test('border follows each consecutive prerequisite',()=>{
   const fields=['palette','logo','background','icons','skills'] as const;
   fields.forEach((field,index)=>{const p=complete();p[field]='pending';assert.equal(progressStage(p),6-index);});
 });
-test('shared dynasty designs and existing prose drafts are not signed off',()=>{
+test('reviewed intros do not sign off shared dynasty art or QA',()=>{
   const p=civilizationProgress('tang');assert.equal(p.palette,'progress');assert.equal(p.logo,'progress');
-  assert.equal(p.intro,'pending');assert.equal(p.qa,'pending');assert.equal(progressStage(p),6);
+  assert.equal(p.intro,'done');assert.equal(p.qa,'pending');assert.equal(progressStage(p),6);
 });
 
  test('new roster entries have no invented completion or skills', () => {

@@ -1,3 +1,4 @@
+import { draftCivilizationIds } from './draftRoster.js';
 import { experimentalRules } from './experimentalRules.js';
 import { civilizations } from './civilizations.js';
 import type { Color } from 'chess.js';
@@ -77,7 +78,7 @@ export const draftSteps = [
 export function optionsAt(picks: string[]): string[] {
   const step = draftSteps[picks.length];
   if (!step) return [];
-  if (step.category === 'civilization') return Object.keys(skills);
+  if (step.category === 'civilization') return [...draftCivilizationIds];
   const civilization = picks[step.color === 'w' ? 0 : 1] as Civilization;
   const cards = skills[civilization]?.[step.category];
   return cards ? cards.length ? cards.map(skill => skill.id) : ['pending'] : [];

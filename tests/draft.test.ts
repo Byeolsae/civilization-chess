@@ -1,3 +1,6 @@
+import { draftCivilizations, draftCivilizationIds } from '../src/draftRoster';
+import { civilizationIntros } from '../src/civilizationIntros';
+import { chooseAiDraftPick } from '../src/civilizationReadiness';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Chess } from 'chess.js';
@@ -83,8 +86,8 @@ test('legacy games remain playable without inventing chosen skills', () => {
   assert.deepEqual(restored.game.history(), ['e4']);
 });
 
-test('all civilization pairings complete, reload and save with pending skills skipped', () => {
-  for (const white of civilizations) for (const black of civilizations) {
+test('all selectable civilization pairings complete, reload and save with pending skills skipped', () => {
+  for (const white of draftCivilizations) for (const black of draftCivilizations) {
     let draft = confirmPick(confirmPick([], white.id), black.id);
     while (!completeDraft(draft)) {
       assert.deepEqual(restoreDraft(JSON.stringify(draft)), draft);
@@ -120,5 +123,26 @@ test('removed civilizations are rejected in saved drafts and matches', () => {
     assert.deepEqual(restoreDraft(JSON.stringify([removed])), []);
     assert.deepEqual(restoreDraft(JSON.stringify(['korea', removed])), []);
     assert.equal(decodeMatch(JSON.stringify({ version: 2, moves: ['e4'], players: { w: 'korea', b: removed }, resigned: null, loadouts: null })), null);
+  }
+});
+
+test('temporary pick roster is exactly the 25 working factions with reviewed bilingual intros', () => {
+  assert.equal(draftCivilizationIds.length, 25);
+  assert.equal(new Set(draftCivilizationIds).size, 25);
+  assert.deepEqual(new Set(optionsAt([])), new Set(draftCivilizationIds));
+  assert.deepEqual(new Set(optionsAt(['rome'])), new Set(draftCivilizationIds));
+  assert.deepEqual(new Set(draftCivilizationIds), new Set(civilizations.filter(c => civilizationAppearance[c.id] !== 'classic').map(c => c.id)));
+  for (const id of draftCivilizationIds) {
+    assert.ok(civilizationIntros[id]?.ko);
+    assert.ok(civilizationIntros[id]?.en);
+  }
+  for (const c of civilizations.filter(c => !draftCivilizations.some(d => d.id === c.id))) {
+    assert.deepEqual(confirmPick([], c.id), []);
+    assert.deepEqual(restoreDraft(JSON.stringify([c.id])), []);
+    // Restrict new picks, not the registry used by old matches/replays.
+    assert.ok(decodeMatch(encodeMatch(new Chess(), { w: c.id, b: 'rome' }, null, null)));
+  }
+  for (let n = 0; n < 1000; n++) {
+    assert.ok(optionsAt([]).includes(chooseAiDraftPick([], () => (n + 0.5) / 1000)!));
   }
 });

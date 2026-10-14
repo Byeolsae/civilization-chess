@@ -205,3 +205,8 @@
 @media(max-width:760px){.civ-card-skill-icons{height:110px;gap:6px}.civ-card-skill{flex-basis:42px;padding:5px}.civ-card-skill-art>.draft-horse{font-size:26px}}
 
 .theme-ming{--draft-accent:#f9cb00;--draft-rgb:249,203,0}.theme-goryeo{--draft-accent:#ffdc88;--draft-rgb:255,220,136}.theme-yuan{--draft-accent:#8db9e8;--draft-rgb:141,185,232}.theme-song{--draft-accent:#a6cbb4;--draft-rgb:166,203,180}.theme-han{--draft-accent:#ffcc0a;--draft-rgb:255,204,10}
+
+/* Reserve the same reading space for each short, localized selection introduction. */
+.duel-card-identity>.civ-selection-intro,
+.draft-theater .duel-card-identity>.civ-selection-intro{height:auto;min-height:4.8em;max-width:30ch;margin:0 auto;padding:8px 0 14px;color:#eee2c8;font-size:clamp(13px,1.05vw,16px);font-weight:500;line-height:1.6;word-break:keep-all;overflow-wrap:anywhere;text-wrap:balance;text-shadow:0 2px 8px #0009}
+@media(max-width:760px){.draft-theater .duel-card-identity>.civ-selection-intro{min-height:4.5em;font-size:12px;line-height:1.5;padding:3px 0 8px}}
