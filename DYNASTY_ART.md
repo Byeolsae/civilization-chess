@@ -35,3 +35,5 @@
 생성 경로는 `scripts/dynasty-reference-paths.json`이며 `scripts/dynasty-motifs.mjs`가 읽는다. 색상은 기존 흑백 팔레트를 유지한다. 송은 이번 수정에서 제외하여 직전 파일과 동일하다. 재생성: `node scripts/trace-reference-emblems.mjs <sharp 패키지 경로>` 후 `node scripts/create-civilization-icons.mjs`. 참고자료의 역사적 고증 제한은 그대로다.
 
 원본 사진은 저장소에 공개하지 않는다. 새 체크아웃에서는 문양 생성에 커밋된 SVG 경로 JSON을 사용한다. 윤곽 재추출은 로컬 원본이 있을 때만 실행한다.
+
+문양 크기 조정: 명·고려·원·한은 원형 프레임 중심을 유지하며 내부 문양만 85%로 축소했다. 원본 윤곽·색상·프레임 크기와 송 로고는 유지한다.
