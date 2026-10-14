@@ -1,6 +1,25 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { filterCivilizations } from '../src/civilizationFilters';
+import { getLocale, setLocale, translate } from '../src/i18n';
+
+test('cached search preserves locale sorting and returns independent result arrays', () => {
+  const originalLocale = getLocale();
+  try {
+    for (const locale of ['en', 'ko', 'en'] as const) {
+      setLocale(locale);
+      const result = filterCivilizations();
+      const names = result.map(c => translate(c.name, locale));
+      assert.deepEqual(names, [...names].sort((a, b) => a.localeCompare(b, locale)));
+      result.splice(0);
+      assert.equal(filterCivilizations().length, 87);
+      assert.ok(filterCivilizations(' K O R E A ').some(c => c.id === 'korea'));
+      assert.deepEqual(filterCivilizations('다이비엣').map(c => c.id), ['dai-viet']);
+    }
+  } finally {
+    setLocale(originalLocale);
+  }
+});
 
 test('expanded roster has unique identities and Korean ordering', () => {
   const names = filterCivilizations().map(c => c.name);

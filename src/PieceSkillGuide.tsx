@@ -7,9 +7,9 @@ import { pieceNames, type Players } from './game';
 import { skills } from './draft';
 import { pieceSkillInfo } from './pieceSkills';
 
-export function PieceSkillGuide({ game, square, players, mode, cargo, enabled, onMode, onCargo }: {
-  game: AbilityGame; square: Square; players: Players; mode: string; cargo: string; enabled: boolean;
-  onMode: (mode: string) => void; onCargo: (id: string) => void;
+export function PieceSkillGuide({ game, square, players, mode, cargo, onCargo }: {
+  game: AbilityGame; square: Square; players: Players; mode: string; cargo: string;
+  onCargo: (id: string) => void;
 }) {
   const info = pieceSkillInfo(game, square), p = game.unit(square);
   if (!info || !p) return null;

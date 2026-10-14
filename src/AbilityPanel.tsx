@@ -7,7 +7,6 @@ import { AbilityGame, abilityNames, type AbilityAction } from "./AbilityGame";
 import { skills } from "./draft";
 import { type Players, colorNames, pieceNames } from "./game";
 import "./abilities.css";
-import Piece from './Piece';
 export function AbilityPanel({
   compact = false,
   game,

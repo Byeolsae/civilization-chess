@@ -13,9 +13,9 @@ import EvaluationBar from './EvaluationBar';
 import { useOnlineRoom } from './useOnlineRoom';
 import { OnlineLobby, OnlineBanner, OnlineQuiz, OnlineWaitingRoom } from './OnlineLobby';
 import { completeDraft } from './draft';
-import { useEffect, useRef, useState, type ReactNode, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type PointerEvent as ReactPointerEvent } from 'react';
 import { Chess, type Color, type PieceSymbol, type Square } from 'chess.js';
-import { ScrollText, Pyramid, Route, ArrowRight, ArrowLeftRight, ChevronRight, Crown, Flag, RotateCcw, Shield, Swords, X } from 'lucide-react';
+import { ScrollText, Pyramid, Route, ArrowRight, ArrowLeftRight, ChevronRight, Crown, Flag, RotateCcw, Swords, X } from 'lucide-react';
 import { civilizations, colorNames, decodeMatch, encodeMatch, gameStatus, legalMoves, opposite, pieceNames, playMove, STORAGE_KEY, type Civilization, type Players, type Promotion } from './game';
 
 import Draft from './DraftScreen';
@@ -474,7 +474,7 @@ export default function App() {
             {translateUi(placementHuman && placementArmed && <div className="placement-controls">{translateUi(game.loadouts[placementOwner].passive === 'roads' && (['row','column'] as const).map(axis => <button key={axis} aria-pressed={placementAxis === axis} onClick={() => setPlacementAxis(axis)}>{translateUi(axis === 'row' ? '가로 2행' : '세로 2열')}</button>))}<button className="primary-button" disabled={!placementSquare || !!confirm} onClick={confirmPlacement}>{translateUi("배치 확정")}</button><button onClick={() => {setPlacementArmed(false);setPlacementSquare(null);}}>{translateUi("취소")}</button></div>)}
           </section>)}
           {translateUi(game instanceof AbilityGame && <ActiveGuide game={game} target={activeTarget} players={players} />)}
-          {translateUi(game instanceof AbilityGame && selected && !activeTarget.armed && <PieceSkillGuide game={game} square={selected} players={players} mode={pieceMode} cargo={pieceCargo} enabled={humanTurn && !confirm && !promotion && !game.state.duel} onMode={mode => { setPieceMode(mode); setPieceCargo(mode === 'deploy' ? pieceInfo?.cargo[0] ?? '' : ''); }} onCargo={setPieceCargo} />)}
+          {translateUi(game instanceof AbilityGame && selected && !activeTarget.armed && <PieceSkillGuide game={game} square={selected} players={players} mode={pieceMode} cargo={pieceCargo} onCargo={setPieceCargo} />)}
           {translateUi(playerBar(bottomColor))}
           <div className="board-toolbar"><span>{translateUi(started ? game instanceof AbilityGame ? `백 ${game.state.turns.w}턴 · 흑 ${game.state.turns.b}턴 · ${history.length}행동` : `${Math.floor(history.length / 2) + 1} 라운드 · ${history.length}수 진행` : '백이 먼저 시작합니다')}</span><div>
             <button onClick={undo} disabled={settings.mode === 'online' || !started || (!canUndoTurn(game, settings) && !resigned)}><RotateCcw size={16} /> {translateUi(settings.mode === 'ai' ? '내 차례로 무르기' : '한 수 무르기')}</button>

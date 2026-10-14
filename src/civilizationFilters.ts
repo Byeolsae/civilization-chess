@@ -20,13 +20,29 @@ export const civilizationEras: Record<Civilization, readonly Era[]> = {
   edo: ['근세', '근대'], meiji: ['근대'],
 };
 
+const normalizeSearch = (value: string) => value.toLocaleLowerCase().replace(/\s+/g, '');
+// Civilization data is static. Build bilingual search terms once, not on each render.
+const searchIndex = new Map(civilizations.map(civ => [civ.id, normalizeSearch(
+  `${civ.name}${civ.english} ${'aliases' in civ ? civ.aliases : ''} ${civ.countries.join(' ')} ${translate(civ.name, 'en')} ${civ.countries.map(c => translate(c, 'en')).join(' ')}`
+)]));
+const orderedRosters = new Map<ReturnType<typeof getLocale>, (typeof civilizations[number])[]>();
+function orderedCivilizations() {
+  const locale = getLocale();
+  let ordered = orderedRosters.get(locale);
+  if (!ordered) {
+    const names = new Map(civilizations.map(c => [c.id, translate(c.name, locale)]));
+    ordered = [...civilizations].sort((a, b) => names.get(a.id)!.localeCompare(names.get(b.id)!, locale));
+    orderedRosters.set(locale, ordered);
+  }
+  return ordered;
+}
+
 export function filterCivilizations(search = '', region: RegionFilter = '전체', era: EraFilter = '전체', country: CountryFilter = '전체') {
-  const normalize = (value: string) => value.toLocaleLowerCase().replace(/\s+/g, '');
-  const query = normalize(search);
-  return civilizations.filter(civ =>
+  const query = normalizeSearch(search);
+  return orderedCivilizations().filter(civ =>
     (country === '전체' || belongsToCountry(civ, country)) &&
     (region === '전체' || civ.region === region) &&
     (era === '전체' || civilizationEras[civ.id].includes(era)) &&
-    normalize(`${civ.name}${civ.english} ${'aliases' in civ ? civ.aliases : ''} ${civ.countries.join(' ')} ${translate(civ.name, 'en')} ${civ.countries.map(c => translate(c, 'en')).join(' ')}`).includes(query)
-  ).sort((a, b) => translate(a.name, getLocale()).localeCompare(translate(b.name, getLocale()), getLocale()));
+    (!query || searchIndex.get(civ.id)!.includes(query))
+  );
 }

@@ -4,7 +4,7 @@ import DeveloperModeToggle from './DeveloperModeToggle';
 import { useDeveloperMode } from './developerMode';
 import ProgressFilters from './ProgressFilters';
 import { civilizationProgress, defaultProgressFilter, matchesProgress } from './civilizationProgress';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Color } from 'chess.js';
 import { Search, Check, Crown, Globe2 } from 'lucide-react';
 import { civilizations, civilizationAppearance, regions } from './civilizations';
@@ -27,8 +27,8 @@ export default function CivilizationPicker({choice,color,disabled,onChoose,picks
   const [query,setQuery]=useState('');
   const [region,setRegion]=useState<RegionFilter>('전체');
   const [progressFilter,setProgressFilter]=useState({...defaultProgressFilter});
-  const candidates=filterCivilizations(query,region).filter(c=>isDraftCivilization(c.id));
-  const visible=candidates.filter(c=>!developerMode||matchesProgress(civilizationProgress(c.id),progressFilter));
+  const candidates=useMemo(()=>filterCivilizations(query,region).filter(c=>isDraftCivilization(c.id)),[query,region,locale]);
+  const visible=useMemo(()=>candidates.filter(c=>!developerMode||matchesProgress(civilizationProgress(c.id),progressFilter)),[candidates,developerMode,progressFilter]);
   return <div className={rosterOnly?"civ-roster-only":"civ-pick-layout duel-pick-layout"}>
     {!rosterOnly&&<DraftCivilizationCard side="w" {...{color,choice,picks,settings}}/>}
     <div className="civ-pick-roster">

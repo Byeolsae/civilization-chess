@@ -4,6 +4,8 @@
 
 ## 현재 상태
 
+- 코드 정리(2026-10-14): 문명 검색 문자열은 한 번만 생성, 언어별 정렬은 캐시, 홈/픽창 필터 결과는 입력 변경 시에만 재계산. 미사용 import와 스킬 안내창 props 제거. TypeScript `noUnusedLocals`/`noUnusedParameters` 활성화. 빌드·테스트 212개 통과. 초기 JS 번들 약 618 kB(압축 전) 경고는 남아 있으며, 별도 화면 분리는 추후 작업이다.
+
 - 프로젝트: React 19 + TypeScript + Vite, pnpm. GitHub `Byeolsae/civilization-chess`, 기본 브랜치 `main`, 서비스 `https://civilization-chess.vercel.app/`.
 - 마지막 기능 푸시: `23c9528` — 25개 문명 한국어·영어 소개 재작성, 선택 카드 로고 위치 조정. 빌드 통과. 브라우저 정책으로 실제 화면 검증은 미완료. 배포 완료 여부는 확인하지 않았다.
 - 이전 `291bc2a`: 픽창·AI 선택 후보를 작업 대상 25개로 제한. 전체 문명 목록과 기존 대전 데이터는 유지. 당시 테스트 211개 통과.
