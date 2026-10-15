@@ -1,6 +1,14 @@
 # 작업 이어받기
 
-최종 정리: 2026-10-14. 이 문서는 긴 대화 대신 현재 상태를 찾는 출발점이다. 최신 사용자 요청과 실제 코드가 우선한다.
+최종 정리: 2026-10-15. 이 문서는 긴 대화 대신 현재 상태를 찾는 출발점이다. 최신 사용자 요청과 실제 코드가 우선한다.
+
+## 다른 컴퓨터에서 이어받기 — 2026-10-15 사용자 재확인
+
+- 사용자는 기존 GitHub·Vercel 작업 기록과 확정 기준을 이어받아 같은 기준으로 작업하도록 요청했다. 기존 기준을 임의로 초기화하거나 철회된 시안을 복원하지 않는다. 문서 안에서도 최신 사용자 수정사항이 이전 내용보다 우선한다.
+- 기준 문서: `AGENTS.md`, `BACKGROUND_STANDARD.md`, `CIVILIZATION_INTRO_STANDARD.md`, `ART_DIRECTION.md`, `DYNASTY_ART.md`, `CIVILIZATION_PROGRESS.md`, `CIVILIZATION_ROSTER.md`, `SKILL_RULES.md`, `I18N.md`, `ONLINE_PVP.md`. 필요한 작업의 조사 기록도 함께 확인한다.
+- GitHub 연결로 저장소 읽기·쓰기 권한을 확인했다. Vercel 인증 계정은 `chanyoungpark007-3678`, 프로젝트 `civilization-chess` 조회 성공. 연결 도구에서 이 프로젝트는 명시적인 팀 slug 없이 조회했을 때 성공했다. 팀 목록이 비어 있거나 팀 slug 조회가 403이라는 이유만으로 연결 실패라고 단정하지 않는다.
+- GitHub의 최신 `main` 커밋 `fb5472a`에 대한 Vercel 상태는 `success` / `Deployment has completed`로 확인했다. 이는 배포 상태 확인이며 실제 게임 화면·기능 검수를 대신하지 않는다.
+- 다른 컴퓨터의 미푸시 파일, Git에서 제외한 원본과 환경설정, 문서화되지 않은 과거 채팅은 자동으로 이어받은 것으로 간주하지 않는다.
 
 ## 현재 상태
 
