@@ -2,6 +2,12 @@
 
 ## Latest background feedback — 2026-10-15
 
+The user approved the three `art/backgrounds/three-civilizations/*-harmony.png` images as the visual direction. Use their balance of nature and architecture, depth and solemn mood as reference; older drafts are superseded. Game integration, target-size conversion and detailed historical/UI checks remain separate work. The earlier generation-pause note below is historical and has been superseded by the user's subsequent generation and approval requests.
+
+Latest composition clarification takes priority: balance architecture with nature. Large near buildings frame the sides; the center may include distant landmarks and settlements among natural scenery. The user explicitly allows distant pyramids or the Colosseum, including centrally. Preserve depth and readable landscape; neither dense central city walls nor nature-only emptiness is the rule. Previous prompts banning all central architecture are superseded. Choose a compatible period and place for each landmark and document artistic departures.
+
+Fantasy mood means monumental, solemn, imposing and resolute: the gravity of a civilization before a chess-like confrontation. It supersedes peaceful pastoral/enchanted-paradise interpretations. Keep cities and architecture intact; no ruins, destruction, burning buildings or battle debris. Convey tension through scale, controlled color, deep light/shadow and a stately sky, while retaining readability and the no-people rule. Image generation remains paused until the user requests resumption.
+
 Use elevated palace/temple/residence terrace viewpoints overlooking layered town roofs, lanes and local landscape when suitable; apply this to the current Egypt/Greece/Rome revision. Ground the viewer at human eye level on a terrace, with columns or galleries at the sides, not an aerial drone view. No people at any distance.
 
 No people anywhere in backgrounds, including tiny distant figures, crowds, riders, and silhouettes. Build richness through environment, props, lighting and atmosphere. Inspect all depth layers; any draft containing people requires correction before final use.
@@ -28,7 +34,7 @@ For every future civilization, establish period and place before generation, ins
 
 1. Thoroughly research period-specific architecture AND geography: terrain, ecosystems, plants growing there, rivers/waterways and their presence or absence.
 2. Final dimensions: **1672 × 942 pixels**, superseding 1672 × 941.
-3. Buildings at the sides; landscape or open space in the center.
+3. Large near buildings at the sides; harmonious nature and middle/distant architecture in the center. Central landmarks are allowed under the latest clarification.
 4. Weather and time of day fit the period atmosphere and local conditions.
 5. Slight creative interpretation of scenery/terrain for grandeur is allowed, but geographical facts (terrain character, ecosystem, plants, rivers) must remain accurate. Record the artistic departures.
 6. Choose the most publicly recognizable, historically accurate scene for the civilization/period. Palaces and landmarks are options, not mandatory or preferred over accurate village or city landscapes. Do not use anachronistic stereotypes for recognition.
