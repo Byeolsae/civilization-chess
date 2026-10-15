@@ -25,4 +25,4 @@
 - 이름 아래에 본문 읽기 영역을 둔다. 긴 한국어/영어 및 작은 화면에서는 본문만 스크롤할 수 있게 하고 로고와 이름을 유지한다.
 - 스킬 선택 단계에서는 소개문 대신 기존 스킬 아이콘 구성을 사용한다.
 
-25개 적용 본문: `src/civilizationIntros.ts`. 역사 소재 기록: `CIVILIZATION_INTRO_RESEARCH.md`.
+2026-10-15 사용자 요청으로 전체 87개 문명에 적용했다. 기존 25개 본문은 `src/civilizationIntros.ts`, 나머지 62개는 `src/additionalCivilizationIntros.ts`에 있다. 역사 소재와 범위는 `CIVILIZATION_INTRO_RESEARCH.md`에 기록한다. 전체 문명은 문명 목록의 상세 화면에서 소개를 읽을 수 있으며, 대전 픽창의 기존 25개 제한과 스킬 선택 단계의 배치는 유지한다.

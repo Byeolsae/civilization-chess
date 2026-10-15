@@ -24,9 +24,11 @@ test('reviewed intros do not sign off shared dynasty art or QA',()=>{
   assert.equal(p.intro,'done');assert.equal(p.qa,'pending');assert.equal(progressStage(p),6);
 });
 
- test('new roster entries have no invented completion or skills', () => {
+test('new roster introductions do not complete unrelated artwork or skills', () => {
   for (const id of ['dai-viet','khmer','byzantium','hawaii-polynesia','pirate-republic'] as const) {
-    assert.ok(Object.values(civilizationProgress(id)).every(value => value === 'pending'));
+    const progress = civilizationProgress(id);
+    assert.equal(progress.intro, 'done');
+    assert.ok(Object.entries(progress).filter(([field]) => field !== 'intro').every(([, value]) => value === 'pending'));
     assert.equal(progressStage(civilizationProgress(id)), 6);
   }
 });

@@ -1,5 +1,13 @@
 # Visual direction
 
+## Latest background feedback — 2026-10-15
+
+Use elevated palace/temple/residence terrace viewpoints overlooking layered town roofs, lanes and local landscape when suitable; apply this to the current Egypt/Greece/Rome revision. Ground the viewer at human eye level on a terrace, with columns or galleries at the sides, not an aerial drone view. No people at any distance.
+
+No people anywhere in backgrounds, including tiny distant figures, crowds, riders, and silhouettes. Build richness through environment, props, lighting and atmosphere. Inspect all depth layers; any draft containing people requires correction before final use.
+
+The user rejected the current drafts as too empty and explicitly allowed a little fantasy. Follow the latest section of BACKGROUND_STANDARD.md: richer layered environments, including the center; achieve UI readability through contrast and focus rather than barren plazas. Restrained fantastical light, atmosphere, color and spatial grandeur are allowed. Preserve civilization identity and distinguish artistic invention from researched history. Current sparse drafts are not approved references.
+
 ## Efficient continuation
 
 User preference (2026-10-14): conserve usage while completing requested work. Read `WORK_HANDOFF.md` first for current state, then only the source and reference documents relevant to the request. Use targeted searches and bounded excerpts instead of repeatedly reading large files or conversation history. Batch independent reads. Run checks proportionate to the change; do not repeat passing checks without a new reason. Keep updates and final answers concise in Korean. Preserve historical research and visual verification when the task needs them; do not trade correctness for fewer calls. Update the handoff when project state or confirmed direction materially changes. Do not assume push success means deployment success.

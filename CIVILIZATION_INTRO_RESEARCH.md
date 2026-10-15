@@ -51,3 +51,76 @@ Vassar PDF는 검색 결과의 지리 설명을 확인했으나 본문 직접 �
 ## 내레이션 문체 개정
 
 문명 시리즈는 문체의 방향만 참고한다. [Civilization VI 공식 매뉴얼](https://downloads.2kgames.com/civilization/vi/manuals/eu/CIV_VI_25TH_ONLINE_MANUAL_ENG.pdf)의 플레이어가 백성을 이끌며 역사를 만든다는 관점을 참고하되 실제 문장은 인용하거나 번안하지 않았다. 위 25행의 기존 역사 소재를 유지하면서, 각 소재의 의미와 플레이어에게 주어지는 과제를 독자적인 문장으로 풀었다. 카드에서는 로고/이름을 고정하고 본문을 별도로 스크롤한다.
+
+## 전체 문명으로 확장 — 2026-10-15
+
+사용자 요청: 기존 25개 소개와 확정 문체를 참고하여 다른 문명에도 적용. `src/additionalCivilizationIntros.ts`에 나머지 62개를 한국어·영어 각 4문장으로 작성했다. 기존 25개 본문은 유지한다. 전체 87개의 소개는 문명 목록 상세에서 읽을 수 있다. 소개 추가는 새 대전 선택 허용이나 스킬·역사 설명·최종 검수 완료를 뜻하지 않으며, 픽창의 25개 제한은 유지한다.
+
+아래는 **본문에 사용한 좁은 역사 소재의 근거**다. 모든 문명의 통사를 검증한 기록이 아니다. 확인일은 2026-10-15. `열람`은 웹 도구로 해당 페이지 본문을 열어 확인한 부분, `검색 발췌`는 검색 도구가 제공한 해당 기관의 본문/발췌를 확인한 부분이다. 후자는 원문 전체를 직접 열람했다는 뜻이 아니다. 직접 인용하지 않았으며, 마지막 두 문장은 플레이어에게 제안하는 가상 미래다.
+
+| 문명 ID | 소재와 시대·해석 범위 | 근거 / 확인 방법 |
+|---|---|---|
+| mongol-empire | 13~14세기 카라코룸, 오르혼의 유목과 도시·교역. 원나라의 직접 영토와 동일시하지 않음 | [UNESCO 오르혼](https://whc.unesco.org/en/list/1081/) · 열람 |
+| russian-empire | 18세기 상트페테르부르크의 계획도시·운하·궁전. 건설의 어려움을 무시한 무조건적 진보 서사 지양 | [UNESCO 상트페테르부르크](https://whc.unesco.org/en/list/540/) · 열람 |
+| prussia | 프리드리히 2세의 상수시와 볼테르의 체류, 포츠담의 궁전·정원 | [UNESCO 포츠담](https://whc.unesco.org/en/list/532/) · 열람 |
+| inca | 잉카 도로망의 산지·계곡 연결과 교통·교역·보급 시설 | [UNESCO 카팍냔](https://whc.unesco.org/en/list/1459/) · 열람 |
+| maya | 티칼의 신전·광장·주거지. 마야 전체를 단일제국이나 소멸한 민족으로 서술하지 않음 | [UNESCO 티칼](https://whc.unesco.org/en/list/64/) · 열람 |
+| gaul | 기원전 2~1세기 아이두이의 비브락테, 성벽·공예·교역. 갈리아 전체의 수도로 표현하지 않음 | [Bibracte 유적기관](https://www.bibracte.fr/en/bibracte-throughout-time) · 검색 발췌 |
+| babylon | 여러 왕조의 도시 기억, 특히 신바빌로니아의 성벽·성문·궁전·신전. 공중정원을 확정된 실물로 쓰지 않음 | [UNESCO 바빌론](https://whc.unesco.org/en/list/278/) · 열람 |
+| dai-viet | 리 왕조의 탕롱, 홍강과 남북 문화 교류 | [UNESCO 탕롱](https://whc.unesco.org/en/list/1328/) · 열람 |
+| khmer | 앙코르의 여러 도읍, 앙코르와트·바이욘의 건축과 조각 | [UNESCO 앙코르](https://whc.unesco.org/en/list/668/) · 열람 |
+| siam | 아유타야의 탑·사원과 파괴 이후 남은 유산. 시암 전체 시대를 한 도시로 한정하지 않음 | [UNESCO 아유타야](https://whc.unesco.org/en/list/576/) · 열람 |
+| majapahit | 자바의 트로울란 도성·생활 유물. 문헌상의 세력권을 현대 국경의 직접 통치로 과장하지 않음 | [UNESCO 잠정목록, 인도네시아 제출자료](https://whc.unesco.org/fr/listesindicatives/5466/) · 검색 발췌; 세계유산 등재와 구분 |
+| maurya | 아소카의 룸비니 방문과 기념 석주. 불확실한 부처 탄생연대는 사용하지 않음 | [UNESCO 룸비니](https://whc.unesco.org/en/list/666) · 검색 본문 발췌 |
+| chola | 11~12세기 남인도 사원과 석조·청동 공예 | [UNESCO 촐라 사원](https://whc.unesco.org/en/list/250/) · 열람 |
+| mughal | 샤 자한의 타지마할, 대리석 추모 건축. 왕조 전체의 정책을 일반화하지 않음 | [UNESCO 타지마할](https://whc.unesco.org/en/list/252/) · 열람 |
+| nepal-kingdom | 고르카 샤 왕조의 계곡 왕국 정복·통합. 앞선 말라 왕조와 구분 | [네팔 관광청 역사](https://trade.ntb.gov.np/know-nepal/nepals-history/) · 검색 본문 발췌 |
+| ancient-persia | 아케메네스의 페르세폴리스, 기단과 메소포타미아 건축 영향. 사산 왕조와 구분 | [UNESCO 페르세폴리스](https://whc.unesco.org/en/list/114/) · 열람 |
+| sumer | 남부 메소포타미아 삼각주의 우르·우루크. 단일 수메르 제국을 가정하지 않음 | [UNESCO 아흐와르와 도시 유적](https://whc.unesco.org/en/list/1481/) · 열람 |
+| assyria | 아슈르의 티그리스 지리, 도읍·종교·교역과 농경 기반 | [UNESCO 아슈르](https://whc.unesco.org/en/list/1130/) · 열람 |
+| abbasid | 9세기 사마라의 수도 기능과 예술·건축 영향. 바그다드의 특정 기관 일화를 임의로 넣지 않음 | [UNESCO 사마라](https://whc.unesco.org/en/list/276/) · 열람 |
+| ottoman | 이스탄불의 보스포루스 지리와 오스만의 돔 건축. 하기아 소피아 건립을 오스만 업적으로 돌리지 않음 | [UNESCO 이스탄불](https://whc.unesco.org/en/list/356/) · 열람 |
+| macedon | 아이가이와 필리포스·알렉산드로스 시대의 확장. 모든 헬레니즘 국가를 한 왕국으로 표현하지 않음 | [UNESCO 아이가이](https://whc.unesco.org/en/list/780/) · 열람 |
+| venice | 석호 섬도시와 해양 세력, 예술·건축 | [UNESCO 베네치아](https://whc.unesco.org/en/list/394/) · 열람 |
+| byzantium | 6세기 하기아 소피아와 콘스탄티노폴리스의 위치. 오스만 시대 건축과 구분 | [UNESCO 이스탄불](https://whc.unesco.org/en/list/356/) · 열람 |
+| carthage | 포에니 카르타고의 튀니스만·지중해 교역. 후대 로마도시와 구분 | [UNESCO 카르타고](https://whc.unesco.org/en/list/37/) · 열람 |
+| phoenicia | 티레의 항해와 지중해 정착지 연결. 페니키아 단일왕국·보라색 발명 전설을 단정하지 않음 | [UNESCO 티레](https://whc.unesco.org/en/list/299/) · 열람 |
+| celts | 여러 공동체의 곡선 장식·금속 예술. 통일왕국 또는 현대 민족과의 단순 동일시 지양 | [대영박물관 전시 도록](https://www.britishmuseumshoponline.org/exhibitions/celts-art-and-identity-exhibition-catalogue-paperback.html), [선사학회 Celtic Art](https://prehistoricsociety.org/sites/prehistoricsociety.org/files/resources/ps-intros-ia-5-celtic-art.pdf) · 검색 발췌 |
+| huns | 아틸라 시대 로마와의 충돌·관계 및 여러 집단의 권력. 흉노와의 일대일 동일시·기후 원인 확정 지양 | [케임브리지 대학 연구 소개](https://www.cam.ac.uk/research/news/drought-encouraged-attilas-huns-to-attack-the-roman-empire-tree-rings-suggest), [Met 유럽 연표](https://www.metmuseum.org/ja/toah/ht/05/eue.html) · 검색 발췌 |
+| scythia | 초원의 말에 의존한 생활과 동물형 금속 장식. 특정 소설의 관습을 역사로 옮기지 않음 | [대영박물관 비교 해설](https://www.britishmuseum.org/blog/dothraki-and-scythians-game-clones), [동물 장식 금제 유물](https://www.britishmuseum.org/collection/image/596086001) · 검색 발췌 |
+| aksum | 악숨의 석비·왕릉과 후대의 대관 전통. 에티오피아 제국 항목과 구분 | [UNESCO 악숨](https://whc.unesco.org/en/list/15/) · 열람 |
+| ethiopian-empire | 곤다르 파실 게비의 궁정·교회와 건축 교류 | [UNESCO 파실 게비](https://whc.unesco.org/en/list/19/) · 열람 |
+| mali | 사하라 금 교역과 만사 무사의 순례. 부의 정확한 현대 환산 수치는 사용하지 않음 | [Met 사하라 금 교역](https://www.metmuseum.org/es/essays/the-trans-saharan-gold-trade-7th-14th-century) · 검색 본문 발췌 |
+| songhai | 가오의 아스키아 기념물, 흙 건축, 금·소금 교역 | [UNESCO 아스키아 묘](https://whc.unesco.org/en/list/1139/) · 열람 |
+| morocco | 마린 왕조 시기 페스의 학교·숙소·분수와 도시 생활. 모로코 전체를 단일 왕조로 취급하지 않음 | [UNESCO 페스](https://whc.unesco.org/en/list/170/) · 열람 |
+| kongo | 음반자콩고의 왕실·재판·신성한 장소와 포르투갈 접촉에 따른 변화. 현대 콩고 국가와 구분 | [UNESCO 음반자콩고](https://whc.unesco.org/en/list/1511/) · 열람 |
+| buganda | 19세기 카수비 왕실 건축과 공동체의 지속성. 유기재료 건축을 미개함으로 서술하지 않음 | [UNESCO 카수비](https://whc.unesco.org/en/list/1022/) · 열람 |
+| kush | 메로에의 왕국·피라미드·수계와 문화 교류. 이집트의 부속 문명처럼 표현하지 않음 | [UNESCO 메로에](https://whc.unesco.org/en/list/1336/) · 열람 |
+| normans | 12세기 시칠리아 노르만 왕국의 복합 문화 건축에 초점. 모든 노르만 사회가 항상 관용적이었다고 확대하지 않음 | [UNESCO 팔레르모](https://whc.unesco.org/en/list/1487/) · 열람 |
+| british-empire | 17~18세기 카리브 브림스톤힐, 영국 설계와 노예화된 아프리카인 노동. 식민주의의 대가를 누락하지 않음 | [UNESCO 브림스톤힐](https://whc.unesco.org/en/list/910/) · 열람 |
+| french-empire | 나폴레옹 제1제정 전후의 민법전 유산. 법전은 제정 선포 전인 1804년 3월 제정되어 ‘나폴레옹 시대’로 표현. 제2제정 도시 개조와 혼합하지 않음 | [나폴레옹 재단 민법전 해설](https://www.napoleon.org/en/history-of-the-two-empires/close-up/a-close-up-on-the-promulgation-of-the-french-code-civil-21-march-1804) · 검색 본문 발췌 |
+| spanish-empire | 세비야 인디아스 문서관과 아메리카 교역·식민 통치. 정복을 무조건적 진보로 표현하지 않음 | [UNESCO 세비야](https://whc.unesco.org/en/list/383/), [UNESCO 보고서 교역 설명](https://whc.unesco.org/archive/2012/whc12-36com-INF7Ae.pdf) · 열람 / 검색 발췌 |
+| portugal-kingdom | 벨렝의 항해 기념 건축, 해외 연결과 노예무역의 대가 | [UNESCO 벨렝](https://whc.unesco.org/en/list/263/), [UNESCO 고레](https://whc.unesco.org/en/list/26/) · 열람 |
+| dutch-republic | 16세기 말~17세기 암스테르담 운하 확장과 계획도시. 이를 식민 통치 전체의 찬양으로 확대하지 않음 | [UNESCO 암스테르담](https://whc.unesco.org/en/list/1349/) · 열람 |
+| poland-kingdom | 중세 왕도 크라쿠프·바벨과 시장. 폴란드-리투아니아 전체를 단일민족으로 표현하지 않음 | [UNESCO 크라쿠프](https://whc.unesco.org/en/list/29/) · 열람 |
+| hungary-kingdom | 부다의 중세 성과 다뉴브. 부다·페스트 통합 이전을 현대 통합도시처럼 단정하지 않음 | [UNESCO 부다페스트](https://whc.unesco.org/en/list/400/) · 열람 |
+| holy-roman-empire | 레겐스부르크의 교역과 제국 회의. 고대 로마와 구분, 다중 권력의 조율이라는 서사 해석 | [UNESCO 레겐스부르크](https://whc.unesco.org/en/list/1155/), [등재 결정](https://whc.unesco.org/en/decisions/1008) · 열람 / 검색 발췌 |
+| austria | 묶인 임시 이름은 유지하되 빈의 제국시대 유산과 음악이 후대로 이어지는 소재로 작성. 공화국과 제국을 동시 통치체제로 혼동하지 않음 | [UNESCO 빈](https://whc.unesco.org/en/list/1033/) · 열람 |
+| georgia-kingdom | 다비트 4세·타마르 시기의 겔라티와 중세 문화·학문 | [UNESCO 겔라티](https://whc.unesco.org/en/list/710), [겔라티 역사 보고서](https://whc.unesco.org/document/157524) · 검색 본문 발췌 |
+| bulgarian-empire | 제1불가리아 제국의 마다라 기마상과 비문. 제2제국과 구분 | [UNESCO 마다라](https://whc.unesco.org/en/list/43/) · 열람 |
+| vikings | 비르카·호브고르덴의 바이킹 시대 교역 관계. 단일 바이킹 국가를 가정하지 않음 | [UNESCO 비르카](https://whc.unesco.org/en/list/555/) · 검색 본문 발췌 |
+| sweden-kingdom | 17세기 말 카를스크로나 계획 해군도시 | [UNESCO 카를스크로나](https://whc.unesco.org/en/list/871/) · 검색 본문 발췌 |
+| scotland-kingdom | 15세기부터의 에든버러 왕도·중세 구시가에 초점. 연합 이후 신시가 건설은 왕국 업적으로 사용하지 않음 | [UNESCO 에든버러](https://whc.unesco.org/en/list/728/) · 열람 |
+| iceland-commonwealth | 930년 시작된 알팅의 법·분쟁 조정. 현대 보통선거 민주주의로 동일시하지 않음 | [UNESCO 싱벨리르](https://whc.unesco.org/en/list/1152/) · 열람 |
+| brazil-empire | 제국의 노예제와 1888년 폐지법. 황제 한 사람에게 해방의 공로를 독점시키지 않음 | [브라질 대통령실 법률 원문](https://www.planalto.gov.br/ccivil_03/leis/lim/lim3353.htm) · 열람; 1831년 수입 금지법을 전면 폐지법으로 혼동하지 않음 |
+| gran-colombia | 1819~1820년대 공화국 통합 구상과 지역 이해의 충돌 | [콜롬비아 중앙은행 문화백과](https://enciclopedia.banrepcultural.org/index.php/El_proyecto_grancolombiano) · 검색 본문 발췌 |
+| iroquois | 하우데노쇼니의 자칭과 연맹 협의·각 민족의 정체성. 정확한 건국연대나 신화를 사실로 단정하지 않음 | [연맹 공식 소개](https://www.haudenosauneeconfederacy.com/who-we-are/), [공식 정부 설명](https://www.haudenosauneeconfederacy.com/government/) · 검색 본문 발췌; 직접 접근 robots 제한 |
+| shoshone | 여러 쇼쇼니 공동체 중 팀비샤의 고향과 환경 지식을 사례로 선택. 모든 쇼쇼니를 사막 또는 평원 문화 하나로 일반화하지 않음 | [미 국립공원청 팀비샤 소개](https://www.nps.gov/articles/000/home-timbisha-shoshone-demonstration.htm) · 검색 발췌 |
+| mississippian | 카호키아의 흙 둔덕·광장·공동 노동. 미시시피 문화 전체를 단일 국가로 취급하지 않음 | [UNESCO 카호키아](https://whc.unesco.org/en/list/198) · 검색 본문 발췌 |
+| mapuche | 친족 공동체 로프를 중심으로 한 사회. 하나의 중앙집권 왕국을 가정하지 않음 | [칠레 국립도서관 Memoria Chilena](https://www.memoriachilena.gob.cl/602/w3-article-689.html) · 검색 발췌 |
+| hawaii-polynesia | 기존 국가·시대 태그에 맞춰 19세기 하와이 왕국과 이올라니 궁전으로 소개 범위를 명시. 폴리네시아 전체를 하와이 왕국과 동일시하지 않음 | [이올라니 궁전 박물관](https://www.iolanipalace.org/sacred-palace/) · 검색 본문 발췌 |
+| tonga-empire | 투이통가의 라파하 왕릉과 태평양 지역 영향. 영향권을 근대식 직접 영토로 환산하지 않음 | [UNESCO/ANU 라파하 연구, World Heritage Papers 34](https://whc.unesco.org/documents/publi_paper_series_34_en.pdf) · 검색 본문 발췌 |
+| maori | 화카파파의 계보·관계와 세대 전승. 창세 전통을 실증 역사로 쓰지 않으며 단일 마오리 제국을 가정하지 않음 | [뉴질랜드 Te Ara, 화카파파](https://teara.govt.nz/en/whakapapa-genealogy/page-1) · 검색 본문 발췌 |
+| pirate-republic | 18세기 초 나소의 얕은 바다·해적 거점·경쟁과 짧은 지속. 관광박물관 설명의 과장된 일화·현대 민주공화국 해석은 채택하지 않음 | [Pirates of Nassau 박물관](https://www.piratesofnassau.com/the-republic-of-pirates/) · 검색 본문 발췌 |
+
+원문 접근 제한이 있었던 대영박물관의 일반 ‘who were’ 블로그 주소와 Britannica Hun 페이지는 근거로 사용하지 않았다. 검색 중 발견한 관련 없는 유적 페이지 역시 위 근거표에서 제외했다. 새 배경·문양을 제작할 때는 이 소개문 자료만으로 고증이 끝났다고 판단하지 않고 별도 조사한다.

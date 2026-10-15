@@ -1,5 +1,6 @@
 import type { Civilization } from './civilizations';
 import type { DraftCivilization } from './draftRoster';
+import { additionalCivilizationIntros } from './additionalCivilizationIntros';
 
 // Original historical narration addressing the player, not quotations from Civilization or historical sources.
 // Historical materials and scope: CIVILIZATION_INTRO_RESEARCH.md.
@@ -106,4 +107,7 @@ const reviewedIntros = {
   },
 } satisfies Record<DraftCivilization, { ko: string; en: string }>;
 
-export const civilizationIntros: Partial<Record<Civilization, { ko: string; en: string }>> = reviewedIntros;
+export const civilizationIntros: Record<Civilization, { ko: string; en: string }> = {
+  ...reviewedIntros,
+  ...additionalCivilizationIntros,
+};
