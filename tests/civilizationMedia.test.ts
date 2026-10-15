@@ -6,8 +6,16 @@ import { civilizationMedia, defaultMediaPreferences, mediaForCivilization, oppon
 import { defaultSettings, localSettings } from '../src/matchSettings';
 import type { Players } from '../src/game';
 
-test('background reset leaves every civilization without artwork while keeping media independent', () => {
-  for (const { id } of civilizations) assert.equal(mediaForCivilization(id).background, null, id);
+test('only the three approved civilizations have deployed background assets', () => {
+  const approved = new Set(['egypt', 'rome', 'greece']);
+  for (const { id } of civilizations) {
+    const background = mediaForCivilization(id).background;
+    if (approved.has(id)) {
+      assert.ok(background && existsSync(`public${background}`), `${id} background missing`);
+      const bytes = readFileSync(`public${background}`);
+      assert.equal(bytes.toString('ascii', 8, 12), 'WEBP');
+    } else assert.equal(background, null, id);
+  }
   for (const id of ['sengoku', 'edo', 'ming', 'goryeo'] as const) assert.equal(mediaForCivilization(id).bgm, null);
 });
 
