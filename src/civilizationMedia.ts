@@ -12,7 +12,7 @@ export const defaultMedia: CivilizationMedia = { background: null, bgm: null };
 export const civilizationMedia: Partial<Record<Civilization, CivilizationMedia>> = {
   sengoku: { background: null, bgm: null },
   edo: { background: null, bgm: null },
-  ming: { background: null, bgm: null },
+  ming: { background: '/media/ming/background-huizhou-v1.webp', bgm: null },
   goryeo: { background: null, bgm: null },
   greece: { background: '/media/greece/background-clear-v1.webp', bgm: '/media/greece/bgm-loop-v1.mp3', credit: { title: 'Kallipolian Dance', artist: 'Farya Faraji & World Musicians · SEIKILO Ancient World Music' } },
   egypt: { background: '/media/egypt/background-clear-v1.webp', bgm: '/media/egypt/bgm-loop-v1.mp3', credit: { title: 'The Legend of Narmer', artist: 'WombatNoisesAudio' } },

@@ -12,6 +12,10 @@
 
 ## 현재 상태
 
+- 명나라 후이저우 정원 후속(2026-10-16): 사용자가 이전 연못 정원 그림을 지정해 그 느낌으로 명대 제작 요청. ming-japan/ming-huizhou-garden PNG·프롬프트·1672×942 WebP 및 HUIZHOU_REVIEW.md 저장. 1620년경 부유층 저택 정원의 해석, 특정 유적 복원 아님. 기존 거용관보다 최신 방향 우선. 세부 형태와 식재 직접 고증 한계 문서화. 게임 미연결·미푸시.
+
+- 명나라·전국시대·에도 배경 시안(2026-10-16): 사용자 범위 선택으로 3종 제작. art/backgrounds/2026-10-16/ming-japan/에 ming-juyongguan, sengoku-matsumoto, edo-moat-blue-hour 원본 PNG·실제 프롬프트·1672×942 WebP quality 84·REVIEW.md 저장. 각각 1580년 거용관, 1598년 마쓰모토, 1700년 에도성 소재의 해석이다. 사람 금지·절제된 구름·측면 건축과 중앙 자연/원경 건축 조화 유지. 상세 형상·지리 배치·식재·계절의 한계는 REVIEW에 기록. 사용자 시안 검토 단계이며 게임 연결·푸시·배포 및 UI 크롭 검수 전.
+
 - 그리스 배경 연결 수정(2026-10-16): 맑은 하늘 원본과 background-clear-v1.webp는 GitHub에 있었으나 실제 greece 설정은 harmony 버전을 가리켰다. 사용자 지적으로 실제 매핑을 /media/greece/background-clear-v1.webp로 수정했다. 이전 여섯 배경 모두 연결 완료 기록은 이 누락을 놓친 것이므로 이 항목으로 정정한다.
 
 - 청나라 기둥 마감 수정(2026-10-16): 사용자 명시 요청으로 광택을 줄이고 미세한 도장 질감을 더한 qing-matte-pillars.png 및 실제 프롬프트 저장. 게임 경로는 public/media/qing/background-matte-v1.webp (1672×942, quality 84). 기존 청나라 맑은 오후 구도 및 나머지 다섯 배경 유지. 수정·적용·푸시 요청 범위에 포함된다.
@@ -102,3 +106,12 @@
 5. 긴 조사 결과는 해당 조사 문서에 저장하고, 이 문서는 짧은 현황과 경로 중심으로 유지한다.
 
 개발 서버 기본 포트 5173, 빌드 미리보기 4173. 기존 서버 실행 여부를 확인한 뒤 필요한 경우에만 시작한다.
+
+### 후속 명나라 중앙 시야 수정 — 2026-10-16
+사용자 요청으로 중앙 건물을 비켜 연못 너머 낮은 수목·완만한 산·하늘로 시야를 연 ming-huizhou-open-view 시안 저장. art/backgrounds/2026-10-16/ming-japan/의 PNG·WebP·프롬프트 및 HUIZHOU_REVIEW 참고. 기존 garden 원본 보존. 최신 방향이며 게임 미연결·미푸시.
+
+### 명나라 후경 벽 제거 — 2026-10-16 최신
+사용자 요청으로 오른쪽 계단형 후경 벽과 왼쪽 지붕 뒤 돌출 벽을 제거. ming-japan/ming-huizhou-natural-roofs PNG·WebP·프롬프트가 최신. 회랑·연못·중앙 먼 산 유지. HUIZHOU_REVIEW에 검토 기록. 게임 적용·푸시 전.
+
+### 명나라 최종 선택 및 적용 — 2026-10-16
+사용자가 exec-696f287b-c8e3-4ff6-bceb-cfb830d6182c.png를 재선택해 푸시 요청. 중앙 2층 건물과 양옆 후경 흰 벽이 있는 ming-huizhou-garden.png가 확정본. 원본 SHA256 일치 확인. public/media/ming/background-huizhou-v1.webp 연결, 1672×942 quality84. 이후 open-view와 natural-roofs 수정안은 채택하지 않음. 일본 시안도 미적용. 이번 공유 파일은 선택한 명나라 원본·프롬프트·검토 문서와 게임 파일이며 다른 미푸시 시안은 로컬에 남음.
