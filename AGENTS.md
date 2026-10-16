@@ -1,5 +1,7 @@
 # Visual direction
 
+Latest 2026-10-16: reduce excessive clouds across all six backgrounds. Do not equate grandeur with storm clouds or repeated god rays. Use scale, depth, material and controlled contrast; distinguish each civilization's sky/time. Egypt clear sunset; Rome clear dawn; Greece clear coastal daylight; Joseon light mountain mist; Qing thin clouds. Aztec specifically becomes night with historically researched torches; intentional lighting flames are allowed, destruction/fire damage and all people remain forbidden. Document evidence versus artistic torch mounting.
+
 ## Latest background feedback — 2026-10-15
 
 The user approved the three `art/backgrounds/three-civilizations/*-harmony.png` images as the visual direction. Use their balance of nature and architecture, depth and solemn mood as reference; older drafts are superseded. Game integration, target-size conversion and detailed historical/UI checks remain separate work. The earlier generation-pause note below is historical and has been superseded by the user's subsequent generation and approval requests.

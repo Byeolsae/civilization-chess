@@ -6,8 +6,8 @@ import { civilizationMedia, defaultMediaPreferences, mediaForCivilization, oppon
 import { defaultSettings, localSettings } from '../src/matchSettings';
 import type { Players } from '../src/game';
 
-test('only the three approved civilizations have deployed background assets', () => {
-  const approved = new Set(['egypt', 'rome', 'greece']);
+test('only the six approved civilizations have deployed background assets', () => {
+  const approved = new Set(['egypt', 'rome', 'greece', 'korea', 'qing', 'aztec']);
   for (const { id } of civilizations) {
     const background = mediaForCivilization(id).background;
     if (approved.has(id)) {

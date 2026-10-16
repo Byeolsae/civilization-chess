@@ -12,6 +12,12 @@
 
 ## 현재 상태
 
+- 여섯 배경 적용(2026-10-16): 사용자 승인·푸시 요청으로 clear-skies 6종을 1672×942 WebP quality 84로 변환해 `public/media/{egypt,rome,greece,korea,qing,aztec}/background-clear-v1.webp`에 연결했다. 조선 ID는 korea. 청나라 기둥은 현재 매끈한 붉은 마감 유지. 최신 원본 6종·실제 프롬프트·조사·기준 함께 공유. 아래 미연결·미푸시는 이전 이력. 전 기기 크롭 및 정밀 역사 복원 검증은 별도.
+
+- 여섯 배경 하늘 수정(2026-10-16): 사용자 요청으로 과한 먹구름·광선을 줄이고 이집트 맑은 일몰, 로마 맑은 새벽, 그리스 청명한 낮, 조선 산안개 아침, 청나라 얇은 구름 오후, 아즈텍 횃불 야경을 내장 image_gen으로 제작했다. 원본 6종·실제 프롬프트·횃불 조사/한계는 `art/backgrounds/2026-10-16/clear-skies/`. 오코틀 목재 횃불 근거를 참고했으며 끈·받침·설치 위치는 추정으로 구분한다. 새 하늘 기준을 BACKGROUND_STANDARD.md, AGENTS.md, ART_DIRECTION.md에 기록. 생성본 검토 단계, 게임 연결·푸시 전. 이전 날씨 프롬프트는 최신 지시로 대체된다.
+
+- 조선·청나라·아즈텍 신규 시안(2026-10-16): 사용자 요청과 중단 후 “계속” 지시에 따라 내장 image_gen으로 3종 제작 완료. `art/backgrounds/2026-10-16/`에 joseon-palace, qing-imperial-garden, aztec-lake-city PNG 및 실제 프롬프트 저장. 조사와 검토 한계는 같은 폴더 REVIEW.md. 조선 1870년경 경복궁, 청나라 1895년경 이화원, 아즈텍 1518년경 테노치티틀란 소재. 실제 조망 복원도가 아닌 분위기 시안이다. 게임 연결·최종 규격 변환·푸시 전이며 기존 배포는 변경하지 않았다.
+
 - 이집트 일몰 적용(2026-10-16): 사용자 푸시 요청으로 `egypt-sunset-gold.png`를 채택, `public/media/egypt/background-sunset-v1.webp` (1672×942, quality 84)에 변환하고 미디어 설정에 연결. 원본·실제 프롬프트·검토 기록 함께 공유. 로마 새벽·그리스 배경 유지. 아래 이집트 일몰 미연결·미푸시는 이전 이력이다.
 
 - 이집트 일몰 수정(2026-10-16): 사용자 요청으로 `art/backgrounds/three-civilizations/egypt-sunset-gold.png`와 실제 프롬프트 생성. 기존 흰 외장·금장 꼭대기·구도를 유지한 일몰 시안. 내장 image_gen 편집, 아직 게임 연결·푸시 전이며 운영 배경은 기존 egypt-harmony-gold 기반이다.
