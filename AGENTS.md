@@ -1,5 +1,7 @@
 # Visual direction
 
+Latest 2026-10-17: Edo backgrounds emphasize the city; Sengoku backgrounds emphasize natural landscapes. Buildings support the Sengoku landscape rather than dominate its center. Select historically and geographically compatible places before rendering; do not relocate the flatland Matsumoto castle onto a mountain. See BACKGROUND_STANDARD.md. Existing Japanese drafts are not final approved assets.
+
 Latest 2026-10-16: reduce excessive clouds across all six backgrounds. Do not equate grandeur with storm clouds or repeated god rays. Use scale, depth, material and controlled contrast; distinguish each civilization's sky/time. Egypt clear sunset; Rome clear dawn; Greece clear coastal daylight; Joseon light mountain mist; Qing thin clouds. Aztec specifically becomes night with historically researched torches; intentional lighting flames are allowed, destruction/fire damage and all people remain forbidden. Document evidence versus artistic torch mounting.
 
 ## Latest background feedback — 2026-10-15
