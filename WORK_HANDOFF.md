@@ -12,6 +12,10 @@
 
 ## 현재 상태
 
+- 이집트 일몰 적용(2026-10-16): 사용자 푸시 요청으로 `egypt-sunset-gold.png`를 채택, `public/media/egypt/background-sunset-v1.webp` (1672×942, quality 84)에 변환하고 미디어 설정에 연결. 원본·실제 프롬프트·검토 기록 함께 공유. 로마 새벽·그리스 배경 유지. 아래 이집트 일몰 미연결·미푸시는 이전 이력이다.
+
+- 이집트 일몰 수정(2026-10-16): 사용자 요청으로 `art/backgrounds/three-civilizations/egypt-sunset-gold.png`와 실제 프롬프트 생성. 기존 흰 외장·금장 꼭대기·구도를 유지한 일몰 시안. 내장 image_gen 편집, 아직 게임 연결·푸시 전이며 운영 배경은 기존 egypt-harmony-gold 기반이다.
+
 - 로마 새벽 배경 적용(2026-10-16): 사용자 푸시 요청으로 붉은 군기·새벽 버전을 채택하고 `public/media/rome/background-dawn-v1.webp` (1672×942, quality 84)에 변환·연결. 원본·실제 프롬프트·검토 기록 함께 공유. 아래 로마 미연결·미푸시는 이전 이력이다. 이집트 금장 및 그리스 배경 유지.
 
 - 로마 분위기 수정(2026-10-16): BGM에 어울리는 출정 직전의 웅장한 새벽과 붉은 군기를 요청받아 `art/backgrounds/three-civilizations/rome-dawn-banners.png` 및 실제 프롬프트 생성·저장. 양옆 군기와 중앙 자연·콜로세움 유지. 군기 문양·배치와 새벽 조명은 미술적 해석. 사용자 검토 전, 이 새 버전은 미연결·미푸시이며 운영 사이트 로마는 기존 harmony 유지.
