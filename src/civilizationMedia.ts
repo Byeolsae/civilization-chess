@@ -19,7 +19,7 @@ export const civilizationMedia: Partial<Record<Civilization, CivilizationMedia>>
   rome: { background: '/media/rome/background-clear-v1.webp', bgm: '/media/rome/bgm-loop-v1.mp3', credit: { title: 'National Anthem of the Roman Empire — S.P.Q.R.', artist: 'VidGames', sourceOnly: true } },
   aztec: { background: '/media/aztec/background-clear-v1.webp', bgm: '/media/aztec/bgm-loop-v1.mp3', credit: { title: 'Aztec Empire', artist: 'Jimena Contreras' } },
   korea: { background: '/media/korea/background-clear-v1.webp', bgm: '/media/korea/bgm-loop-v1.mp3', credit: { title: 'Once upon a time', artist: 'eldlofi' } },
-  qing: { background: '/media/qing/background-clear-v1.webp', bgm: '/media/qing/bgm-loop-v1.mp3', credit: { title: 'Cup of Solid Gold (Medley)', artist: 'Norwegian Baron', sourceOnly: true } },
+  qing: { background: '/media/qing/background-matte-v1.webp', bgm: '/media/qing/bgm-loop-v1.mp3', credit: { title: 'Cup of Solid Gold (Medley)', artist: 'Norwegian Baron', sourceOnly: true } },
 };
 export function mediaForCivilization(id: Civilization): CivilizationMedia {
   return { ...defaultMedia, ...civilizationMedia[id] };
