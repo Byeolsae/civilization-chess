@@ -14,7 +14,7 @@ export const civilizationMedia: Partial<Record<Civilization, CivilizationMedia>>
   edo: { background: null, bgm: null },
   ming: { background: null, bgm: null },
   goryeo: { background: null, bgm: null },
-  greece: { background: '/media/greece/background-harmony-v1.webp', bgm: '/media/greece/bgm-loop-v1.mp3', credit: { title: 'Kallipolian Dance', artist: 'Farya Faraji & World Musicians · SEIKILO Ancient World Music' } },
+  greece: { background: '/media/greece/background-clear-v1.webp', bgm: '/media/greece/bgm-loop-v1.mp3', credit: { title: 'Kallipolian Dance', artist: 'Farya Faraji & World Musicians · SEIKILO Ancient World Music' } },
   egypt: { background: '/media/egypt/background-clear-v1.webp', bgm: '/media/egypt/bgm-loop-v1.mp3', credit: { title: 'The Legend of Narmer', artist: 'WombatNoisesAudio' } },
   rome: { background: '/media/rome/background-clear-v1.webp', bgm: '/media/rome/bgm-loop-v1.mp3', credit: { title: 'National Anthem of the Roman Empire — S.P.Q.R.', artist: 'VidGames', sourceOnly: true } },
   aztec: { background: '/media/aztec/background-clear-v1.webp', bgm: '/media/aztec/bgm-loop-v1.mp3', credit: { title: 'Aztec Empire', artist: 'Jimena Contreras' } },

@@ -12,6 +12,8 @@
 
 ## 현재 상태
 
+- 그리스 배경 연결 수정(2026-10-16): 맑은 하늘 원본과 background-clear-v1.webp는 GitHub에 있었으나 실제 greece 설정은 harmony 버전을 가리켰다. 사용자 지적으로 실제 매핑을 /media/greece/background-clear-v1.webp로 수정했다. 이전 여섯 배경 모두 연결 완료 기록은 이 누락을 놓친 것이므로 이 항목으로 정정한다.
+
 - 청나라 기둥 마감 수정(2026-10-16): 사용자 명시 요청으로 광택을 줄이고 미세한 도장 질감을 더한 qing-matte-pillars.png 및 실제 프롬프트 저장. 게임 경로는 public/media/qing/background-matte-v1.webp (1672×942, quality 84). 기존 청나라 맑은 오후 구도 및 나머지 다섯 배경 유지. 수정·적용·푸시 요청 범위에 포함된다.
 
 - 여섯 배경 적용(2026-10-16): 사용자 승인·푸시 요청으로 clear-skies 6종을 1672×942 WebP quality 84로 변환해 `public/media/{egypt,rome,greece,korea,qing,aztec}/background-clear-v1.webp`에 연결했다. 조선 ID는 korea. 청나라 기둥은 현재 매끈한 붉은 마감 유지. 최신 원본 6종·실제 프롬프트·조사·기준 함께 공유. 아래 미연결·미푸시는 이전 이력. 전 기기 크롭 및 정밀 역사 복원 검증은 별도.
