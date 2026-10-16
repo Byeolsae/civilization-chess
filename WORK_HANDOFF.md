@@ -1,5 +1,7 @@
 # 작업 이어받기
 
+2026-10-17 에도 후속 승인·적용: “ㅇㅋ 푸시 ㄱㄱ” 요청으로 edo-nihonbashi-night.webp를 수정 없이 public/media/edo/background-nihonbashi-night-v1.webp에 복사·연결. 배경 9종, 에도 BGM은 null 유지. 야경 원본 PNG·실제 프롬프트·EDO_NIGHT_REVIEW.md 함께 공유. 아래 에도 미연결/로컬 전용 기록은 승인 이전 상태. 청나라·센고쿠 직전 커밋 9bf6fc8의 운영 READY 및 파일 일치 확인 완료.
+
 2026-10-17 후속 적용: 사용자가 청나라 일몰 및 센고쿠 그대로 푸시 요청. qing-sunset.png에서 public/media/qing/background-sunset-v1.webp 생성, 센고쿠 japan/sengoku-ichijodani.webp를 수정 없이 public/media/sengoku/background-ichijodani-v1.webp에 복사·연결. 배경 승인 목록 8개. 에도는 야경 시안 생성만 요청하여 로컬 edo-nihonbashi-night PNG·프롬프트·WebP·조명 조사 저장, 운영 미연결. 에도 로컬 파일은 이번 푸시 대상에서 제외. 배포 결과는 해당 GitHub 커밋/Vercel 상태로 확인.
 
 일본 배경 제작(2026-10-17): 후속 “역사 고증 맞게 ㄱㄱ” 요청으로 에도 1833–1834년경 니혼바시 도시, 센고쿠 1570년경 이치조다니 자연 중심 시안 생성. `art/backgrounds/2026-10-17/japan/`에 PNG·실제 프롬프트·1672×942 WebP·REVIEW.md 저장. 박물관·유적 자료에 근거한 해석이며 정확한 조망/식생 복원은 아님. 게임 미연결·미푸시. 아래 기준만 기록했다는 문구는 이 생성 이전 상태.

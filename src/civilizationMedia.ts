@@ -11,7 +11,7 @@ export const defaultMedia: CivilizationMedia = { background: null, bgm: null };
 // greece: { background: '/media/greece/background-clear-v1.webp', bgm: '/media/greece/bgm.mp3' },
 export const civilizationMedia: Partial<Record<Civilization, CivilizationMedia>> = {
   sengoku: { background: '/media/sengoku/background-ichijodani-v1.webp', bgm: null },
-  edo: { background: null, bgm: null },
+  edo: { background: '/media/edo/background-nihonbashi-night-v1.webp', bgm: null },
   ming: { background: '/media/ming/background-huizhou-v1.webp', bgm: null },
   goryeo: { background: null, bgm: null },
   greece: { background: '/media/greece/background-clear-v1.webp', bgm: '/media/greece/bgm-loop-v1.mp3', credit: { title: 'Kallipolian Dance', artist: 'Farya Faraji & World Musicians · SEIKILO Ancient World Music' } },
