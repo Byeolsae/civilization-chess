@@ -1,5 +1,15 @@
 # 작업 이어받기
 
+2026-10-17 고려 최종 적용: “왼쪽도 고려로 만들고 푸시” 요청으로 goryeo-autumn-temple-jusimpo.png 생성. 원본·실제 프롬프트·GORYEO_TEMPLE_REVIEW.md 공유, public/media/goryeo/background-autumn-temple-v1.webp (1672×942 quality84) 연결. 승인 배경 10종, 고려 BGM null. 아래 고려 미적용 기록은 이전 상태, 이전 시안은 로컬 보관.
+
+2026-10-17 고려 사진 참고 후속: 사용자 제공 9장 중 1·3·4번의 색 배치를 참고해 goryeo-autumn-temple-ochre PNG·실제 프롬프트·1672×942 WebP 저장. 황토 벽면과 작은 창, 적갈색 목재, 처마에 모인 녹색 단청. muted보다 최신 시안. 게임 미연결·미푸시. 사진을 고려 원색 고증 확정 근거로 취급하지 않는다.
+
+2026-10-17 고려 사찰 색채 후속: 건물 색 지적 후 “ㄱㄱ” 승인으로 goryeo-autumn-temple-muted PNG·실제 프롬프트·1672×942 WebP 저장. 기둥 적갈색과 단청 채도/문양 밀도 조정, 가을 구도 유지. art/backgrounds/2026-10-17/GORYEO_TEMPLE_REVIEW.md에 한계 기록. 최신 검토 시안이며 게임 미연결·미푸시.
+
+2026-10-17 고려 사찰 전환: 사용자 요청으로 궁궐 대신 가을 산지 사찰 중심 goryeo-autumn-temple 시안 생성. 1380년경, 부석사 무량수전의 주심포·배흘림기둥 참고한 창작. 원본·프롬프트·WebP·GORYEO_TEMPLE_REVIEW.md는 art/backgrounds/2026-10-17/. 기존 goryeo-autumn 궁궐 시안보다 최신 방향 우선. 미연결·미푸시.
+
+2026-10-17 고려 가을 시안: 사용자 신규 요청으로 goryeo-autumn PNG·실제 프롬프트·1672×942 WebP·GORYEO_REVIEW.md를 art/backgrounds/2026-10-17/에 저장. 1120년경 개경 만월대 남향 조망 해석, 층층 석축과 가을 수목. 상부구조·단청·식재 및 정확한 조망은 복원 검증되지 않음. 게임 미연결·미푸시. 에도 직전 cb21f68은 운영 READY 및 실제 이미지/번들 반영 확인 완료.
+
 2026-10-17 에도 후속 승인·적용: “ㅇㅋ 푸시 ㄱㄱ” 요청으로 edo-nihonbashi-night.webp를 수정 없이 public/media/edo/background-nihonbashi-night-v1.webp에 복사·연결. 배경 9종, 에도 BGM은 null 유지. 야경 원본 PNG·실제 프롬프트·EDO_NIGHT_REVIEW.md 함께 공유. 아래 에도 미연결/로컬 전용 기록은 승인 이전 상태. 청나라·센고쿠 직전 커밋 9bf6fc8의 운영 READY 및 파일 일치 확인 완료.
 
 2026-10-17 후속 적용: 사용자가 청나라 일몰 및 센고쿠 그대로 푸시 요청. qing-sunset.png에서 public/media/qing/background-sunset-v1.webp 생성, 센고쿠 japan/sengoku-ichijodani.webp를 수정 없이 public/media/sengoku/background-ichijodani-v1.webp에 복사·연결. 배경 승인 목록 8개. 에도는 야경 시안 생성만 요청하여 로컬 edo-nihonbashi-night PNG·프롬프트·WebP·조명 조사 저장, 운영 미연결. 에도 로컬 파일은 이번 푸시 대상에서 제외. 배포 결과는 해당 GitHub 커밋/Vercel 상태로 확인.
