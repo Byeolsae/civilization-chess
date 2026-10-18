@@ -1,5 +1,5 @@
 .ballista-shot{filter:none}
-.ballista-bow{animation:ballista-bow var(--bolt-hit) both}
+.ballista-bow{animation:ballista-bow var(--bolt-load) both,ballista-bow-release 280ms var(--bolt-load) forwards}
 .ballista-bow-wood{fill:none;stroke:#d4ab69;stroke-width:7;stroke-linecap:round;filter:drop-shadow(0 2px 2px #0009)}
 .ballista-string{fill:none;stroke:#fff0c5;stroke-width:2;animation:ballista-string var(--bolt-load) ease-in both}
 .ballista-rail{fill:none;stroke:#593823;stroke-width:6;stroke-linecap:round}
@@ -12,7 +12,8 @@
 .ballista-dust{fill:#c4ac89;filter:blur(5px);transform-box:fill-box;transform-origin:center;animation:ballista-dust 650ms var(--bolt-hit) both}
 @keyframes ballista-string{0%{d:path('M-8 -33L-8 0L-8 33')}88%{d:path('M-8 -33L-35 0L-8 33')}100%{d:path('M-8 -33L8 0L-8 33')}}
 @keyframes ballista-load{0%{transform:translateX(28px)}88%{transform:translateX(0)}100%{transform:translateX(0)}}
-@keyframes ballista-bow{0%{opacity:0}15%,65%{opacity:1;transform:translateX(0)}72%{opacity:1;transform:translateX(-10px)}100%{opacity:0;transform:translateX(0)}}
+@keyframes ballista-bow{0%{opacity:0}15%,100%{opacity:1}}
+@keyframes ballista-bow-release{0%{opacity:1;transform:translateX(0)}15%{opacity:1;transform:translateX(-10px)}100%{opacity:0;transform:translateX(0)}}
 @keyframes ballista-flight{0%{transform:translateX(0);opacity:1}88%{transform:translateX(var(--bolt-distance));opacity:1}100%{transform:translateX(var(--bolt-distance));opacity:0}}
 @keyframes ballista-speed{0%{opacity:0}20%,75%{opacity:.85}100%{opacity:0}}
 @keyframes ballista-victim{0%{opacity:1;transform:translate(0,0);filter:brightness(1)}9%{opacity:1;transform:translate(0,0);filter:brightness(2.1)}25%{opacity:1;transform:translate(var(--hit-x),var(--hit-y)) rotate(12deg) scale(.98,.88)}65%{opacity:.5;transform:translate(var(--hit-x),var(--hit-y)) rotate(23deg) scale(.85,.45);filter:sepia(.5) brightness(.65)}100%{opacity:0;transform:translate(var(--hit-x),var(--hit-y)) rotate(28deg) scale(.65,.12)}}

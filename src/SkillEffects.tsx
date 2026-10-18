@@ -113,8 +113,8 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
     const x = -(b.x-a.x)/distance*recoil, y = -(b.y-a.y)/distance*recoil;
     const motion = piece?.animate([
       {transform:'translate(0,0) scale(1)',offset:0},
-      {transform: 'translate(0,2px) scale(1.04,.94)',offset:.63},
-      {transform: `translate(${x}px,${y}px) scale(.97,1.03)`,offset:.68},
+      {transform: 'translate(0,2px) scale(1.04,.94)',offset:BALLISTA_LAUNCH_MS/(BALLISTA_LAUNCH_MS+280)},
+      {transform: `translate(${x}px,${y}px) scale(.97,1.03)`,offset:(BALLISTA_LAUNCH_MS+35)/(BALLISTA_LAUNCH_MS+280)},
       {transform:'translate(0,0) scale(1)',offset:1},
     ],{duration:BALLISTA_LAUNCH_MS+280,easing:'ease-out'});
     // Strike in the bolt's direction, then rapidly damp the recoil. The delay is
