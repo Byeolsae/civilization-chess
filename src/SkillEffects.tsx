@@ -1,5 +1,5 @@
 import BallistaShot from './BallistaShot';
-import { BALLISTA_EFFECT_MS, BALLISTA_LAUNCH_MS, POSEIDON_WAVE_MS, POSEIDON_RETURN_MS, POSEIDON_EFFECT_MS } from './skillTiming';
+import { BALLISTA_EFFECT_MS, BALLISTA_HIT_MS, BALLISTA_LAUNCH_MS, POSEIDON_WAVE_MS, POSEIDON_RETURN_MS, POSEIDON_EFFECT_MS } from './skillTiming';
 import { createPortal } from 'react-dom';
 import { civilizationAppearance } from './civilizations';
 import type { Players } from './game';
@@ -117,7 +117,19 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
       {transform: `translate(${x}px,${y}px) scale(.97,1.03)`,offset:.68},
       {transform:'translate(0,0) scale(1)',offset:1},
     ],{duration:BALLISTA_LAUNCH_MS+280,easing:'ease-out'});
-    return () => motion?.cancel();
+    // Strike in the bolt's direction, then rapidly damp the recoil. The delay is
+    // shared with the projectile and victim so loading never shakes the board.
+    const surface = board?.closest('.board-section') ?? board;
+    const shake = surface?.animate([
+      {transform:'translate(0,0)',offset:0},
+      {transform:`translate(${-x}px,${-y}px)`,offset:.1},
+      {transform:`translate(${x*.75}px,${y*.75}px)`,offset:.23},
+      {transform:`translate(${-x*.45-y*.2}px,${-y*.45+x*.2}px)`,offset:.39},
+      {transform:`translate(${x*.25}px,${y*.25}px)`,offset:.58},
+      {transform:`translate(${-x*.1}px,${-y*.1}px)`,offset:.78},
+      {transform:'translate(0,0)',offset:1},
+    ],{duration:360,delay:BALLISTA_HIT_MS,easing:'linear'});
+    return () => { motion?.cancel(); shake?.cancel(); };
   }, [shot, flipped]);
   const charm = [...playing].reverse().find(e => e.skill === 'cleopatra');
   useLayoutEffect(() => {
