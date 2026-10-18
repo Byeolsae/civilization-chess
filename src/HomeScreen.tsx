@@ -6,7 +6,7 @@ import { filterCivilizations } from './civilizationFilters';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Crown, Pause, Play, Globe2, Bot, Users, ScrollText } from 'lucide-react';
 import { civilizations, type Civilization } from './civilizations';
-import CivilizationDetail from './CivilizationDetail';
+import CivilizationDetail, { type CivilizationDetailTab } from './CivilizationDetail';
 import { civilizationMedia, MEDIA_SETTINGS_KEY, parseMediaPreferences } from './civilizationMedia';
 
 import type { Skill } from './draft';
@@ -58,7 +58,7 @@ export default function HomeScreen({onPlay,onResume,canResume,draft,draftCiviliz
     return()=>observer.disconnect();
   },[page,locale,progressFilter,archiveSearch,developerMode]);
   useEffect(()=>{if(demoSkill){demoRef.current?.focus({preventScroll:true});demoRef.current?.scrollIntoView({block:'start',behavior:'instant'});}},[demoSkill]);
-  const [tab,setTab]=useState<'skills'|'history'>('skills');
+  const [tab,setTab]=useState<CivilizationDetailTab>('history');
   useEffect(()=>{setDemoSkill(null);},[selected,page,tab]);
   const [pending,setPending]=useState<MatchSettings|null>(null);
   const [aiOptions,setAiOptions]=useState(false);

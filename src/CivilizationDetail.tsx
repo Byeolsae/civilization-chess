@@ -14,9 +14,10 @@ import { specialPieceTypes } from './specialPieces';
 import './civilizationDetail.css';
 
 type HistoryNote = { ko: string; en: string; source: string };
+export type CivilizationDetailTab = 'intro' | 'history' | 'skills';
 export default function CivilizationDetail({civilization, developerMode, tab, onTab, demo, onDemo, history}: {
-  civilization: Civilization; developerMode: boolean; tab: 'history'|'skills';
-  onTab: (tab:'history'|'skills')=>void; demo: Skill|null; onDemo:(skill:Skill|null)=>void;
+  civilization: Civilization; developerMode: boolean; tab: CivilizationDetailTab;
+  onTab: (tab:CivilizationDetailTab)=>void; demo: Skill|null; onDemo:(skill:Skill|null)=>void;
   history?:HistoryNote;
 }) {
   const locale=useLocale(), text=(ko:string,en:string)=>locale==='ko'?ko:en;
@@ -32,17 +33,17 @@ export default function CivilizationDetail({civilization, developerMode, tab, on
       <div className="civilization-detail-emblem" aria-hidden="true">{hasCivilizationIcon(civilization)?<CivilizationIcon civilization={civilization} size={132}/>:<span>{t(civ.name).slice(0,1)}</span>}</div>
       <div><span className="home-eyebrow">{civ.english}</span><h1>{t(civ.name)}</h1></div>
       <nav className="civilization-detail-tabs" aria-label={text('문명 상세 메뉴','Civilization details')}>
+        <button aria-pressed={tab==='intro'} onClick={()=>onTab('intro')}>{text('소개문구','Introduction')}</button>
         <button aria-pressed={tab==='history'} onClick={()=>onTab('history')}>{text('역사 설명','History')}</button>
         <button aria-pressed={tab==='skills'} onClick={()=>onTab('skills')}>{text('문명별 스킬','Skills')}</button>
       </nav>
       <DeveloperModeToggle/>
       {developerMode&&<CivilizationProgress civilization={civilization}/>}
     </header>
-    {tab==='history'?<section className="civilization-history-panel" aria-labelledby="civilization-history-title">
-      <header><small>CHRONICLES</small><h2 id="civilization-history-title">{text('역사 설명','History')}</h2></header>
-      <div className="civilization-history-scroll" role="region" aria-label={text(`${civ.name} 역사 본문`,`${t(civ.name)} history text`)} tabIndex={0}>
-        <p className="civilization-history-intro">{civilizationIntros[civilization][locale]}</p>
-        {history&&<><h3>{text('역사와 풍경','History and landscape')}</h3><p>{history[locale]}</p><a href={history.source} target="_blank" rel="noreferrer">{text('역사 자료 보기 ↗','Read historical source ↗')}</a></>}
+    {tab!=='skills'?<section className="civilization-history-panel" aria-labelledby="civilization-history-title">
+      <header><small>{tab==='intro'?'INTRODUCTION':'CHRONICLES'}</small><h2 id="civilization-history-title">{tab==='intro'?text('소개문구','Introduction'):text('역사 설명','History')}</h2></header>
+      <div key={tab} className="civilization-history-scroll" role="region" aria-label={tab==='intro'?text(`${civ.name} 소개문구`,`${t(civ.name)} introduction`):text(`${civ.name} 역사 본문`,`${t(civ.name)} history text`)} tabIndex={0}>
+        {tab==='intro'?<p>{civilizationIntros[civilization][locale]}</p>:history?<><h3>{text('역사와 풍경','History and landscape')}</h3><p>{history[locale]}</p><a href={history.source} target="_blank" rel="noreferrer">{text('역사 자료 보기 ↗','Read historical source ↗')}</a></>:<p>{text('역사 설명을 준비하고 있습니다. 역사 자료를 확인한 뒤 추가할 예정입니다.','Historical notes are being prepared and will be added after reviewing sources.')}</p>}
       </div>
     </section>:<section className="civilization-skill-panel" aria-label={text('문명 스킬 9칸','Nine civilization skill slots')}>
       <div className="civilization-skill-panel-heading"><h2>{text('문명별 스킬','Skills')}</h2><p>{text('스킬을 선택해 큰 화면으로 시연을 확인하세요.','Select a skill to explore its full-size demonstration.')}</p></div>
