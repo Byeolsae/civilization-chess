@@ -1,7 +1,7 @@
 import VersusScene, { MATCH_ENTRY_MS } from './VersusScene';
 import { romanLaws } from './romanLaws';
 import LawSelection from './LawSelection';
-import { POSEIDON_EFFECT_MS } from './skillTiming';
+import { BALLISTA_EFFECT_MS, POSEIDON_EFFECT_MS } from './skillTiming';
 import { translateUi, useLocale } from './i18n';
 import LanguageSwitch from './LanguageSwitch';
 import MatchHistory from './MatchHistory';
@@ -181,7 +181,7 @@ export default function App() {
     const newAction = previous.game === game && history.length > previous.count;
     const action = newAction && game instanceof AbilityGame ? JSON.parse(game.history().at(-1)!) as AbilityAction : undefined;
     const blockedRoyalAttack=action?.kind==='move' && game instanceof AbilityGame && game.unit(action.to)?.type==='k' && !!game.unit(action.from);
-    const delay = newAction ? blockedRoyalAttack ? 1800 : action?.skill === 'poseidon' ? POSEIDON_EFFECT_MS + 120 : action?.skill === 'hades' ? 2800 : lastMove?.flags.includes('s') ? 1300 : 360 : 0;
+    const delay = newAction ? blockedRoyalAttack ? 1800 : action?.skill === 'poseidon' ? POSEIDON_EFFECT_MS + 120 : action?.skill === 'ballista' ? BALLISTA_EFFECT_MS + 120 : action?.skill === 'hades' ? 2800 : lastMove?.flags.includes('s') ? 1300 : 360 : 0;
     const timer = setTimeout(() => {
       dragRef.current = null; setDragVisual(null); setSelected(null);
       setFlipped((placementOwner ?? turn) === 'b');

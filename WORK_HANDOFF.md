@@ -1,5 +1,7 @@
 # 작업 이어받기
 
+2026-10-18 발리스타 연출: 기존 광선 대신 `BallistaShot.tsx`/`ballistaShot.css`의 장전·대형 화살·명중 붕괴 연출. 공통 타이밍은 `skillTiming.ts`(발사 520ms, 명중 780ms, 종료 1500ms). 처치 전 기물 외형을 이벤트에 보관하되 방패 생존 시 사망 외형을 만들지 않는다. 로컬 판 뒤집기는 종료 이후로 지연. 인게임·스킬 시연 공통 적용. 빌드 및 효과 이벤트 테스트 5개 통과, 실제 화면 모션 검수는 미완료.
+
 2026-10-17 고려 최종 적용: “왼쪽도 고려로 만들고 푸시” 요청으로 goryeo-autumn-temple-jusimpo.png 생성. 원본·실제 프롬프트·GORYEO_TEMPLE_REVIEW.md 공유, public/media/goryeo/background-autumn-temple-v1.webp (1672×942 quality84) 연결. 승인 배경 10종, 고려 BGM null. 아래 고려 미적용 기록은 이전 상태, 이전 시안은 로컬 보관.
 
 2026-10-17 고려 사진 참고 후속: 사용자 제공 9장 중 1·3·4번의 색 배치를 참고해 goryeo-autumn-temple-ochre PNG·실제 프롬프트·1672×942 WebP 저장. 황토 벽면과 작은 창, 적갈색 목재, 처마에 모인 녹색 단청. muted보다 최신 시안. 게임 미연결·미푸시. 사진을 고려 원색 고증 확정 근거로 취급하지 않는다.

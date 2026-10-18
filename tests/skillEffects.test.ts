@@ -3,6 +3,21 @@ import assert from 'node:assert/strict';
 import { AbilityGame } from '../src/AbilityGame';
 import { boardPoint, skillEffects } from '../src/skillEffectEvents';
 const none = { passive: 'pending', active: 'pending', piece: 'pending' };
+test('ballista keeps the captured sprite for impact, but never kills a shield survivor visually', () => {
+  for (const protectedPawn of [false, true]) {
+    const game = new AbilityGame({w:{...none,piece:'ballista'},b:{...none,piece:protectedPawn?'sparta':'pending'}},'7k/8/8/8/p7/8/8/R6K w - - 0 1');
+    const before = structuredClone(game.state);
+    const action = game.actions().find(a=>a.skill==='ballista' && a.from==='a1' && a.to==='a4')!;
+    assert.ok(action);
+    game.perform(action);
+    const events = skillEffects(action,before,game.state);
+    const shot = events.find(e=>e.skill==='ballista')!;
+    assert.equal(shot.from,'a1');
+    assert.equal(shot.to,'a4');
+    assert.equal(shot.victim?.type,protectedPawn?undefined:'p');
+    assert.equal(events.some(e=>e.skill==='shield'),protectedPawn);
+  }
+});
 test('effect coordinates follow board orientation', () => {
   assert.deepEqual(boardPoint('a8', false), {x:50,y:50});
   assert.deepEqual(boardPoint('a8', true), {x:750,y:750});

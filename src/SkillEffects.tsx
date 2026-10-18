@@ -1,4 +1,5 @@
-import { POSEIDON_WAVE_MS, POSEIDON_RETURN_MS, POSEIDON_EFFECT_MS } from './skillTiming';
+import BallistaShot from './BallistaShot';
+import { BALLISTA_EFFECT_MS, BALLISTA_LAUNCH_MS, POSEIDON_WAVE_MS, POSEIDON_RETURN_MS, POSEIDON_EFFECT_MS } from './skillTiming';
 import { createPortal } from 'react-dom';
 import { civilizationAppearance } from './civilizations';
 import type { Players } from './game';
@@ -101,6 +102,23 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
     const motion=piece?.animate([{opacity:0},{opacity:0}],{duration:1200});
     return()=>motion?.cancel();
   },[guardBlock,flipped]);
+  const shot = [...playing].reverse().find(e => e.skill === 'ballista');
+  useLayoutEffect(() => {
+    if (!shot || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const board = layer.current?.closest('.board');
+    const piece = board?.querySelector(`[data-square="${shot.from}"] .piece`);
+    const a = boardPoint(shot.from, flipped), b = boardPoint(shot.to, flipped);
+    const distance = Math.hypot(b.x-a.x,b.y-a.y);
+    const recoil = (board?.getBoundingClientRect().width ?? 800) / 800 * 10;
+    const x = -(b.x-a.x)/distance*recoil, y = -(b.y-a.y)/distance*recoil;
+    const motion = piece?.animate([
+      {transform:'translate(0,0) scale(1)',offset:0},
+      {transform: 'translate(0,2px) scale(1.04,.94)',offset:.63},
+      {transform: `translate(${x}px,${y}px) scale(.97,1.03)`,offset:.68},
+      {transform:'translate(0,0) scale(1)',offset:1},
+    ],{duration:BALLISTA_LAUNCH_MS+280,easing:'ease-out'});
+    return () => motion?.cancel();
+  }, [shot, flipped]);
   const charm = [...playing].reverse().find(e => e.skill === 'cleopatra');
   useLayoutEffect(() => {
     if (!charm || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -122,7 +140,7 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
     if (!effects.length) return;
     setPlaying(current => [...current, ...effects].slice(-8));
     setAnnouncement(effects.map(e => `${abilityNames[e.skill] ?? labels[e.skill] ?? '스킬'} 발동`).join(' · '));
-    const timer = setTimeout(() => { setPlaying(current => current.filter(e => !effects.some(next => next.id === e.id))); timers.current.delete(timer); }, effects.some(e => e.skill === 'guard-block') ? 1700 : effects.some(e => e.skill === 'judgment') ? 3600 : effects.some(e => ['osiris', 'revive', 'judgment', 'anubis', 'hades'].includes(e.skill)) ? 2600 : effects.some(e => e.skill === 'cleopatra') ? 1900 : effects.some(e => e.skill === 'poseidon') ? POSEIDON_EFFECT_MS : 1250);
+    const timer = setTimeout(() => { setPlaying(current => current.filter(e => !effects.some(next => next.id === e.id))); timers.current.delete(timer); }, effects.some(e => e.skill === 'ballista') ? BALLISTA_EFFECT_MS : effects.some(e => e.skill === 'guard-block') ? 1700 : effects.some(e => e.skill === 'judgment') ? 3600 : effects.some(e => ['osiris', 'revive', 'judgment', 'anubis', 'hades'].includes(e.skill)) ? 2600 : effects.some(e => e.skill === 'cleopatra') ? 1900 : effects.some(e => e.skill === 'poseidon') ? POSEIDON_EFFECT_MS : 1250);
     timers.current.add(timer);
   }, [game, count, flipped]);
   useLayoutEffect(() => () => { timers.current.forEach(clearTimeout); timers.current.clear(); }, []);
@@ -150,6 +168,7 @@ function screenDirection(direction: number | undefined, flipped: boolean) {
 function Effect({ effect: e, flipped, ghostSrc, soulSrcs }: { effect: SkillEffect; flipped: boolean; ghostSrc?: string; soulSrcs?: string[] }) {
   const from = boardPoint(e.from, flipped), to = boardPoint(e.to, flipped);
   const color = colors[e.skill] ?? '#f6d58d';
+  if (e.skill === 'ballista') return <BallistaShot from={from} to={to} victim={ghostSrc}/>;
   if (e.skill === 'guard-block') return <GuardBlock effect={e} flipped={flipped} attacker={ghostSrc}/>;
   if (e.skill === 'shield') return <ShieldBreak x={to.x} y={to.y} dark={e.shieldOwner==='b'} roman={e.shieldStyle==='praetorian'}/>;
   if (e.skill === 'hades') return <HadesPortal souls={soulSrcs ?? []}/>;
@@ -158,7 +177,7 @@ function Effect({ effect: e, flipped, ghostSrc, soulSrcs }: { effect: SkillEffec
   if (e.skill === 'cleopatra') return <CharmFlight from={from} to={to} originalSrc={ghostSrc}/>;
   if (e.skill === 'minotaur') return <GroundFracture x={from.x} y={from.y}/>;
   if (e.skill === 'set') return <g className="skill-fx skill-fx-set"><ellipse className="set-dust" cx={to.x} cy={to.y} rx="138" ry="118" /></g>;
-  const beam = ['ballista', 'pilum', 'cleopatra', 'trojan', 'deploy', 'gladiator'].includes(e.skill);
+  const beam = ['pilum', 'cleopatra', 'trojan', 'deploy', 'gladiator'].includes(e.skill);
   const portal = ['osiris', 'hades', 'anubis', 'trojan', 'deploy', 'gladiator', 'revive'].includes(e.skill);
   const zone = ['set', 'vesta', 'alesia'].includes(e.skill);
   const direction = screenDirection(e.direction, flipped);

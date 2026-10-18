@@ -1,3 +1,6 @@
 export const POSEIDON_WAVE_MS = 900;
+export const BALLISTA_LAUNCH_MS = 520;
+export const BALLISTA_HIT_MS = 780;
+export const BALLISTA_EFFECT_MS = 1500;
 export const POSEIDON_RETURN_MS = 380;
 export const POSEIDON_EFFECT_MS = POSEIDON_WAVE_MS + POSEIDON_RETURN_MS + 100;
