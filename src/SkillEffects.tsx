@@ -1,5 +1,5 @@
 import BallistaShot from './BallistaShot';
-import { BALLISTA_EFFECT_MS, BALLISTA_HIT_MS, BALLISTA_LAUNCH_MS, POSEIDON_WAVE_MS, POSEIDON_RETURN_MS, POSEIDON_EFFECT_MS } from './skillTiming';
+import { BALLISTA_EFFECT_MS, BALLISTA_HIT_MS, BALLISTA_LAUNCH_MS, BALLISTA_DESTRUCTION_MS, BALLISTA_COOLDOWN_FADE_MS, POSEIDON_WAVE_MS, POSEIDON_RETURN_MS, POSEIDON_EFFECT_MS } from './skillTiming';
 import { createPortal } from 'react-dom';
 import { civilizationAppearance } from './civilizations';
 import type { Players } from './game';
@@ -132,12 +132,13 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
     // The cooldown is committed immediately, but its board badge waits until
     // the victim finishes breaking apart (or the shield absorbs the hit).
     const badge = board?.querySelector(`[data-square="${shot.from}"] .board-cooldown`);
-    const revealAt = shot.victim ? BALLISTA_EFFECT_MS - 20 : BALLISTA_HIT_MS + 280;
+    const revealAt = BALLISTA_HIT_MS + (shot.victim ? BALLISTA_DESTRUCTION_MS : 280);
+    const revealDuration = revealAt + BALLISTA_COOLDOWN_FADE_MS;
     const cooldownReveal = badge?.animate([
       {opacity:0,visibility:'hidden',offset:0},
-      {opacity:0,visibility:'hidden',offset:revealAt/(revealAt+140)},
+      {opacity:0,visibility:'hidden',offset:revealAt/revealDuration,easing:'ease-out'},
       {opacity:1,visibility:'visible',offset:1},
-    ],{duration:revealAt+140,easing:'linear'});
+    ],{duration:revealDuration,easing:'linear'});
     return () => { motion?.cancel(); shake?.cancel(); cooldownReveal?.cancel(); };
   }, [shot, flipped]);
   const charm = [...playing].reverse().find(e => e.skill === 'cleopatra');

@@ -1,5 +1,5 @@
 import { useId, type CSSProperties } from 'react';
-import { BALLISTA_HIT_MS, BALLISTA_LAUNCH_MS, BALLISTA_EFFECT_MS } from './skillTiming';
+import { BALLISTA_HIT_MS, BALLISTA_LAUNCH_MS } from './skillTiming';
 import './ballistaShot.css';
 
 type Point = { x: number; y: number };
@@ -8,9 +8,9 @@ export default function BallistaShot({ from, to, victim }: { from: Point; to: Po
   const dx = to.x-from.x, dy = to.y-from.y, distance = Math.hypot(dx,dy);
   const angle = Math.atan2(dy,dx)*180/Math.PI;
   const style = {
-    '--bolt-distance': `${distance}px`, '--hit-x': `${dx/distance*32}px`, '--hit-y': `${dy/distance*32}px`,
+    '--bolt-distance': `${distance}px`,
     '--bolt-load': `${BALLISTA_LAUNCH_MS}ms`, '--bolt-flight': `${BALLISTA_HIT_MS-BALLISTA_LAUNCH_MS}ms`,
-    '--bolt-hit': `${BALLISTA_HIT_MS}ms`, '--bolt-total': `${BALLISTA_EFFECT_MS}ms`,
+    '--bolt-hit': `${BALLISTA_HIT_MS}ms`,
   } as CSSProperties;
   return <g className="ballista-shot" style={style}>
     <g transform={`translate(${from.x} ${from.y}) rotate(${angle})`}>
@@ -29,13 +29,13 @@ export default function BallistaShot({ from, to, victim }: { from: Point; to: Po
       </g></g>
     </g>
     <g transform={`translate(${to.x} ${to.y})`}>
-      {victim && <g className="ballista-victim-push">
+      {victim && <g>
         <image className="ballista-victim" href={victim} x="-44" y="-44" width="88" height="88"/>
         {['0,0 -44,-44 0,-44','0,0 0,-44 44,-44','0,0 44,-44 44,44','0,0 44,44 0,44','0,0 0,44 -44,44','0,0 -44,44 -44,-44'].map((points,i)=>{
           const radians=(i*60-120)*Math.PI/180;
           return <g key={i} className="ballista-fragment" style={{
-            '--fragment-x':`${Math.cos(radians)*22+dx/distance*12}px`,
-            '--fragment-y':`${Math.sin(radians)*22+dy/distance*12+9}px`,
+            '--fragment-x':`${Math.cos(radians)*22}px`,
+            '--fragment-y':`${Math.sin(radians)*22+9}px`,
             '--fragment-turn':`${i%2===0?24:-28}deg`,
           } as CSSProperties}>
             <defs><clipPath id={`${fragmentId}-${i}`}><polygon points={points}/></clipPath></defs>
