@@ -129,7 +129,16 @@ export default function SkillEffects({ game, flipped, players }: { game: Chess; 
       {transform:`translate(${-x*.1}px,${-y*.1}px)`,offset:.78},
       {transform:'translate(0,0)',offset:1},
     ],{duration:360,delay:BALLISTA_HIT_MS,easing:'linear'});
-    return () => { motion?.cancel(); shake?.cancel(); };
+    // The cooldown is committed immediately, but its board badge waits until
+    // the victim finishes breaking apart (or the shield absorbs the hit).
+    const badge = board?.querySelector(`[data-square="${shot.from}"] .board-cooldown`);
+    const revealAt = shot.victim ? BALLISTA_EFFECT_MS - 20 : BALLISTA_HIT_MS + 280;
+    const cooldownReveal = badge?.animate([
+      {opacity:0,visibility:'hidden',offset:0},
+      {opacity:0,visibility:'hidden',offset:revealAt/(revealAt+140)},
+      {opacity:1,visibility:'visible',offset:1},
+    ],{duration:revealAt+140,easing:'linear'});
+    return () => { motion?.cancel(); shake?.cancel(); cooldownReveal?.cancel(); };
   }, [shot, flipped]);
   const charm = [...playing].reverse().find(e => e.skill === 'cleopatra');
   useLayoutEffect(() => {
