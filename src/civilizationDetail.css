@@ -79,7 +79,7 @@
 
 @keyframes civilization-detail-exit{from{opacity:1}to{opacity:0}}
 @keyframes civilization-panel-exit{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(30px)}}
-.civilization-detail-view.detail-skills{animation:civilization-copy-enter .55s cubic-bezier(.22,1,.36,1) both}
+
 .home-screen.is-detail-leaving .civilization-detail-view{animation:civilization-detail-exit .32s ease-in both;pointer-events:none}
 .home-screen.is-detail-leaving .civilization-history-panel{animation:civilization-panel-exit .32s ease-in both}
 .home-screen.is-detail-leaving .home-back{pointer-events:none}
@@ -93,3 +93,14 @@
 .civilization-skill-panel .civilization-skill-tile.is-empty{background:transparent}
 @media(max-width:520px){.civilization-skill-panel{padding:16px 10px}.civilization-skill-panel-heading{padding:0 6px 14px;margin-bottom:12px}.civilization-skill-panel .civilization-skill-grid{gap:6px}}
 @media(prefers-reduced-motion:reduce){.civilization-skill-panel .civilization-skill-tile:is(:hover,:focus-visible):not(:disabled){transform:none}}
+
+/* Skills occupy the same full-height gradient column as the chronicles. */
+.is-reading-civilization .civilization-skill-panel{padding-bottom:96px}
+.is-reading-civilization .civilization-skill-grid{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;grid-template-rows:repeat(3,minmax(145px,1fr));gap:8px;padding:20px 4px 8px 0;scrollbar-width:thin;scrollbar-color:#dec59466 transparent;animation:civilization-copy-enter .65s .22s both}
+.is-reading-civilization .civilization-skill-tile{min-height:145px;padding:10px 4px;gap:8px}
+.is-reading-civilization .civilization-skill-tile>strong{font-size:clamp(12px,1vw,16px)}
+.is-reading-civilization .civilization-skill-art,.is-reading-civilization .civilization-skill-art>svg,.is-reading-civilization .civilization-skill-art>.piece{width:48px;height:48px}
+.is-reading-civilization .civilization-skill-tile>small{font-size:9px}
+.is-reading-civilization .civilization-skill-preview-label{font-size:9px}
+@media(max-width:900px){.is-reading-civilization .civilization-skill-panel{height:80svh;min-height:540px;padding-left:16px;padding-right:16px}}
+@media(prefers-reduced-motion:reduce){.is-reading-civilization .civilization-skill-grid{animation:none}}

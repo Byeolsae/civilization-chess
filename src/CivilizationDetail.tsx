@@ -46,8 +46,8 @@ export default function CivilizationDetail({civilization, developerMode, tab, on
         {tab==='intro'?<p>{civilizationIntros[civilization][locale]}</p>:history?<><h3>{text('역사와 풍경','History and landscape')}</h3><p>{history[locale]}</p><a href={history.source} target="_blank" rel="noreferrer">{text('역사 자료 보기 ↗','Read historical source ↗')}</a></>:<p>{text('역사 설명을 준비하고 있습니다. 역사 자료를 확인한 뒤 추가할 예정입니다.','Historical notes are being prepared and will be added after reviewing sources.')}</p>}
       </div>
       <div className="civilization-history-seal" aria-hidden="true">{hasCivilizationIcon(civilization)?<CivilizationIcon civilization={civilization} size={88}/>:<span>{civ.english}</span>}</div>
-    </section>:<section className={`civilization-skill-panel theme-${civilization}`} aria-label={text('문명 스킬 9칸','Nine civilization skill slots')}>
-      <div className="civilization-skill-panel-heading"><h2>{text('문명별 스킬','Skills')}</h2><p>{text('스킬을 선택해 큰 화면으로 시연을 확인하세요.','Select a skill to explore its full-size demonstration.')}</p></div>
+    </section>:<section className={`civilization-history-panel civilization-skill-panel theme-${civilization}`} aria-label={text('문명 스킬 9칸','Nine civilization skill slots')}>
+      <header><small>ABILITIES</small><h2>{t(civ.name)}</h2><span className="civilization-reading-label">{text('문명별 스킬 · 선택하면 시연을 볼 수 있습니다.','Skills · Select to watch a demonstration.')}</span></header>
       <div className="civilization-skill-grid">{categories.flatMap(category=>Array.from({length:3},(_,index)=>{
         const skill=skills[civilization][category.id][index];
         return <button key={`${category.id}-${index}`} className={`civilization-skill-tile ${skill?'':'is-empty'}`} disabled={!skill} onClick={()=>skill&&onDemo(skill)} aria-label={skill?text(`${skill.name} 시연 보기`,`Watch ${t(skill.name)} demo`):text(`${category.name} ${index+1} 미등록`,`${t(category.name)} ${index+1} unavailable`)}>

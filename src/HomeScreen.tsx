@@ -89,7 +89,7 @@ export default function HomeScreen({onPlay,onResume,canResume,draft,draftCiviliz
   function save(next:typeof preferences){setPreferences(next);try{localStorage.setItem(MEDIA_SETTINGS_KEY,JSON.stringify(next));setSaveError(false);}catch{setSaveError(true);}}
   function launch(next:MatchSettings){if(canResume)setPending(next);else onPlay(next);}
   function start(mode:MatchSettings['mode']){setPending(null);setAiOptions(mode==='ai');if(mode!=='ai')launch({...defaultSettings,mode});}
-  return <main className={`home-screen ${draft?'is-drafting':''} ${detailTransition?'is-detail-leaving':''} ${page==='civilization-detail'&&!demoSkill&&tab!=='skills'?'is-reading-civilization':''}`}>
+  return <main className={`home-screen ${draft?'is-drafting':''} ${detailTransition?'is-detail-leaving':''} ${page==='civilization-detail'&&!demoSkill?'is-reading-civilization':''}`}>
     <div className="home-scenery" aria-hidden="true">{scenes.map((c,index)=><div key={c.id} className={`home-scene ${index===displayScene?'visible':''}`}><SceneImage className="home-scene-art" src={civilizationMedia[c.id]!.background!} visible={index===displayScene}/></div>)}</div>
     <div className="home-shade"/>
     <header className="home-header"><a className="home-brand" href="/" aria-label={t('문명체스 홈')}><Crown/><span>{t('문명체스')}<small>CIVILIZATION CHESS</small></span></a><LanguageSwitch/></header>
