@@ -37,7 +37,7 @@
 .is-reading-civilization .home-header{position:relative;z-index:1;width:60%;box-sizing:border-box}
 .is-reading-civilization .home-content.home-content-archive{margin:2vh 5vw 40px}
 .is-reading-civilization .home-panel.home-archive-stage{animation:none;transform:none;backdrop-filter:none}
-.is-reading-civilization .home-scene-controls{display:none}
+.is-reading-civilization .home-scene-controls{display:flex}
 .is-reading-civilization .civilization-detail-view{display:block;margin-top:0;min-height:0}
 .is-reading-civilization .civilization-identity{width:52%;display:flex;gap:18px;padding:0}
 .is-reading-civilization .civilization-identity>.civilization-detail-emblem{display:none}
@@ -52,19 +52,19 @@
 .is-reading-civilization .civilization-history-scroll{padding:26px 10px 20px 0}
 .is-reading-civilization .civilization-history-scroll h3{border:0;padding:0;margin:0 0 20px}
 .is-reading-civilization .civilization-history-scroll p{font-size:clamp(15px,1.1vw,18px);line-height:2;letter-spacing:.01em}
-.is-reading-civilization .civilization-history-seal{padding:20px 0 28px;height:80px;box-sizing:content-box}
+.is-reading-civilization .civilization-history-seal{padding:20px 0 96px;height:80px;box-sizing:content-box}
 @media(max-width:900px){
   .is-reading-civilization .home-header{width:100%}
   .is-reading-civilization .civilization-identity{width:100%;gap:12px}
   .is-reading-civilization .civilization-history-panel{position:relative;inset:auto;width:100%;height:65svh;min-height:300px;margin:18vh 0 0;padding:32px 24px 0;background:linear-gradient(180deg,#090c10db,#080a0df5)}
   .is-reading-civilization .civilization-history-panel::before{inset:auto 0 100%;width:auto;height:12vh;background:linear-gradient(180deg,transparent,#090c10db)}
-  .is-reading-civilization .civilization-history-seal{height:50px;padding:12px 0 18px}
+  .is-reading-civilization .civilization-history-seal{height:50px;padding:12px 0 96px}
   .is-reading-civilization .civilization-history-seal svg{width:50px;height:50px}
   .is-reading-civilization .civilization-detail-tabs button{padding:10px 12px;font-size:13px}
 }
 @media(min-width:901px) and (max-height:600px){
   .is-reading-civilization .civilization-history-panel{padding-top:24px}
-  .is-reading-civilization .civilization-history-seal{height:40px;padding:8px 0 12px}
+  .is-reading-civilization .civilization-history-seal{height:40px;padding:8px 0 96px}
   .is-reading-civilization .civilization-history-seal svg{height:40px;width:40px}
 }
 @media(max-width:900px){.is-reading-civilization .civilization-history-panel{animation-name:civilization-copy-enter}}
@@ -75,4 +75,14 @@
   .is-reading-civilization .civilization-identity,
   .is-reading-civilization .home-back,
   .is-reading-civilization .home-shade{animation:none}
+}
+
+@keyframes civilization-detail-exit{from{opacity:1}to{opacity:0}}
+@keyframes civilization-panel-exit{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(30px)}}
+.civilization-detail-view.detail-skills{animation:civilization-copy-enter .55s cubic-bezier(.22,1,.36,1) both}
+.home-screen.is-detail-leaving .civilization-detail-view{animation:civilization-detail-exit .32s ease-in both;pointer-events:none}
+.home-screen.is-detail-leaving .civilization-history-panel{animation:civilization-panel-exit .32s ease-in both}
+.home-screen.is-detail-leaving .home-back{pointer-events:none}
+@media(prefers-reduced-motion:reduce){
+ .civilization-detail-view.detail-skills,.home-screen.is-detail-leaving .civilization-detail-view,.home-screen.is-detail-leaving .civilization-history-panel{animation:none}
 }
