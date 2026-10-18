@@ -21,6 +21,16 @@
 @media(prefers-reduced-motion:reduce){.civilization-skill-tile{transition:none}.civilization-skill-tile:hover:not(:disabled){transform:none}}
 
 /* Reading view: scenery remains full-bleed; only the text column scrolls. */
+@keyframes civilization-panel-enter{from{opacity:0;transform:translateX(48px)}to{opacity:1;transform:translateX(0)}}
+@keyframes civilization-copy-enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes civilization-menu-enter{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes civilization-shade-enter{from{opacity:0}to{opacity:1}}
+/* Animate children, never the ancestor of the viewport-fixed reading panel. */
+.is-reading-civilization .civilization-history-panel{animation:civilization-panel-enter .75s cubic-bezier(.22,1,.36,1) both}
+.is-reading-civilization .civilization-history-panel>header{animation:civilization-copy-enter .6s .12s both}
+.is-reading-civilization .civilization-history-scroll{animation:civilization-copy-enter .65s .22s both}
+.is-reading-civilization .civilization-identity,.is-reading-civilization .home-back{animation:civilization-menu-enter .65s .08s both}
+.is-reading-civilization .home-shade{animation:civilization-shade-enter .7s both}
 .civilization-reading-label{display:block;margin-top:12px;font-size:13px;color:#bcb9af}
 .civilization-history-seal{display:flex;justify-content:flex-end;align-items:center;flex-shrink:0;padding:16px 32px 26px;opacity:.13;pointer-events:none}
 .is-reading-civilization .home-shade{background:linear-gradient(180deg,#07101670,transparent 38%,#07101635)}
@@ -56,4 +66,13 @@
   .is-reading-civilization .civilization-history-panel{padding-top:24px}
   .is-reading-civilization .civilization-history-seal{height:40px;padding:8px 0 12px}
   .is-reading-civilization .civilization-history-seal svg{height:40px;width:40px}
+}
+@media(max-width:900px){.is-reading-civilization .civilization-history-panel{animation-name:civilization-copy-enter}}
+@media(prefers-reduced-motion:reduce){
+  .is-reading-civilization .civilization-history-panel,
+  .is-reading-civilization .civilization-history-panel>header,
+  .is-reading-civilization .civilization-history-scroll,
+  .is-reading-civilization .civilization-identity,
+  .is-reading-civilization .home-back,
+  .is-reading-civilization .home-shade{animation:none}
 }
