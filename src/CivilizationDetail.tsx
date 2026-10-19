@@ -29,13 +29,11 @@ export default function CivilizationDetail({civilization, developerMode, tab, on
       </nav>);
   return <article className={`civilization-detail-view detail-${tab}`}>
     <header className="civilization-identity">
-      <div className="civilization-detail-emblem" aria-hidden="true">{hasCivilizationIcon(civilization)?<CivilizationIcon civilization={civilization} size={132}/>:<span>{t(civ.name).slice(0,1)}</span>}</div>
-      <div><span className="home-eyebrow">{civ.english}</span><h1>{t(civ.name)}</h1></div>
       {developerMode&&<CivilizationProgress civilization={civilization}/>}
     </header>
     {tab==='skills'&&demo&&<section className="civilization-demo-beside" aria-label={text(`${demo.name} 시연`,`${t(demo.name)} demo`)}>
       <div className="civilization-demo-context"><strong>{t(demo.name)}</strong></div>
-      <FittedDemo>
+      <FittedDemo key={`${civilization}-${demo.id}`}>
         <SkillDemo key={`${civilization}-${demo.id}`} skill={demo} civilization={civilization} color="w" onClose={()=>onDemo(null)}/>
       </FittedDemo>
     </section>}
@@ -67,6 +65,7 @@ function FittedDemo({children}:{children:ReactNode}) {
     if(!outer||!inner)return;
     const fit=()=>{
       const scale=Math.min(1,outer.clientWidth/Math.max(1,inner.scrollWidth),outer.clientHeight/Math.max(1,inner.scrollHeight));
+      outer.dataset.fitted='true';
       inner.style.transform=`translateX(-50%) scale(${scale})`;
     };
     const observer=new ResizeObserver(fit);
