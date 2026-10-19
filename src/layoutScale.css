@@ -1,0 +1,43 @@
+/* Shared desktop geometry, authored for 2560 x 1440 CSS pixels.
+   Keep native responsive flow; do not scale the document or board coordinates. */
+:root{
+  --ui-page-width:2304px;
+  --ui-gutter:clamp(24px,5vw,128px);
+  --ui-page-gap:clamp(20px,2.22vh,32px);
+  --ui-title:clamp(32px,1.875vw,48px);
+  --ui-section-title:clamp(22px,1.1vw,28px);
+  --ui-body:clamp(14px,.703125vw,18px);
+  --ui-control:clamp(44px,3.89vh,56px);
+}
+@media(min-width:1001px){
+  .home-screen .home-header{box-sizing:border-box;width:100%;max-width:2560px;margin-inline:auto;padding:32px var(--ui-gutter)}
+  .home-screen .home-content,
+  .home-screen.is-settings-page .home-content,
+  .home-screen.is-community-page .home-content{box-sizing:border-box;width:calc(100% - 2 * var(--ui-gutter));max-width:var(--ui-page-width);margin:var(--ui-page-gap) auto 80px}
+  .home-screen .home-content-main{margin-top:7vh}
+  .home-screen .settings-page,.home-screen .community-page,
+  .home-screen .home-draft-stage .draft-selection-room{width:100%;max-width:none;margin-inline:0}
+  .home-screen .home-panel>h1,.home-screen .settings-page-title h1,
+  .home-screen .community-heading h1{font-size:var(--ui-title);line-height:1.2;margin-block:12px 24px}
+  .home-screen .home-back,.home-screen .draft-navigation-back{min-height:var(--ui-control);font-size:var(--ui-body)}
+  .home-screen .home-back{margin-bottom:var(--ui-page-gap)}
+  .settings-page-title,.community-heading{padding:12px 0 var(--ui-page-gap)}
+  .settings-page-layout,.profile-layout,.social-layout{padding-top:var(--ui-page-gap);gap:clamp(32px,3.125vw,80px)}
+  .settings-page-layout{grid-template-columns:clamp(240px,15vw,384px) minmax(0,1fr)}
+  .community-page p,.settings-page-title p,.settings-option p{font-size:var(--ui-body)}
+  .community-page h2,.settings-page-body h2{font-size:var(--ui-section-title)}
+  .home-screen .home-play-stage .home-mode-card{min-height:clamp(380px,53vh,760px)}
+  .draft-selection-room{--draft-stage-height:clamp(520px,55.56vh,800px)}
+  .draft-selection-room .draft-theater,
+  .draft-selection-room .draft-theater .theater-card,
+  .draft-selection-room .theater-center,
+  .draft-selection-room .theater-center>.passive-pick-center{height:var(--draft-stage-height)}
+  .draft-selection-room .draft-intro h1{font-size:var(--ui-section-title)}
+  .draft-selection-room>.draft-confirm-controls>.primary-button{min-height:var(--ui-control);font-size:var(--ui-body)}
+  .is-reading-civilization .civilization-history-panel h2{font-size:var(--ui-title)}
+  .app-shell{box-sizing:border-box;width:100%;max-width:2560px;padding-inline:var(--ui-gutter)}
+  .app-shell:not(.is-playing)>main{max-width:var(--ui-page-width)}
+  .app-shell.is-playing>main{max-width:min(1800px,calc(100svh + 280px));padding-top:var(--ui-page-gap)}
+  .app-shell.is-playing .game-layout{grid-template-columns:minmax(0,1fr) clamp(290px,15.625vw,400px);gap:var(--ui-page-gap)}
+  .app-shell.is-playing .site-header{height:96px}
+}

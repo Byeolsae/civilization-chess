@@ -10,3 +10,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 import './ai.css';
 
 import './civilizationUi.css';
+
+import './layoutScale.css';
