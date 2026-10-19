@@ -168,13 +168,16 @@
 .civilization-history-panel>.civilization-history-scroll{text-shadow:0 1px 3px #000,0 2px 8px #000,0 0 16px #000}
 .civilization-panel-emblem img{width:100%;height:100%;object-fit:contain}
 .civilization-panel-emblem>span{font-size:16px;color:#e5cfa0;text-align:center}
-.is-reading-civilization .civilization-skill-grid{display:flex;flex-direction:column;gap:14px;padding:12px 3px 3px}
-.civilization-skill-row{min-width:0;flex:1 0 158px;display:flex;flex-direction:column}
+.is-reading-civilization .civilization-skill-panel{padding-bottom:0}
+.is-reading-civilization .civilization-skill-grid{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(3,minmax(180px,1fr));gap:16px;padding:16px 3px;box-sizing:border-box}
+.civilization-skill-row{min-width:0;min-height:0;display:flex;flex-direction:column}
 .civilization-skill-row>h3{display:flex;align-items:center;gap:12px;margin:0 0 12px;color:#d6c39b;font-size:11px;font-weight:500;letter-spacing:.16em}
 .civilization-skill-row>h3::before,.civilization-skill-row>h3::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,#a58b5359)}
 .civilization-skill-row>h3::after{transform:scaleX(-1)}
 .civilization-skill-row-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:2px;flex:1}
-.is-reading-civilization .civilization-skill-row .civilization-skill-tile{min-height:132px;gap:14px;padding:16px 6px}
-.is-reading-civilization .civilization-skill-row .civilization-skill-art,.is-reading-civilization .civilization-skill-row .civilization-skill-art>svg,.is-reading-civilization .civilization-skill-row .civilization-skill-art>.piece{width:clamp(46px,3.2vw,62px);height:clamp(46px,3.2vw,62px)}
+.is-reading-civilization .civilization-skill-row .civilization-skill-tile{container-type:inline-size;min-height:148px;gap:18px;padding:16px 6px}
+.is-reading-civilization .civilization-skill-row .civilization-skill-art,.is-reading-civilization .civilization-skill-row .civilization-skill-art>svg,.is-reading-civilization .civilization-skill-row .civilization-skill-art>.piece{width:min(72px,50cqw);height:min(72px,50cqw)}
+.is-reading-civilization .civilization-skill-row .civilization-skill-art::before{inset:-6px}
+.is-reading-civilization .civilization-skill-row .civilization-skill-tile>strong{font-size:clamp(14px,12cqw,19px);line-height:1.3}
 .is-reading-civilization .civilization-skill-panel>header{padding-bottom:16px}
 .civilization-skill-panel .civilization-detail-tabs{margin-bottom:16px}
