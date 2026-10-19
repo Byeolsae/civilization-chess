@@ -30,8 +30,10 @@ def main():
     source = Path(sys.argv[1])
     temp = ROOT / 'tmp/audio'
     temp.mkdir(parents=True, exist_ok=True)
-    report = {}
-    for civ, name in SOURCES.items():
+    report_path = ROOT/'public/media/audio-processing.json'
+    report = json.loads(report_path.read_text(encoding='utf-8')) if report_path.exists() else {}
+    selected = {'home': 'Christopher Tin - Sogno di Volare (기본 시작화면).mp3'} if '--home' in sys.argv else SOURCES
+    for civ, name in selected.items():
         raw = run(['-i', str(source/name), '-vn', '-ar', str(RATE), '-ac', '2', '-f', 'f32le', 'pipe:1']).stdout
         x = np.frombuffer(raw, dtype='<f4').reshape(-1, 2)
         original_seconds = len(x)/RATE
@@ -57,6 +59,7 @@ def main():
             'measured_I':'input_i','measured_TP':'input_tp','measured_LRA':'input_lra',
             'measured_thresh':'input_thresh','offset':'target_offset'}.items()) + ':linear=true'
         output = ROOT / f'public/media/{civ}/bgm-loop-v1.mp3'
+        output.parent.mkdir(parents=True, exist_ok=True)
         run(['-y',*input_args,'-af',second,'-ar',str(RATE),'-c:a','libmp3lame','-b:a','160k','-map_metadata','-1',str(output)])
         verified = measurement(run(['-i',str(output),'-af',target+':print_format=json','-f','null','-']).stderr.decode())
         report[civ] = {'source':name,'original_seconds':round(original_seconds,3),'trim_start_seconds':round(start/RATE,3),

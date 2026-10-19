@@ -169,7 +169,7 @@
 .civilization-panel-emblem img{width:100%;height:100%;object-fit:contain}
 .civilization-panel-emblem>span{font-size:16px;color:#e5cfa0;text-align:center}
 .is-reading-civilization .civilization-skill-panel{padding-bottom:0}
-.is-reading-civilization .civilization-skill-grid{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(3,minmax(180px,1fr));gap:16px;padding:16px 3px;box-sizing:border-box}
+.is-reading-civilization .civilization-skill-grid{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(3,minmax(180px,1fr));gap:16px;padding:28px 3px;box-sizing:border-box}
 .civilization-skill-row{min-width:0;min-height:0;display:flex;flex-direction:column}
 .civilization-skill-row>h3{display:flex;align-items:center;gap:12px;margin:0 0 12px;color:#d6c39b;font-size:11px;font-weight:500;letter-spacing:.16em}
 .civilization-skill-row>h3::before,.civilization-skill-row>h3::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,#a58b5359)}

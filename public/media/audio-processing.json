@@ -76,5 +76,16 @@
     "bytes": 4285170,
     "loop_boundary_step": 0.022047,
     "internal_step_p999": 0.080847
+  },
+  "home": {
+    "source": "Christopher Tin - Sogno di Volare (기본 시작화면).mp3",
+    "original_seconds": 238.91,
+    "trim_start_seconds": 0.6,
+    "trim_end_seconds": 9.86,
+    "loop_seconds": 222.45,
+    "crossfade_seconds": 6.0,
+    "integrated_lufs": -18.44,
+    "true_peak_dbtp": -6.75,
+    "bytes": 4450264
   }
 }

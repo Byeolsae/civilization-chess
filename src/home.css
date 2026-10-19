@@ -144,3 +144,6 @@
 .home-settings .display-mode-help{font-size:12px;line-height:1.6;color:#b7c3ce;margin:0 0 12px}
 
 .home-screen .home-scene-controls{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));margin:0;max-width:calc(100vw - 32px);box-sizing:border-box}
+.home-music-credit{position:fixed;left:5vw;bottom:78px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:11px;color:#e8dfcb;z-index:3;text-shadow:0 2px 5px #000}
+.home-music-credit button{border:1px solid #d7c19466;border-radius:4px;background:#0b121bd9;color:#f1dfb7;padding:7px 10px;cursor:pointer;font:inherit}
+@media(max-width:900px){.home-music-credit{left:6vw;right:6vw;bottom:100px;font-size:10px}}
