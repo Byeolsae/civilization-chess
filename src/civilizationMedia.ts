@@ -13,7 +13,7 @@ export const civilizationMedia: Partial<Record<Civilization, CivilizationMedia>>
   sengoku: { background: '/media/sengoku/background-ichijodani-v1.webp', bgm: null },
   edo: { background: '/media/edo/background-nihonbashi-night-v1.webp', bgm: null },
   ming: { background: '/media/ming/background-huizhou-v1.webp', bgm: null },
-  goryeo: { background: '/media/goryeo/background-autumn-temple-v1.webp', bgm: null },
+  goryeo: { background: '/media/goryeo/background-original-layout-v2.webp', bgm: null },
   greece: { background: '/media/greece/background-clear-v1.webp', bgm: '/media/greece/bgm-loop-v1.mp3', credit: { title: 'Kallipolian Dance', artist: 'Farya Faraji & World Musicians · SEIKILO Ancient World Music' } },
   egypt: { background: '/media/egypt/background-clear-v1.webp', bgm: '/media/egypt/bgm-loop-v1.mp3', credit: { title: 'The Legend of Narmer', artist: 'WombatNoisesAudio' } },
   rome: { background: '/media/rome/background-clear-v1.webp', bgm: '/media/rome/bgm-loop-v1.mp3', credit: { title: 'National Anthem of the Roman Empire — S.P.Q.R.', artist: 'VidGames', sourceOnly: true } },
