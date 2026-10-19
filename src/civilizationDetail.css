@@ -86,13 +86,18 @@
 @media(prefers-reduced-motion:reduce){
  .civilization-detail-view.detail-skills,.home-screen.is-detail-leaving .civilization-detail-view,.home-screen.is-detail-leaving .civilization-history-panel{animation:none}
 }
-.civilization-skill-panel .civilization-skill-tile{background:#ffffff04;border-color:transparent;border-radius:4px;box-shadow:none}
-.civilization-skill-panel .civilization-skill-tile:nth-child(n+4){border-top-color:#ffffff12}
-.civilization-skill-panel .civilization-skill-tile:is(:hover,:focus-visible):not(:disabled){background:color-mix(in srgb,var(--draft-accent,#e6c891) 11%,transparent);border-color:color-mix(in srgb,var(--draft-accent,#e6c891) 50%,transparent);transform:translateY(-2px)}
+.civilization-skill-panel .civilization-skill-tile{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(155deg,#ffffff0e,#ffffff03 45%,#0005);border-color:color-mix(in srgb,var(--draft-accent,#e6c891) 24%,transparent);border-radius:6px;box-shadow:inset 0 1px #ffffff0b,0 4px 10px #0003;transition:transform .2s,border-color .2s,background .2s,box-shadow .2s}
+.civilization-skill-panel .civilization-skill-tile::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 50% 42%,color-mix(in srgb,var(--draft-accent,#e6c891) 13%,transparent),transparent 65%);pointer-events:none}
+.civilization-skill-panel .civilization-skill-tile::after{content:"";position:absolute;top:0;left:30%;right:30%;height:2px;background:var(--draft-accent,#e6c891);opacity:.55;pointer-events:none;transition:opacity .2s}
+.civilization-skill-panel .civilization-skill-art{position:relative;border-radius:50%;background:radial-gradient(circle,#ffffff0a,transparent 72%);filter:drop-shadow(0 3px 5px #0009);transition:transform .2s,filter .2s}
+.civilization-skill-panel .civilization-skill-tile:is(:hover,:focus-visible):not(:disabled){background:linear-gradient(155deg,color-mix(in srgb,var(--draft-accent,#e6c891) 15%,#11161c),#0b1018);border-color:color-mix(in srgb,var(--draft-accent,#e6c891) 70%,transparent);box-shadow:inset 0 1px #ffffff20,0 5px 16px #0006;transform:translateY(-2px)}
+.civilization-skill-panel .civilization-skill-tile:is(:hover,:focus-visible):not(:disabled)::after{opacity:1}
+.civilization-skill-panel .civilization-skill-tile:is(:hover,:focus-visible):not(:disabled) .civilization-skill-art{transform:scale(1.06);filter:drop-shadow(0 0 7px color-mix(in srgb,var(--draft-accent,#e6c891) 35%,transparent))}
+.civilization-skill-panel .civilization-skill-tile>strong{text-shadow:0 2px 5px #0009}
 .civilization-skill-panel .civilization-skill-tile>small{color:var(--draft-accent,#c7b68d)}
-.civilization-skill-panel .civilization-skill-tile.is-empty{background:transparent}
+.civilization-skill-panel .civilization-skill-tile.is-empty{background:#ffffff02;border-color:#ffffff10;box-shadow:none}.civilization-skill-panel .civilization-skill-tile.is-empty::before,.civilization-skill-panel .civilization-skill-tile.is-empty::after{display:none}
 @media(max-width:520px){.civilization-skill-panel{padding:16px 10px}.civilization-skill-panel-heading{padding:0 6px 14px;margin-bottom:12px}.civilization-skill-panel .civilization-skill-grid{gap:6px}}
-@media(prefers-reduced-motion:reduce){.civilization-skill-panel .civilization-skill-tile:is(:hover,:focus-visible):not(:disabled){transform:none}}
+@media(prefers-reduced-motion:reduce){.civilization-skill-panel .civilization-skill-tile,.civilization-skill-panel .civilization-skill-art,.civilization-skill-panel .civilization-skill-tile::after{transition:none}.civilization-skill-panel .civilization-skill-tile:is(:hover,:focus-visible):not(:disabled),.civilization-skill-panel .civilization-skill-tile:is(:hover,:focus-visible):not(:disabled) .civilization-skill-art{transform:none}}
 
 /* Skills occupy the same full-height gradient column as the chronicles. */
 .is-reading-civilization .civilization-skill-panel{padding-bottom:96px}
