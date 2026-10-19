@@ -33,9 +33,9 @@ const history: Partial<Record<Civilization, {ko:string;en:string;source:string}>
   goryeo: {ko:'고려의 불교 건축을 이해하는 중요한 사례인 부석사 무량수전은 주심포와 배흘림기둥으로 알려져 있습니다. 1376년 중수설과 11세기 중창설이 함께 전해집니다. 배경은 고려 산사의 건축을 참고한 창작 풍경입니다.',en:'Buseoksa’s Muryangsujeon is an important example of Goryeo Buddhist architecture, known for pillar-top brackets and subtly swelling columns. Scholarship discusses both an 11th-century rebuilding and a 1376 renovation.',source:'https://contents.history.go.kr/mobile/kc/view.do?code=kc_age_20&levelId=kc_r200327'},
 };
 
-export default function HomeScreen({onPlay,onResume,canResume,draft,draftCivilization}:{draftCivilization?:Civilization|null;draft?:ReactNode;onPlay:(settings:MatchSettings)=>void;onResume:()=>void;canResume:boolean}) {
+export default function HomeScreen({onPlay,onResume,canResume,draft,draftCivilization,initialPage='main'}:{initialPage?:'main'|'play';draftCivilization?:Civilization|null;draft?:ReactNode;onPlay:(settings:MatchSettings)=>void;onResume:()=>void;canResume:boolean}) {
   const locale=useLocale(); const text=(ko:string,en:string)=>locale==='ko'?ko:en;
-  const [page,setPage]=useState<Page>('main');
+  const [page,setPage]=useState<Page>(initialPage);
   const developerMode=useDeveloperMode();
   const [progressFilter,setProgressFilter]=useState({...defaultProgressFilter});
   const [archiveSearch,setArchiveSearch]=useState('');
@@ -93,7 +93,8 @@ export default function HomeScreen({onPlay,onResume,canResume,draft,draftCiviliz
   useEffect(()=>{if(scenes.length<2||draft||!cycling||(page==='civilizations'||page==='civilization-detail'))return;const timer=setInterval(()=>setScene(v=>(v+1)%scenes.length),10000);return()=>clearInterval(timer);},[cycling,page,draft]);
   useEffect(()=>{const listener=(e:KeyboardEvent)=>{if(e.key==='Escape'){if(draft)return;if(demoSkill)setDemoSkill(null);else if(page==='civilization-detail')leaveDetail();else setPage('main');}};window.addEventListener('keydown',listener);return()=>window.removeEventListener('keydown',listener);},[page,demoSkill,draft]);
   const drafting=!!draft;
-  useEffect(()=>{if(drafting)window.scrollTo(0,0);},[drafting]);
+  const wasDrafting=useRef(drafting);
+  useEffect(()=>{if(drafting)window.scrollTo(0,0);else if(wasDrafting.current){setPage('play');setAiOptions(false);}wasDrafting.current=drafting;},[drafting]);
   const displayScene=draft&&draftCivilization?scenes.findIndex(c=>c.id===draftCivilization):scene;
   const background=scenes[displayScene];
   const menus:[Page,string,string][]=[['play','플레이하기','PLAY'],['civilizations','문명','CIVILIZATIONS'],['social','소셜','SOCIAL'],['profile','프로필','PROFILE'],['settings','설정','SETTINGS']];

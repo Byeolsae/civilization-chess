@@ -381,7 +381,7 @@ export default function App() {
 
   const localDraft = <Draft onBackgroundChange={setDraftCivilization} initialPicks={rematchPicks} settings={settings} onSettings={() => {setRematchPicks(undefined);setSetupReady(false);}} onStart={(nextPlayers, nextLoadouts) => { window.scrollTo(0,0); setEntering(!matchMedia('(prefers-reduced-motion: reduce)').matches); setPlayers(nextPlayers); setLoadouts(nextLoadouts); setGame(Object.values(nextLoadouts).some(l => Object.values(l).some(id => id !== 'pending')) ? new AbilityGame(nextLoadouts).beginPlacement() : new Chess()); setFlipped(settings.mode === 'ai' && settings.humanColor === 'b'); setStarted(true); }} />;
 
-  if (home || (!started && (!setupReady || settings.mode !== 'online'))) return <HomeScreen draftCivilization={draftCivilization} draft={!home && setupReady && !started ? localDraft : undefined} canResume={started || setupReady} onResume={() => setHome(false)} onPlay={next => {
+  if (home || (!started && (!setupReady || settings.mode !== 'online'))) return <HomeScreen initialPage={home?'main':'play'} draftCivilization={draftCivilization} draft={!home && setupReady && !started ? localDraft : undefined} canResume={started || setupReady} onResume={() => setHome(false)} onPlay={next => {
     reset(); setSettings(next); setSetupReady(true); setHome(false);
     try { localStorage.setItem(SETUP_KEY, JSON.stringify(next)); } catch { setStorageError(true); }
   }}/>;
