@@ -56,9 +56,9 @@ export const skills: Record<Civilization, Record<Category, Skill[]>> = {
       { id: 'twelve-tables', name: '12표법', subtitle: '전장을 다스리는 법', description: '게임 시작 전에 12개 법 슬롯 중 하나를 선택합니다. 로마는 법의 특권을 얻습니다.', detail: '군율법·진군법·징집법 중 하나를 선택합니다. 선택한 법의 제한은 로마에 적용되지 않습니다.', symbol: 'scroll' },
     ],
     active: [
-      { id: 'alesia', name: '알레시아 포위망', subtitle: '벗어날 수 없는 포위', description: '2×2 영역에 2턴 동안 상대가 드나들 수 없는 포위망을 만듭니다.', detail: '아군은 자유롭게 통과합니다. 킹 계열이 포함된 영역은 선택할 수 없습니다.', symbol: 'fence' },
-      { id: 'vesta', name: '베스타의 성화', subtitle: '꺼지지 않는 수호', description: '3턴 동안 성화 주변 8칸의 아군을 전투불능 효과에서 한 번 보호합니다.', detail: '기물마다 한 번 보호합니다. 적이 성화 칸에 들어오면 성화가 사라집니다.', symbol: 'flame' },
-      { id: 'pilum', name: '필룸 투척', subtitle: '공격의 기회를 빼앗다', description: '상대 하나를 무장 해제해 다음 자기 턴의 공격을 막습니다.', detail: '이동은 가능하며 상대의 다음 자기 턴이 끝나면 해제됩니다.', symbol: 'swords' },
+      { id: 'alesia', name: '카이사르', subtitle: '벗어날 수 없는 포위', description: '2×2 영역에 2턴 동안 상대가 드나들 수 없는 포위망을 만듭니다.', detail: '아군은 자유롭게 통과합니다. 킹 계열이 포함된 영역은 선택할 수 없습니다.', symbol: 'fence' },
+      { id: 'vesta', name: '베스타', subtitle: '꺼지지 않는 성화', description: '3턴 동안 성화 주변 8칸의 아군을 전투불능 효과에서 한 번 보호합니다.', detail: '기물마다 한 번 보호합니다. 적이 성화 칸에 들어오면 성화가 사라집니다.', symbol: 'flame' },
+      { id: 'pilum', name: '마르스', subtitle: '전쟁신의 창', description: '상대 하나를 무장 해제해 다음 자기 턴의 공격을 막습니다.', detail: '이동은 가능하며 상대의 다음 자기 턴이 끝나면 해제됩니다.', symbol: 'swords' },
     ],
     piece: [
       { id: 'gladiator', name: '글라디아토르', subtitle: '비숍의 변신', description: '본 게임을 멈추고 적 하나와 별도 콜로세움에서 총 8행동 동안 결투합니다.', detail: '비숍마다 게임당 2회입니다. 8×8에서 시작해 4행동 후 6×6으로 축소됩니다. 글라는 퀸처럼 움직이며 8행동 안에 잡지 못하면 사망합니다.', symbol: 'swords' },
