@@ -216,7 +216,9 @@
 .civ-selection-intro:focus-visible{outline:2px solid var(--draft-accent,#e8bf60);outline-offset:2px;border-radius:4px}
 @media(max-width:760px){.draft-theater.theater-civilizations .duel-card-identity{margin-top:6px;grid-template-rows:76px auto auto minmax(0,1fr)}.draft-theater.theater-civilizations .duel-card-identity>h2{margin:4px 0 8px}.draft-theater.theater-civilizations .duel-card-identity>p{font-size:12px;line-height:1.65;padding:3px 3px 6px}}
 
-.draft-screen .draft-mode-bar{position:sticky;top:8px;z-index:30;flex-wrap:wrap;padding:10px 14px;background:#101a23f2;border:1px solid #e2c99a35;border-radius:6px;box-shadow:0 6px 20px #0003}
-.draft-mode-bar .draft-navigation-back{display:inline-flex;align-items:center;gap:9px;min-height:42px;padding:10px 16px;font-size:14px;color:#f3dfb9;border-color:#d9bb7b88;background:#d9bb7b14}
+.draft-screen .draft-mode-bar{position:relative;z-index:30;flex-wrap:wrap;padding:0;background:none;border:0;border-radius:0;box-shadow:none}
+.draft-screen .draft-mode-bar button{background:none;border:0;box-shadow:none;padding:10px 0;min-height:44px;text-shadow:0 2px 8px #0009}
+.draft-mode-bar .draft-navigation-back{display:inline-flex;align-items:center;gap:9px;font-size:14px;color:#f3dfb9}
+.draft-mode-bar button:hover:not(:disabled){color:#fff;text-decoration:underline;text-underline-offset:5px}
 .draft-mode-bar button:focus-visible{outline:2px solid #e2c99a;outline-offset:3px}
 .draft-mode-bar button:disabled{opacity:.45;cursor:default}
