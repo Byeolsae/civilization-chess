@@ -132,7 +132,7 @@ export default function Draft({ onStart, settings, onSettings, network, initialP
       </div>
       <div className="theater-card theater-black"><DraftCivilizationCard side="b" color={step?.color??'b'} choice={category?null:choice} picks={picks} settings={settings} skillStage={category?.id??false}/></div>
     </div>
-    <div className="draft-controls"><button className="draft-back" onClick={navigateBack} disabled={backDisabled}><ArrowLeft size={16} />{translateUi(backLabel)}</button><span className="draft-counter">{translateUi(picks.length + 1)} / 8<span>{translateUi(category ? '카드 3장 중 하나를 선택하세요' : '같은 문명도 선택할 수 있습니다')}</span></span><button className="primary-button" disabled={!choice || locking || transitioning || aiTurn || onlineWaiting} onClick={() => setLocking(true)}>{translateUi(onlineWaiting ? '상대 선택 대기' : aiTurn ? 'AI 선택 중' : locking ? '선택 확정 중' : '선택 확정')}{translateUi(locking ? <Check size={18} /> : <ArrowRight size={18} />)}</button></div>
+    <div className="draft-controls draft-confirm-controls"><button className="primary-button" disabled={!choice || locking || transitioning || aiTurn || onlineWaiting} onClick={() => setLocking(true)}>{translateUi(onlineWaiting ? '상대 선택 대기' : aiTurn ? 'AI 선택 중' : locking ? '선택 확정 중' : '선택 확정')}{translateUi(locking ? <Check size={18} /> : <ArrowRight size={18} />)}</button></div>
     {translateUi(saveFailed && <p className="storage-warning" role="alert">{translateUi("선택 내용을 저장할 수 없습니다. 새로고침하면 다시 선택해야 합니다.")}</p>)}
   </section>;
 }

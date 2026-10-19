@@ -222,3 +222,9 @@
 .draft-mode-bar button:hover:not(:disabled){color:#fff;text-decoration:underline;text-underline-offset:5px}
 .draft-mode-bar button:focus-visible{outline:2px solid #e2c99a;outline-offset:3px}
 .draft-mode-bar button:disabled{opacity:.45;cursor:default}
+
+/* Keep confirmation centered without a surrounding footer panel. */
+.draft-selection-room>.draft-controls.draft-confirm-controls{display:flex;justify-content:center;align-items:center;position:sticky;bottom:max(16px,env(safe-area-inset-bottom));z-index:5;min-height:0;margin:24px 0 0;padding:8px 0;background:none;border:0;border-radius:0;box-shadow:none;pointer-events:none}
+.draft-selection-room>.draft-confirm-controls>.primary-button{pointer-events:auto;width:min(280px,80vw);min-height:54px;padding:15px 28px;border:1px solid #ead29a;background:linear-gradient(180deg,#e2c78d,#b99a60);color:#1c2026;border-radius:3px;box-shadow:0 5px 18px #0005;font-weight:700;letter-spacing:.06em}
+.draft-selection-room>.draft-confirm-controls>.primary-button:disabled{opacity:.55;background:#30363b;color:#b8b8b4;border-color:#77766b;box-shadow:none}
+.draft-transition-exit>.draft-confirm-controls>.primary-button,.draft-transition-enter>.draft-confirm-controls>.primary-button{pointer-events:none}
