@@ -66,7 +66,7 @@ function FittedDemo({children}:{children:ReactNode}) {
     const fit=()=>{
       const scale=Math.min(1,outer.clientWidth/Math.max(1,inner.scrollWidth),outer.clientHeight/Math.max(1,inner.scrollHeight));
       outer.dataset.fitted='true';
-      inner.style.transform=`translateX(-50%) scale(${scale})`;
+      inner.style.transform=`translate(-50%,-50%) scale(${scale})`;
     };
     const observer=new ResizeObserver(fit);
     observer.observe(outer);observer.observe(inner);fit();

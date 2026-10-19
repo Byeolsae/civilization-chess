@@ -143,3 +143,23 @@
 @media(max-width:900px){.civilization-demo-beside{left:2vw;right:2vw;top:85px;bottom:85px;width:auto;padding:10px}}
 @media(min-width:901px) and (max-height:650px){.civilization-demo-beside{top:135px;bottom:16px}}
 @media(prefers-reduced-motion:reduce){.civilization-demo-fit-content{transition:none}.civilization-demo-beside .civilization-demo-stage.skill-preview-slot .skill-demo{animation:none}}
+
+/* Keep the preview clear of navigation, the right panel and scenery controls. */
+.civilization-demo-beside{left:4vw;top:175px;bottom:100px;width:52vw}
+.civilization-demo-fit-content{height:auto;min-height:0;top:50%;transform-origin:center center}
+.civilization-demo-beside .civilization-demo-stage.skill-preview-slot .skill-demo{min-height:0;padding:18px;gap:16px;border-radius:8px;background:#0b1019d9}
+.civilization-demo-beside .demo-visual{max-width:440px}
+/* Original card framing inspired by the reference: embossed back and diamond crest. */
+.civilization-skill-panel .civilization-skill-tile{background:linear-gradient(145deg,#292b30,#17191f 65%,#202127);border:2px solid #72634c;border-radius:9px;box-shadow:inset 0 0 0 3px #101217,inset 0 0 0 4px #ffffff0b,0 4px 8px #0006}
+.civilization-skill-panel .civilization-skill-tile::before{inset:6px;border:1px solid #b7a17920;border-radius:5px;background:radial-gradient(circle at 0 50%,transparent 7px,#b8aa8b0b 8px,#b8aa8b0b 9px,transparent 10px),radial-gradient(circle at 100% 50%,transparent 7px,#b8aa8b0b 8px,#b8aa8b0b 9px,transparent 10px);background-size:24px 32px;opacity:.8}
+.civilization-skill-panel .civilization-skill-tile::after{display:none}
+.is-reading-civilization .civilization-skill-tile{padding:12px 7px;gap:10px}
+.civilization-skill-panel .civilization-skill-art{isolation:isolate;border-radius:0;background:none;color:#f5df9e;filter:drop-shadow(0 3px 3px #0008);margin:9px 0}
+.civilization-skill-panel .civilization-skill-art::before{content:"";position:absolute;inset:-4px;z-index:-1;transform:rotate(45deg);border:2px solid #8f7a55;border-radius:5px;background:linear-gradient(135deg,#25221d,#111214);box-shadow:0 0 0 2px #101114, inset 0 0 0 2px #d4ba7918}
+.civilization-skill-panel .civilization-skill-tile>strong{color:#f0e2c5}
+.civilization-skill-panel .civilization-skill-tile>small{color:#c7b794}
+.civilization-skill-panel .civilization-skill-preview-label{color:#a99d85}
+.civilization-skill-panel .civilization-skill-tile:is(:hover,:focus-visible,[aria-pressed=true]):not(:disabled){border-color:#d6b978;background:linear-gradient(145deg,#363329,#1b1d23);box-shadow:inset 0 0 0 3px #101217,0 0 14px #d6b97820}
+.civilization-skill-panel .civilization-skill-tile.is-empty .civilization-skill-art::before{opacity:.25}
+@media(max-width:900px){.civilization-demo-beside{left:5vw;right:5vw;top:150px;bottom:105px;width:auto;padding:12px}.civilization-demo-fit-content{width:100%}}
+@media(max-height:650px){.civilization-demo-beside{top:140px;bottom:90px}}
