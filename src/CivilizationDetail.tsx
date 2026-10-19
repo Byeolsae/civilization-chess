@@ -22,12 +22,6 @@ export default function CivilizationDetail({civilization, developerMode, tab, on
 }) {
   const locale=useLocale(), text=(ko:string,en:string)=>locale==='ko'?ko:en;
   const civ=civilizations.find(c=>c.id===civilization)!;
-  if(demo) return <article className="civilization-demo-page" aria-label={text(`${demo.name} 시연`,`${t(demo.name)} demo`)}>
-    <div className="civilization-demo-context"><span>{t(civ.name)}</span><span> / </span><strong>{t(demo.name)}</strong></div>
-    <div className="skill-preview-slot civilization-demo-stage">
-      <SkillDemo key={`${civilization}-${demo.id}`} skill={demo} civilization={civilization} color="w" onClose={()=>onDemo(null)}/>
-    </div>
-  </article>;
   return <article className={`civilization-detail-view detail-${tab}`}>
     <header className="civilization-identity">
       <div className="civilization-detail-emblem" aria-hidden="true">{hasCivilizationIcon(civilization)?<CivilizationIcon civilization={civilization} size={132}/>:<span>{t(civ.name).slice(0,1)}</span>}</div>
@@ -40,6 +34,12 @@ export default function CivilizationDetail({civilization, developerMode, tab, on
       <DeveloperModeToggle/>
       {developerMode&&<CivilizationProgress civilization={civilization}/>}
     </header>
+    {tab==='skills'&&demo&&<section className="civilization-demo-beside" aria-label={text(`${demo.name} 시연`,`${t(demo.name)} demo`)}>
+      <div className="civilization-demo-context"><strong>{t(demo.name)}</strong></div>
+      <div className="skill-preview-slot civilization-demo-stage">
+        <SkillDemo key={`${civilization}-${demo.id}`} skill={demo} civilization={civilization} color="w" onClose={()=>onDemo(null)}/>
+      </div>
+    </section>}
     {tab!=='skills'?<section className="civilization-history-panel" aria-labelledby="civilization-history-title">
       <header><small>{tab==='intro'?'INTRODUCTION':'CHRONICLES'}</small><h2 id="civilization-history-title">{t(civ.name)}</h2><span className="civilization-reading-label">{tab==='intro'?text('소개문구','Introduction'):text('역사 설명','History')}</span></header>
       <div key={tab} className="civilization-history-scroll" role="region" aria-label={tab==='intro'?text(`${civ.name} 소개문구`,`${t(civ.name)} introduction`):text(`${civ.name} 역사 본문`,`${t(civ.name)} history text`)} tabIndex={0}>
@@ -50,7 +50,7 @@ export default function CivilizationDetail({civilization, developerMode, tab, on
       <header><small>ABILITIES</small><h2>{t(civ.name)}</h2><span className="civilization-reading-label">{text('문명별 스킬 · 선택하면 시연을 볼 수 있습니다.','Skills · Select to watch a demonstration.')}</span></header>
       <div className="civilization-skill-grid">{categories.flatMap(category=>Array.from({length:3},(_,index)=>{
         const skill=skills[civilization][category.id][index];
-        return <button key={`${category.id}-${index}`} className={`civilization-skill-tile ${skill?'':'is-empty'}`} disabled={!skill} onClick={()=>skill&&onDemo(skill)} aria-label={skill?text(`${skill.name} 시연 보기`,`Watch ${t(skill.name)} demo`):text(`${category.name} ${index+1} 미등록`,`${t(category.name)} ${index+1} unavailable`)}>
+        return <button key={`${category.id}-${index}`} className={`civilization-skill-tile ${skill?'':'is-empty'}`} aria-pressed={!!skill&&demo?.id===skill.id} disabled={!skill} onClick={()=>skill&&onDemo(skill)} aria-label={skill?text(`${skill.name} 시연 보기`,`Watch ${t(skill.name)} demo`):text(`${category.name} ${index+1} 미등록`,`${t(category.name)} ${index+1} unavailable`)}>
           <small>{t(category.name)}<span>{String(index+1).padStart(2,'0')}</span></small>
           <span className="civilization-skill-art" aria-hidden="true">{skill?(specialPieceTypes[skill.id]?<Piece type={specialPieceTypes[skill.id]} color="w" civilization={civilization} skill={skill.id}/>:<SkillSymbol skill={skill}/>):<span>—</span>}</span>
           <strong>{skill?t(skill.name):text('미등록','Unavailable')}</strong>
