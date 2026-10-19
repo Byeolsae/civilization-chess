@@ -21,6 +21,15 @@ export default function CivilizationDetail({civilization, developerMode, tab, on
 }) {
   const locale=useLocale(), text=(ko:string,en:string)=>locale==='ko'?ko:en;
   const civ=civilizations.find(c=>c.id===civilization)!;
+  const panelRef=useRef<HTMLElement>(null);
+  useLayoutEffect(()=>{
+    const panel=panelRef.current, heading=panel?.querySelector('header');
+    if(!panel||!heading)return;
+    const alignEmblem=()=>panel.style.setProperty('--emblem-area-top',`${heading.offsetTop+heading.offsetHeight}px`);
+    const observer=new ResizeObserver(alignEmblem);
+    observer.observe(panel);observer.observe(heading);alignEmblem();
+    return()=>observer.disconnect();
+  },[tab,locale]);
   const tabs=(<nav className="civilization-detail-tabs" aria-label={text('문명 상세 메뉴','Civilization details')}>
         <button aria-pressed={tab==='intro'} onClick={()=>onTab('intro')}>{text('소개문구','Introduction')}</button>
         <button aria-pressed={tab==='history'} onClick={()=>onTab('history')}>{text('역사 설명','History')}</button>
@@ -36,14 +45,14 @@ export default function CivilizationDetail({civilization, developerMode, tab, on
         <SkillDemo key={`${civilization}-${demo.id}`} skill={demo} civilization={civilization} color="w" onClose={()=>onDemo(null)}/>
       </FittedDemo>
     </section>}
-    {tab!=='skills'?<section className="civilization-history-panel" aria-labelledby="civilization-history-title">
+    {tab!=='skills'?<section ref={panelRef} className="civilization-history-panel" aria-labelledby="civilization-history-title">
       <header>{tabs}<small>{tab==='intro'?'INTRODUCTION':'CHRONICLES'}</small><h2 id="civilization-history-title">{t(civ.name)}</h2><span className="civilization-reading-label">{tab==='intro'?text('소개문구','Introduction'):text('역사 설명','History')}</span></header>
       <div className="civilization-panel-emblem" aria-hidden="true">{hasCivilizationIcon(civilization)?<CivilizationIcon civilization={civilization} size={124}/>:<span>{civ.english}</span>}</div>
       <div key={tab} className="civilization-history-scroll" role="region" aria-label={tab==='intro'?text(`${civ.name} 소개문구`,`${t(civ.name)} introduction`):text(`${civ.name} 역사 본문`,`${t(civ.name)} history text`)} tabIndex={0}>
         {tab==='intro'?<p>{civilizationIntros[civilization][locale]}</p>:history?<><h3>{text('역사와 풍경','History and landscape')}</h3><p>{history[locale]}</p><a href={history.source} target="_blank" rel="noreferrer">{text('역사 자료 보기 ↗','Read historical source ↗')}</a></>:<p>{text('역사 설명을 준비하고 있습니다. 역사 자료를 확인한 뒤 추가할 예정입니다.','Historical notes are being prepared and will be added after reviewing sources.')}</p>}
       </div>
 
-    </section>:<section className={`civilization-history-panel civilization-skill-panel theme-${civilization}`} aria-label={text('문명 스킬 9칸','Nine civilization skill slots')}>
+    </section>:<section ref={panelRef} className={`civilization-history-panel civilization-skill-panel theme-${civilization}`} aria-label={text('문명 스킬 9칸','Nine civilization skill slots')}>
       <header>{tabs}<small>ABILITIES</small><h2>{t(civ.name)}</h2><span className="civilization-reading-label">{text('문명별 스킬 · 선택하면 시연을 볼 수 있습니다.','Skills · Select to watch a demonstration.')}</span></header>
       <div className="civilization-panel-emblem" aria-hidden="true">{hasCivilizationIcon(civilization)?<CivilizationIcon civilization={civilization} size={124}/>:<span>{civ.english}</span>}</div>
       <div className="civilization-skill-grid">{categories.map(category=><section className="civilization-skill-row" key={category.id} aria-label={t(category.name)}><h3>{t(category.name)}</h3><div className="civilization-skill-row-cards">{Array.from({length:3},(_,index)=>{
