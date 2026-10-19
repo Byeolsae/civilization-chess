@@ -100,7 +100,7 @@
 @media(prefers-reduced-motion:reduce){.civilization-skill-panel .civilization-skill-tile,.civilization-skill-panel .civilization-skill-art,.civilization-skill-panel .civilization-skill-tile::after{transition:none}.civilization-skill-panel .civilization-skill-tile:is(:hover,:focus-visible):not(:disabled),.civilization-skill-panel .civilization-skill-tile:is(:hover,:focus-visible):not(:disabled) .civilization-skill-art{transform:none}}
 
 /* Skills occupy the same full-height gradient column as the chronicles. */
-.is-reading-civilization .civilization-skill-panel{padding-bottom:96px}
+.is-reading-civilization .civilization-skill-panel{padding:clamp(24px,4vh,44px) clamp(16px,2vw,32px) 24px}
 .is-reading-civilization .civilization-skill-grid{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;grid-template-rows:repeat(3,minmax(145px,1fr));gap:8px;padding:20px 4px 8px 0;scrollbar-width:thin;scrollbar-color:#dec59466 transparent;animation:civilization-copy-enter .65s .22s both}
 .is-reading-civilization .civilization-skill-tile{min-height:145px;padding:10px 4px;gap:8px}
 .is-reading-civilization .civilization-skill-tile>strong{font-size:clamp(12px,1vw,16px)}
@@ -168,10 +168,13 @@
 .civilization-history-panel>.civilization-history-scroll{text-shadow:0 1px 3px #000,0 2px 8px #000,0 0 16px #000}
 .civilization-panel-emblem img{width:100%;height:100%;object-fit:contain}
 .civilization-panel-emblem>span{font-size:16px;color:#e5cfa0;text-align:center}
-.is-reading-civilization .civilization-skill-grid{display:flex;flex-direction:column;gap:18px;padding-top:8px}
-.civilization-skill-row{min-width:0;flex:none}
+.is-reading-civilization .civilization-skill-grid{display:flex;flex-direction:column;gap:14px;padding:12px 3px 3px}
+.civilization-skill-row{min-width:0;flex:1 0 158px;display:flex;flex-direction:column}
 .civilization-skill-row>h3{display:flex;align-items:center;gap:12px;margin:0 0 12px;color:#d6c39b;font-size:11px;font-weight:500;letter-spacing:.16em}
 .civilization-skill-row>h3::before,.civilization-skill-row>h3::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,#a58b5359)}
 .civilization-skill-row>h3::after{transform:scaleX(-1)}
-.civilization-skill-row-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:2px}
-.is-reading-civilization .civilization-skill-row .civilization-skill-tile{min-height:120px;gap:12px;padding:14px 6px}
+.civilization-skill-row-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:2px;flex:1}
+.is-reading-civilization .civilization-skill-row .civilization-skill-tile{min-height:132px;gap:14px;padding:16px 6px}
+.is-reading-civilization .civilization-skill-row .civilization-skill-art,.is-reading-civilization .civilization-skill-row .civilization-skill-art>svg,.is-reading-civilization .civilization-skill-row .civilization-skill-art>.piece{width:clamp(46px,3.2vw,62px);height:clamp(46px,3.2vw,62px)}
+.is-reading-civilization .civilization-skill-panel>header{padding-bottom:16px}
+.civilization-skill-panel .civilization-detail-tabs{margin-bottom:16px}
