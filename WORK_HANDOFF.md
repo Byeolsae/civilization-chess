@@ -1,5 +1,7 @@
 # 작업 이어받기
 
+2026-10-20 최신 화면 기본값: 자동은 PC·태블릿·모바일 모두 화면 맞춤. 이전 PC 자동 QHD 지침을 대체. QHD 고정 2560×1440은 수동 선택으로 유지하며, 기존 자동 저장값에도 새 동작 적용. 입력 좌표 구조는 변경하지 않음.
+
 2026-10-19 최신 승인·적용: “ㅇㅋ 이거 푸시” 요청으로 goryeo-original-layout 최종 선택. 기존 구도 유지·왼쪽 갈색 목재 두 기둥 버전이며 public/media/goryeo/background-original-layout-v2.webp에 원본 WebP 그대로 복사·연결. PNG·프롬프트·REVIEW·최신 기준 함께 공유. 아래 미적용 문구는 승인 이전 상태. courtyard-rebuilt 및 two-columns는 거부된 로컬 시안.
 
 2026-10-19 구도 재지정 후속: 사용자 지정 원본(c86cb4f2 PNG)으로 되돌아가 왼쪽 목조 전각만 갈색 목재·두 기둥으로 편집한 goryeo-original-layout 생성. art/backgrounds/2026-10-19/에 PNG·프롬프트·WebP 저장. 원래 계단/바닥/풍경 구도 유지, 흙마당 재작업은 거부된 방향. 미적용·미푸시.
