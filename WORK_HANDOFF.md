@@ -165,6 +165,8 @@
 
 ## 확정 방향
 
+- 2026-10-20 화면 설정: DisplayHost가 동일 출처 iframe의 실제 2560×1440 viewport를 비례 표시. PC 기본 QHD 자동(letterbox), 모바일(좁은 창/터치 태블릿) 기본 responsive. 설정→화면에 자동/QHD/화면 맞춤 및 UI 80~120% 선택. localStorage display.v1 저장. App은 프레임 내부에서 유지되어 설정 변경시 재마운트 안 함. frameElement data-game-viewport로 중첩 방지(홈 링크도 정상). 좌표/고정요소/모달은 자식 문서의 동일 CSS 좌표계 사용. 실제 포인터 브라우저 검수는 별도로 필요.
+
 - 2026-10-20: 사용자가 그리스 액티브 벡터 1차 시안 삭제 요청. 3종과 비교판 제거, 이전 상징 아이콘 복원. 다음 스킬 그림은 사용자가 제공할 이미지를 바탕으로 제작. QHD 공통 header 폭이 문명 상세의 60% 폭을 덮어 언어 버튼과 역사/스킬 탭이 겹쳤음. 공통 규칙에서 상세 header 제외하고 좌측 60%에 제한. QHD는 반응형 디자인 기준이며 물리 모니터 해상도 강제/전체 transform 확대는 하지 않음.
 
 - 2026-10-20 그리스 액티브 1차 벡터 시안 적용: `public/skills/greek-vector-v1/{zeus,poseidon,hades}.svg`, `GreekSkillIcon.tsx` 연결. 512 viewBox/단색 currentColor/투명 여백, 직접 벡터 작성. 원화 비교 `art/skills/greek-vector-v1/review.html`, 근거와 검수 REVIEW.md. 빌드 및 실제 카드 렌더 확인, 사용자 미술 승인 대기.
