@@ -10,7 +10,7 @@
   --ui-control:clamp(44px,3.89vh,56px);
 }
 @media(min-width:1001px){
-  .home-screen .home-header{box-sizing:border-box;width:100%;max-width:2560px;margin-inline:auto;padding:32px var(--ui-gutter)}
+  .home-screen:not(.is-reading-civilization) .home-header{box-sizing:border-box;width:100%;max-width:2560px;margin-inline:auto;padding:32px var(--ui-gutter)}
   .home-screen .home-content,
   .home-screen.is-settings-page .home-content,
   .home-screen.is-community-page .home-content{box-sizing:border-box;width:calc(100% - 2 * var(--ui-gutter));max-width:var(--ui-page-width);margin:var(--ui-page-gap) auto 80px}
@@ -40,4 +40,11 @@
   .app-shell.is-playing>main{max-width:min(1800px,calc(100svh + 280px));padding-top:var(--ui-page-gap)}
   .app-shell.is-playing .game-layout{grid-template-columns:minmax(0,1fr) clamp(290px,15.625vw,400px);gap:var(--ui-page-gap)}
   .app-shell.is-playing .site-header{height:96px}
+}
+
+/* The detail panel owns the right 38%; keep language controls in the left area.
+   Applying the general full-width header here blocks the History/Skills tabs. */
+@media(min-width:901px){
+  .home-screen.is-reading-civilization .home-header{width:60%;max-width:none;margin:0;padding:32px clamp(24px,3vw,64px)}
+  .is-reading-civilization .civilization-history-panel .civilization-detail-tabs button{min-height:44px;white-space:normal;overflow-wrap:anywhere}
 }

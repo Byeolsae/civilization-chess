@@ -165,6 +165,8 @@
 
 ## 확정 방향
 
+- 2026-10-20: 사용자가 그리스 액티브 벡터 1차 시안 삭제 요청. 3종과 비교판 제거, 이전 상징 아이콘 복원. 다음 스킬 그림은 사용자가 제공할 이미지를 바탕으로 제작. QHD 공통 header 폭이 문명 상세의 60% 폭을 덮어 언어 버튼과 역사/스킬 탭이 겹쳤음. 공통 규칙에서 상세 header 제외하고 좌측 60%에 제한. QHD는 반응형 디자인 기준이며 물리 모니터 해상도 강제/전체 transform 확대는 하지 않음.
+
 - 2026-10-20 그리스 액티브 1차 벡터 시안 적용: `public/skills/greek-vector-v1/{zeus,poseidon,hades}.svg`, `GreekSkillIcon.tsx` 연결. 512 viewBox/단색 currentColor/투명 여백, 직접 벡터 작성. 원화 비교 `art/skills/greek-vector-v1/review.html`, 근거와 검수 REVIEW.md. 빌드 및 실제 카드 렌더 확인, 사용자 미술 승인 대기.
 
 - 화면 크기 공통 기준: QHD 2560×1440 CSS px. `layoutScale.css`를 마지막에 로드. 데스크톱 공통 최대 콘텐츠 2304px/좌우128px/제목48px/버튼56px, 화면에 따라 clamp로 축소. 1000px 이하 기존 반응형 유지. 전체 transform/zoom 금지(보드 포인터 좌표 보존).
