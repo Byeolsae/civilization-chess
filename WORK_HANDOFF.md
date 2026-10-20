@@ -165,6 +165,8 @@
 
 ## 확정 방향
 
+- 2026-10-20 그리스 액티브 1차 벡터 시안 적용: `public/skills/greek-vector-v1/{zeus,poseidon,hades}.svg`, `GreekSkillIcon.tsx` 연결. 512 viewBox/단색 currentColor/투명 여백, 직접 벡터 작성. 원화 비교 `art/skills/greek-vector-v1/review.html`, 근거와 검수 REVIEW.md. 빌드 및 실제 카드 렌더 확인, 사용자 미술 승인 대기.
+
 - 화면 크기 공통 기준: QHD 2560×1440 CSS px. `layoutScale.css`를 마지막에 로드. 데스크톱 공통 최대 콘텐츠 2304px/좌우128px/제목48px/버튼56px, 화면에 따라 clamp로 축소. 1000px 이하 기존 반응형 유지. 전체 transform/zoom 금지(보드 포인터 좌표 보존).
 
 - 픽창 상단 내비게이션(검은 바·버튼 테두리 없이 화살표와 뒤로가기 텍스트): 로컬/AI는 이전 선택, 첫 선택에서는 플레이 메뉴로. 선택 중에도 별도 메뉴 복귀 가능. 온라인은 서버 선택을 임의로 되돌리지 않고 방 나가기 제공. 하단 바와 중복 뒤로가기·카운터는 제거하고 선택 확정 버튼만 중앙 아래 독립 배치. HomeScreen은 픽창 종료 시 플레이 모드 메뉴로 복귀.
