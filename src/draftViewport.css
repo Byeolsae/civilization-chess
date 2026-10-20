@@ -1,0 +1,84 @@
+/* The draft owns the available viewport. No fixed minimum stage height. */
+.home-screen.is-drafting{height:100dvh;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.home-screen.is-drafting .home-header{flex:0 0 auto;padding:8px 3vw;min-height:0}
+.home-screen.is-drafting .home-content.home-draft-stage{flex:1;min-height:0;width:94%;max-width:2304px;margin:0 auto;padding:0 0 max(8px,env(safe-area-inset-bottom));display:flex;flex-direction:column}
+.home-draft-stage .draft-screen.draft-selection-room{flex:1;min-height:0;height:100%;padding:0;display:flex;flex-direction:column;gap:8px}
+.home-draft-stage .draft-mode-bar{flex:none;min-height:36px;gap:8px}
+.home-draft-stage .draft-mode-bar button{min-height:36px;padding:4px 0}
+.home-draft-stage .draft-progress{flex:none;margin:0;gap:12px}
+.home-draft-stage .draft-intro{flex:none;padding:0}
+.home-draft-stage .draft-intro h1{font-size:clamp(18px,2.2vh,28px);margin:4px 0!important}
+.home-draft-stage .draft-intro p{margin:0!important;font-size:12px}
+.home-draft-stage .draft-theater{flex:1;min-height:0;height:auto;margin:0;container-type:size}
+.home-draft-stage .draft-theater .theater-card,.home-draft-stage .draft-theater .theater-center{height:100%;top:0}
+.home-draft-stage .theater-center>.passive-pick-center{height:100%;min-height:0;grid-template-rows:80px minmax(0,1fr);gap:8px}
+.home-draft-stage .draft-theater .theater-card>.duel-civ-card{overflow:hidden;padding:12px}
+.home-draft-stage .draft-confirm-controls.draft-controls{position:relative;bottom:auto;flex:none;margin:0;padding:0;min-height:44px}
+.home-draft-stage .draft-confirm-controls>.primary-button{min-height:44px;padding:10px 24px}
+.home-draft-stage .civ-pick-roster{padding:8px;gap:6px;overflow:hidden}
+.home-draft-stage .civ-continent-filter{flex:none;flex-wrap:wrap;margin:0;gap:2px}
+.home-draft-stage .civ-continent-filter button{min-height:28px;padding:4px 7px;font-size:11px}
+.home-draft-stage .civ-pick-search{flex:none;margin:0;min-height:34px;padding:4px 8px}
+.home-draft-stage .civ-pick-dev-tools{flex:none}
+.home-draft-stage .theater-center .civ-pick-grid{overflow:hidden;align-content:stretch;gap:6px;padding:2px}
+.home-draft-stage .civ-pick-tile{min-height:0;padding:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.home-draft-stage .civ-pick-emblem{width:40px;height:40px;min-height:0;margin:0}
+.home-draft-stage .civ-pick-emblem>svg{width:100%;height:100%}
+.home-draft-stage .civ-pick-tile strong{font-size:11px;line-height:1.2}
+.civ-pick-pages{flex:none;display:flex;justify-content:center;align-items:center;gap:16px;height:36px}
+.civ-pick-pages button{width:44px;height:36px;background:#1b2a36;border:1px solid #d2bc8055;color:#ffe6ad;border-radius:4px;font-size:24px}
+.civ-pick-pages button:disabled{opacity:.3}
+.civ-pick-pages span{font-size:12px;color:#d4c7ac}
+.home-draft-stage .draft-theater .duel-card-identity{min-height:0;margin:8px 0 0;display:flex;flex:1;flex-direction:column;justify-content:center;align-items:center;gap:6px}
+.home-draft-stage .draft-theater .duel-card-identity>.civ-pick-hero{min-height:0;flex:0 1 120px;height:120px;width:100%}
+.home-draft-stage .duel-card-identity>.civ-pick-hero .civilization-icon{max-width:100%;max-height:100%}
+.home-draft-stage .draft-theater .duel-card-identity h2{font-size:clamp(18px,2vw,30px);margin:0}
+.home-draft-stage .draft-theater .duel-card-identity>p{flex:0 1 auto;height:auto;max-height:12em;padding:4px;margin:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;font-size:12px;line-height:1.7}
+.home-draft-stage .civ-card-skill-icons{height:auto;flex:none;margin:10px 0;width:100%}
+.home-draft-stage .civ-pick-pieces{margin:0}
+.home-draft-stage .passive-symbol-option{padding:5px;grid-template-columns:40px minmax(0,1fr);grid-template-rows:1fr 18px;gap:2px}
+.home-draft-stage .passive-option-symbol{width:38px;height:38px}
+.home-draft-stage .passive-symbol-option strong{font-size:13px}
+.home-draft-stage .passive-choice-indicator{font-size:10px;padding:0}
+.home-draft-stage .passive-demo-placeholder{min-height:0;height:100%}
+/* Size the demo board from its allotted area, including captured pieces. */
+.home-draft-stage .theater-center .passive-demo-slot .skill-demo-compact{height:100%;width:100%;min-height:0;grid-template-rows:38px minmax(0,1fr) 145px;gap:5px;padding:8px;container-type:size}
+.home-draft-stage .theater-center .passive-demo-slot .skill-demo-compact .demo-visual{width:min(100%,calc(100cqh - 225px));height:auto;min-height:0;align-self:center;overflow:hidden}
+.home-draft-stage .skill-demo-compact .demo-visual .board-frame{width:100%;max-width:none}
+.home-draft-stage .theater-center .passive-demo-slot .skill-demo-compact .demo-explanation{overflow:visible;padding:0}
+.home-draft-stage .theater-center .passive-demo-slot .skill-demo-compact .demo-caption{height:auto;min-height:0;max-height:none;margin:4px 0;padding:4px;font-size:12px;line-height:1.4;overflow:visible}
+.home-draft-stage .demo-details{font-size:11px}
+.home-draft-stage .demo-details[open]{position:absolute;inset:8px;z-index:20;padding:12px;background:#0b1726;border:1px solid #cdb47a88;border-radius:6px;overflow:auto}
+.home-draft-stage .demo-details summary{cursor:pointer;min-height:24px}
+@media(max-width:760px){
+ .home-screen.is-drafting .home-header{padding:4px 3vw}
+ .home-screen.is-drafting .home-header .home-brand{font-size:14px}
+ .home-draft-stage .draft-progress{gap:5px}
+ .home-draft-stage .draft-progress>div{font-size:10px;gap:3px}
+ .home-draft-stage .draft-intro p,.home-draft-stage .draft-eyebrow{display:none}
+ .home-draft-stage .draft-theater .theater-card{height:72px;width:49%;transform:none}
+ .home-draft-stage .draft-theater .theater-center{top:80px;left:0;width:100%;height:calc(100% - 80px)}
+ .home-draft-stage .draft-theater .theater-card>.duel-civ-card{padding:5px 8px}
+ .home-draft-stage .duel-card-owner{font-size:10px}
+ .home-draft-stage .draft-theater .duel-card-identity{margin:0;flex-direction:row;justify-content:flex-start;gap:8px}
+ .home-draft-stage .draft-theater .duel-card-identity>.civ-pick-hero{width:32px;height:32px;flex:0 0 32px}
+ .home-draft-stage .draft-theater .duel-card-identity h2{font-size:15px}
+ .home-draft-stage .draft-theater .duel-card-identity>p,.home-draft-stage .duel-card-identity>small,.home-draft-stage .civ-pick-pieces,.home-draft-stage .civ-card-skill-icons{display:none}
+ .home-draft-stage .theater-center>.passive-pick-center{grid-template-rows:68px minmax(0,1fr)}
+ .home-draft-stage .passive-option-symbol{width:30px;height:30px}
+ .home-draft-stage .passive-symbol-option{grid-template-columns:30px minmax(0,1fr)}
+ .home-draft-stage .passive-symbol-option strong{font-size:11px}
+}
+@media(max-height:650px){
+ .home-screen.is-drafting .home-header{display:none}
+ .home-draft-stage .draft-progress,.home-draft-stage .draft-intro p,.home-draft-stage .draft-eyebrow{display:none}
+ .home-draft-stage .draft-screen.draft-selection-room{gap:4px}
+ .home-draft-stage .draft-intro h1{font-size:16px}
+ .home-draft-stage .draft-theater .duel-card-identity>p,.home-draft-stage .duel-card-state,.home-draft-stage .civ-pick-pieces{display:none}
+ .home-draft-stage .theater-center>.passive-pick-center{grid-template-rows:60px minmax(0,1fr);gap:4px}
+ .home-draft-stage .theater-center .passive-demo-slot .skill-demo-compact{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:30px minmax(0,1fr);gap:4px}
+ .home-draft-stage .skill-demo-compact>header{grid-column:1/-1}
+ .home-draft-stage .theater-center .passive-demo-slot .skill-demo-compact .demo-visual{width:min(100%,calc(100cqh - 64px))}
+ .home-draft-stage .demo-timeline{flex-wrap:wrap;gap:2px}
+ .home-draft-stage .demo-timeline span{display:none}
+}

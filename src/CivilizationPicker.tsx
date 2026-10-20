@@ -4,7 +4,7 @@ import DeveloperModeToggle from './DeveloperModeToggle';
 import { useDeveloperMode } from './developerMode';
 import ProgressFilters from './ProgressFilters';
 import { civilizationProgress, defaultProgressFilter, matchesProgress } from './civilizationProgress';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Color } from 'chess.js';
 import { Search, Check, Crown, Globe2 } from 'lucide-react';
 import { civilizations, civilizationAppearance, regions } from './civilizations';
@@ -29,6 +29,24 @@ export default function CivilizationPicker({choice,color,disabled,onChoose,picks
   const [progressFilter,setProgressFilter]=useState({...defaultProgressFilter});
   const candidates=useMemo(()=>filterCivilizations(query,region).filter(c=>isDraftCivilization(c.id)),[query,region,locale]);
   const visible=useMemo(()=>candidates.filter(c=>!developerMode||matchesProgress(civilizationProgress(c.id),progressFilter)),[candidates,developerMode,progressFilter]);
+  const gridRef=useRef<HTMLDivElement>(null);
+  const [capacity,setCapacity]=useState({columns:5,rows:3});
+  const [page,setPage]=useState(0);
+  useEffect(()=>{
+    if(!rosterOnly||!gridRef.current)return;
+    const observer=new ResizeObserver(([entry])=>{
+      const columns=Math.max(1,Math.floor((entry.contentRect.width+6)/86));
+      const rows=Math.max(1,Math.floor((entry.contentRect.height+6)/86));
+      setCapacity(old=>old.columns===columns&&old.rows===rows?old:{columns,rows});
+    });
+    observer.observe(gridRef.current);
+    return()=>observer.disconnect();
+  },[rosterOnly]);
+  const pageSize=capacity.columns*capacity.rows;
+  const pageCount=Math.max(1,Math.ceil(visible.length/pageSize));
+  const currentPage=Math.min(page,pageCount-1);
+  useEffect(()=>setPage(0),[query,region,progressFilter,pageSize]);
+  const pageItems=rosterOnly?visible.slice(currentPage*pageSize,(currentPage+1)*pageSize):visible;
   return <div className={rosterOnly?"civ-roster-only":"civ-pick-layout duel-pick-layout"}>
     {!rosterOnly&&<DraftCivilizationCard side="w" {...{color,choice,picks,settings}}/>}
     <div className="civ-pick-roster">
@@ -36,13 +54,14 @@ export default function CivilizationPicker({choice,color,disabled,onChoose,picks
       <div className="civ-pick-dev-tools"><DeveloperModeToggle/></div>
       <div className="civ-pick-search"><Search size={18} aria-hidden="true"/><input aria-label={text('문명 이름 검색','Search civilizations')} placeholder={text('문명 이름 검색','Search civilizations')} value={query} onChange={e=>setQuery(e.target.value)}/>{query&&<button onClick={()=>setQuery('')} aria-label={text('검색 지우기','Clear search')}>×</button>}<span aria-live="polite">{visible.length} / {draftCivilizationIds.length}</span></div>
       {developerMode&&<ProgressFilters compact value={progressFilter} onChange={setProgressFilter} ids={candidates.map(c=>c.id)}/>}
-      <div className="civ-pick-grid" role="group" aria-label={text('문명 목록','Civilizations')}>
-        {visible.map(c=><button key={c.id} className={`civ-pick-tile theme-${civilizationAppearance[c.id]}`} aria-label={`${t(c.name)} ${text('선택','select')}`} aria-pressed={choice===c.id} disabled={disabled} onClick={()=>onChoose(c.id)}>
+      <div ref={gridRef} style={rosterOnly?{gridTemplateColumns:`repeat(${capacity.columns},minmax(0,1fr))`,gridTemplateRows:`repeat(${capacity.rows},minmax(0,1fr))`}:undefined} className="civ-pick-grid" role="group" aria-label={text('문명 목록','Civilizations')}>
+        {pageItems.map(c=><button key={c.id} className={`civ-pick-tile theme-${civilizationAppearance[c.id]}`} aria-label={`${t(c.name)} ${text('선택','select')}`} aria-pressed={choice===c.id} disabled={disabled} onClick={()=>onChoose(c.id)}>
           <span className="civ-pick-emblem">{hasCivilizationIcon(c.id)?<CivilizationIcon civilization={c.id} color={color} size={58}/>:<span className="civ-pick-initial">{t(c.name).slice(0,1)}</span>}</span>
           <strong>{t(c.name)}</strong>{developerMode&&<small className={`civ-pick-status ${civilizationReadiness(c.id)}`}>{t(readinessLabels[civilizationReadiness(c.id)])}</small>}{choice===c.id&&<Check className="civ-pick-check" size={15}/>}
         </button>)}
         {!visible.length&&<p className="civ-pick-empty">{text('조건에 맞는 문명이 없어요. 검색어나 필터를 바꿔보세요.','No civilizations found. Change your search or filters.')}</p>}
       </div>
+      {rosterOnly&&<nav className="civ-pick-pages" aria-label={text('문명 목록 페이지','Civilization pages')}><button disabled={currentPage===0} onClick={()=>setPage(currentPage-1)} aria-label={text('이전 문명 페이지','Previous civilizations')}>‹</button><span aria-live="polite">{currentPage+1} / {pageCount}</span><button disabled={currentPage===pageCount-1} onClick={()=>setPage(currentPage+1)} aria-label={text('다음 문명 페이지','Next civilizations')}>›</button></nav>}
     </div>
     {!rosterOnly&&<DraftCivilizationCard side="b" {...{color,choice,picks,settings}}/>}
   </div>;
