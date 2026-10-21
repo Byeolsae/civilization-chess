@@ -36,7 +36,7 @@ export default function CivilizationPicker({choice,color,disabled,onChoose,picks
     if(!rosterOnly||!gridRef.current)return;
     const observer=new ResizeObserver(([entry])=>{
       const columns=Math.max(1,Math.floor((entry.contentRect.width+6)/86));
-      const rows=Math.max(1,Math.floor((entry.contentRect.height+6)/86));
+      const rows=Math.max(1,Math.floor((entry.contentRect.height+6)/106));
       setCapacity(old=>old.columns===columns&&old.rows===rows?old:{columns,rows});
     });
     observer.observe(gridRef.current);

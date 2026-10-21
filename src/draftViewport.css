@@ -22,17 +22,17 @@
 .home-draft-stage .civ-pick-dev-tools{flex:none}
 .home-draft-stage .theater-center .civ-pick-grid{overflow:hidden;align-content:stretch;gap:6px;padding:2px}
 .home-draft-stage .civ-pick-tile{min-height:0;padding:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
-.home-draft-stage .civ-pick-emblem{width:40px;height:40px;min-height:0;margin:0}
-.home-draft-stage .civ-pick-emblem>svg{width:100%;height:100%}
-.home-draft-stage .civ-pick-tile strong{font-size:11px;line-height:1.2}
+.home-draft-stage .civ-pick-emblem{width:40px;height:40px;min-height:40px;flex:0 0 40px;margin:0}
+.home-draft-stage .civ-pick-emblem>.civilization-icon{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain}
+.home-draft-stage .civ-pick-tile strong{flex:none;min-width:0;max-width:100%;font-size:11px;line-height:1.3;overflow-wrap:anywhere}
 .civ-pick-pages{flex:none;display:flex;justify-content:center;align-items:center;gap:16px;height:36px}
 .civ-pick-pages button{width:44px;height:36px;background:#1b2a36;border:1px solid #d2bc8055;color:#ffe6ad;border-radius:4px;font-size:24px}
 .civ-pick-pages button:disabled{opacity:.3}
 .civ-pick-pages span{font-size:12px;color:#d4c7ac}
 .home-draft-stage .draft-theater .duel-card-identity{min-height:0;margin:8px 0 0;display:flex;flex:1;flex-direction:column;justify-content:center;align-items:center;gap:6px}
-.home-draft-stage .draft-theater .duel-card-identity>.civ-pick-hero{min-height:0;flex:0 1 120px;height:120px;width:100%}
-.home-draft-stage .duel-card-identity>.civ-pick-hero .civilization-icon{max-width:100%;max-height:100%}
-.home-draft-stage .draft-theater .duel-card-identity h2{font-size:clamp(18px,2vw,30px);margin:0}
+.home-draft-stage .draft-theater .duel-card-identity>.civ-pick-hero{min-height:0;flex:0 0 auto;height:min(120px,22cqh);width:100%}
+.home-draft-stage .duel-card-identity>.civ-pick-hero>.civilization-icon,.home-draft-stage .duel-card-identity>.civ-pick-hero>svg{display:block;width:100%;height:100%;max-width:128px;max-height:100%;object-fit:contain;flex-shrink:1}
+.home-draft-stage .draft-theater .duel-card-identity h2{flex:none;min-width:0;max-width:100%;overflow-wrap:anywhere;line-height:1.25;font-size:clamp(18px,2vw,30px);margin:0}
 .home-draft-stage .draft-theater .duel-card-identity>p{flex:0 1 auto;height:auto;max-height:12em;padding:4px;margin:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;font-size:12px;line-height:1.7}
 .home-draft-stage .civ-card-skill-icons{height:auto;flex:none;margin:10px 0;width:100%}
 .home-draft-stage .civ-pick-pieces{margin:0}
@@ -62,7 +62,7 @@
  .home-draft-stage .duel-card-owner{font-size:10px}
  .home-draft-stage .draft-theater .duel-card-identity{margin:0;flex-direction:row;justify-content:flex-start;gap:8px}
  .home-draft-stage .draft-theater .duel-card-identity>.civ-pick-hero{width:32px;height:32px;flex:0 0 32px}
- .home-draft-stage .draft-theater .duel-card-identity h2{font-size:15px}
+ .home-draft-stage .draft-theater .duel-card-identity h2{flex:1;min-width:0;max-width:calc(100% - 40px);font-size:15px}
  .home-draft-stage .draft-theater .duel-card-identity>p,.home-draft-stage .duel-card-identity>small,.home-draft-stage .civ-pick-pieces,.home-draft-stage .civ-card-skill-icons{display:none}
  .home-draft-stage .theater-center>.passive-pick-center{grid-template-rows:68px minmax(0,1fr)}
  .home-draft-stage .passive-option-symbol{width:30px;height:30px}
@@ -82,3 +82,8 @@
  .home-draft-stage .demo-timeline{flex-wrap:wrap;gap:2px}
  .home-draft-stage .demo-timeline span{display:none}
 }
+
+/* The symbol must fit its grid track, including IMG emblems and piece SVGs. */
+.home-draft-stage .theater-center .passive-option-symbol>*{width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain}
+.home-draft-stage .passive-symbol-option>strong{grid-column:2;grid-row:1;min-width:0;overflow-wrap:anywhere;align-self:center}
+.home-draft-stage .duel-card-identity>small{flex:none;max-width:100%;overflow-wrap:anywhere;text-align:center}
