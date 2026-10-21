@@ -26,7 +26,8 @@
 
 .ground-fx-layer{position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:hidden;pointer-events:none}@media(prefers-reduced-motion:reduce){.ground-fx-layer *{animation:none!important}}
 
-.square.minotaur-airborne{overflow:visible;z-index:5;container-type:normal}
+/* Keep the same square-sized cqw basis throughout takeoff and landing. */
+.square.minotaur-airborne{overflow:visible;z-index:5;container-type:inline-size}
 
 .hades-scene{animation:hades-life 2.6s both}.hades-dim{fill:#080512;opacity:.5}.hades-gate{animation:hades-gate .5s cubic-bezier(.2,.8,.3,1) both}.hades-void{fill:#090613;stroke:#8f63c0;stroke-width:6;filter:drop-shadow(0 0 18px #9c66e6)}.hades-arch{fill:none;stroke:#806e9e;stroke-width:10;stroke-linejoin:bevel}.hades-runes{stroke:#cbb5ff;stroke-width:3;filter:drop-shadow(0 0 6px #a975fc)}.hades-crown{fill:#45345b;stroke:#ddbb7c;stroke-width:3}.hades-soul{animation:hades-soul 1.2s ease-in both;filter:drop-shadow(0 0 9px #bd8dff)}.hades-ember{fill:#c9a6ff;animation:hades-ember 1.3s ease-out both}.hades-seal{fill:#241333;stroke:#dfc29b;stroke-width:4;animation:hades-seal .75s 1.65s both;filter:drop-shadow(0 0 10px #d6a8ff)}.hades-seal path{fill:none;stroke-linejoin:round}
 @keyframes hades-life{0%{opacity:0}8%,85%{opacity:1}100%{opacity:0}}@keyframes hades-gate{from{transform:scale(.65,.2);opacity:0}to{transform:scale(1);opacity:1}}@keyframes hades-soul{0%{opacity:0;transform:translate(var(--soul-x),var(--soul-y)) scale(1)}15%,30%{opacity:1;transform:translate(var(--soul-x),var(--soul-y)) scale(1)}75%{opacity:.9}100%{opacity:0;transform:translate(0,-48px) scale(.08)}}@keyframes hades-ember{0%{opacity:0;transform:translate(var(--ember-x),100px)}25%{opacity:.8}100%{opacity:0;transform:translate(var(--ember-x),-130px) scale(.2)}}@keyframes hades-seal{0%{opacity:0;transform:scale(1.8)}25%,70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.9)}}
