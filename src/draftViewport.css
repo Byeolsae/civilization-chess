@@ -87,3 +87,26 @@
 .home-draft-stage .theater-center .passive-option-symbol>*{width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain}
 .home-draft-stage .passive-symbol-option>strong{grid-column:2;grid-row:1;min-width:0;overflow-wrap:anywhere;align-self:center}
 .home-draft-stage .duel-card-identity>small{flex:none;max-width:100%;overflow-wrap:anywhere;text-align:center}
+
+/* One persistent navigation row; the stage gets all remaining height. */
+.home-draft-stage .draft-pick-header{display:flex;align-items:center;gap:clamp(8px,1.2vw,20px);flex:none;min-height:44px;min-width:0;padding:0 0 4px;border-bottom:1px solid #d8c39622}
+.draft-pick-header button{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:none;min-height:44px;padding:4px 6px;background:none;border:0;color:#e7d5b3;font-size:12px;white-space:nowrap}
+.draft-pick-header button:disabled{opacity:.4}
+.draft-pick-header button:focus-visible{outline:2px solid #e7d5b3;outline-offset:-2px}
+.draft-pick-mode{flex:none;color:#9caaa9;font-size:12px}
+.draft-pick-steps{display:flex;align-items:center;gap:8px;flex:none}
+.draft-pick-steps>span{display:inline-flex;align-items:center;gap:8px;color:#7e8d94;font-size:12px;white-space:nowrap}
+.draft-pick-steps>span.current{color:var(--draft-accent);font-weight:700}
+.draft-pick-steps svg{color:#52636d}
+.home-draft-stage .draft-pick-status{min-width:0;margin:0 0 0 auto;font-size:14px;font-weight:600;line-height:1.4;color:#f2e5c8;outline:none}
+.draft-pick-status>span{color:#b4c1c5;font-size:12px;font-weight:400}
+.draft-pick-mobile-step{display:none}
+@media(max-width:1100px){.draft-pick-mode{display:none}}
+@media(max-width:900px){
+ .draft-pick-steps{display:none}
+ .draft-pick-mobile-step{display:inline;font-size:inherit;color:#a4b4bc}
+ .home-draft-stage .draft-pick-status{margin-left:0;flex:1;font-size:12px}
+ .home-draft-stage .draft-pick-header{gap:6px}
+ .draft-pick-header .draft-pick-menu{max-width:72px;white-space:normal;font-size:10px}
+}
+@media(max-width:420px){.draft-pick-header .draft-navigation-back>span{display:none}.draft-pick-header .draft-navigation-back{width:36px}.draft-pick-status>span{font-size:11px}}

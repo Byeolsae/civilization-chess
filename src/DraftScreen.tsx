@@ -69,7 +69,6 @@ export default function Draft({ onStart, settings, onSettings, network, initialP
   const stageIndex = !step ? 4 : step.category === 'civilization' ? 0 : categories.findIndex(c => c.id === step.category) + 1;
   const backgroundCivilization = complete ? picks[1] as Civilization : step?.category==='civilization' ? civilizations.find(c=>c.id===choice)?.id ?? civilizations.find(c=>c.id===picks[picks.length-1])?.id ?? null : civilization;
   useEffect(()=>{onBackgroundChange?.(backgroundCivilization);},[backgroundCivilization,onBackgroundChange]);
-  const currentCivilization = civilizations.find(c => c.id === civilization);
 
   useEffect(() => {
     try { if (!network) localStorage.setItem(DRAFT_KEY, sourceKey); setSaveFailed(false); }
@@ -115,9 +114,13 @@ export default function Draft({ onStart, settings, onSettings, network, initialP
     </VersusScene>;
 
   return <section className={`draft-screen draft-selection-room draft-transition-${transition} ${step?.category==='civilization'?'is-civilization-picking':category?'is-passive-picking':''} ${civilization ? `theme-${civilizationAppearance[civilization]}` : 'theme-neutral'}`} aria-label={translateUi("대전 준비")}>
-    <div className="draft-mode-bar"><button className="draft-navigation-back" onClick={navigateBack} disabled={backDisabled} aria-label={translateUi(backLabel)}><ArrowLeft size={18}/>{translateUi('뒤로가기')}</button><span>{translateUi(network ? `온라인 PvP · 나 ${colorNames[network.color]}` : settings.mode === 'ai' ? `AI 대전 · ${difficultyNames[settings.difficulty]} · 나 ${colorNames[settings.humanColor]}` : '로컬 2인 대전')}</span>{previous&&<button onClick={onSettings}>{translateUi('플레이 메뉴로')}</button>}</div>
-    <nav className="draft-progress" aria-label={translateUi("선택 진행 상황")}>{translateUi(['문명', '패시브', '액티브', '기물 스킬', '대전 준비'].map((name, index) => <div key={name} aria-current={stageIndex === index ? 'step' : undefined} className={`${index === stageIndex ? 'current' : ''} ${index < stageIndex ? 'done' : ''}`}><span>{translateUi(index < stageIndex ? <Check size={12} /> : `0${index + 1}`)}</span><b>{translateUi(name)}</b>{translateUi(index < 4 && <ChevronRight size={14} />)}</div>))}</nav>
-    <div className="draft-intro" aria-live="polite"><span className="draft-eyebrow">{translateUi(currentCivilization ? `${currentCivilization.english} / ${category?.english}` : 'CHOOSE YOUR CIVILIZATION')}</span><h1 key={`title-${picks.length}`} ref={titleRef} tabIndex={-1}>{translateUi(colorNames[step.color])}, {translateUi(category ? `${category.name}${category.id === 'piece' ? '을' : '를'} 선택하세요` : '문명을 선택하세요')}</h1><p>{translateUi(onlineWaiting ? '상대의 선택 또는 서버 연결을 기다리고 있어요.' : aiTurn ? 'AI가 문명과 스킬을 고르고 있어요.' : category?.description ?? '당신의 문명이 전투의 시작을 결정합니다.')}</p></div>
+    <header className="draft-pick-header">
+      <button className="draft-navigation-back" onClick={navigateBack} disabled={backDisabled} aria-label={translateUi(backLabel)}><ArrowLeft size={18}/><span>{translateUi('뒤로가기')}</span></button>
+      <span className="draft-pick-mode" title={translateUi(network ? `온라인 PvP · 나 ${colorNames[network.color]}` : settings.mode === 'ai' ? `AI 대전 · ${difficultyNames[settings.difficulty]} · 나 ${colorNames[settings.humanColor]}` : '로컬 2인 대전')}>{translateUi(network?'온라인 PvP':settings.mode==='ai'?'AI 대전':'로컬 2인 대전')}</span>
+      <nav className="draft-pick-steps" aria-label={translateUi('선택 진행 상황')}>{['문명','패시브','액티브','기물 스킬'].map((name,index)=><span key={name} aria-current={stageIndex===index?'step':undefined} className={stageIndex===index?'current':''}>{translateUi(name)}{index<3&&<ChevronRight size={12}/>}</span>)}</nav>
+      <h1 className="draft-pick-status" key={`title-${picks.length}`} ref={titleRef} tabIndex={-1} aria-live="polite"><small className="draft-pick-mobile-step">{stageIndex+1}/4 · </small>{translateUi(colorNames[step.color])} · {translateUi(category?.name??'문명')} <span>{translateUi(onlineWaiting?'상대 선택 대기':aiTurn?'AI 선택 중':'선택')}</span></h1>
+      {previous&&<button className="draft-pick-menu" onClick={onSettings} aria-label={translateUi('플레이 메뉴로')}>{translateUi('플레이 메뉴로')}</button>}
+    </header>
     <div ref={theaterRef} className={`draft-theater ${category?'theater-skills':'theater-civilizations'}`}>
       <div className="theater-card theater-white"><DraftCivilizationCard side="w" color={step?.color??'w'} choice={category?null:choice} picks={picks} settings={settings} skillStage={category?.id??false}/></div>
       <div className="theater-center">
