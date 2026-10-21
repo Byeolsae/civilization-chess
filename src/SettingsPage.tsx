@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import {useDisplayPreferences} from './useDisplayPreferences';
 import { Volume2, Monitor, Languages, ChevronRight } from 'lucide-react';
 import type { MediaPreferences } from './civilizationMedia';
 import { useLocale } from './i18n';
@@ -10,7 +9,6 @@ export default function SettingsPage({preferences,onChange,cycling,onCycling,sce
   preferences:MediaPreferences;onChange:(value:MediaPreferences)=>void;
   cycling:boolean;onCycling:(value:boolean)=>void;sceneCount:number;saveError:boolean;
 }) {
-  const display=useDisplayPreferences();
   const locale=useLocale(), text=(ko:string,en:string)=>locale==='ko'?ko:en;
   const [category,setCategory]=useState<'audio'|'display'|'language'>('audio');
   const sections=[{id:'audio',name:text('오디오','Audio'),icon:Volume2},{id:'display',name:text('화면','Display'),icon:Monitor},{id:'language',name:text('언어','Language'),icon:Languages}] as const;
@@ -26,9 +24,7 @@ export default function SettingsPage({preferences,onChange,cycling,onCycling,sce
           <div className="settings-option"><div><label htmlFor="settings-volume">{text('음악 음량','Music volume')}</label><p>{text('모든 문명 BGM에 적용됩니다.','Applies to every civilization soundtrack.')}</p></div><div className="settings-volume"><input id="settings-volume" type="range" min="0" max="100" value={Math.round(preferences.volume*100)} onChange={e=>onChange({...preferences,volume:Number(e.target.value)/100})}/><output htmlFor="settings-volume">{Math.round(preferences.volume*100)}%</output></div></div>
         </>}
         {category==='display'&&<>
-          <div className="settings-option"><div><strong>{text('화면 표시 방식','Display mode')}</strong><p>{text('모든 기기에서 QHD 배치와 비율을 유지합니다. 화면에 맞게 전체 크기만 조절하고 남는 공간에는 여백을 둡니다.','Every device uses the same QHD layout and proportions. The entire canvas scales to fit, with margins for other aspect ratios.')}</p></div><strong>QHD · 2560×1440</strong></div>
-          <div className="settings-option"><div><label htmlFor="display-size">{text('전체 화면 배율','Canvas scale')}</label><p>{text('자동은 전체 화면을 최대한 크게 맞춥니다. 더 작은 배율도 배치와 비율을 그대로 유지합니다.','Auto fits the full canvas. Smaller scales preserve the same layout and proportions.')}</p></div><select id="display-size" className="settings-display-select" value={display.preferences.size} onChange={e=>display.save({...display.preferences,size:Number(e.target.value)})}><option value={0}>{text('자동','Auto')}</option>{[80,90,100].map(size=><option key={size} value={size}>{size}%</option>)}</select></div>
-          {display.error&&<p role="alert">{text('화면 설정을 저장하지 못했어요.','Unable to save display preferences.')}</p>}
+          <div className="settings-option"><div><strong>{text('화면 표시 방식','Display mode')}</strong><p>{text('HD·FHD·QHD 등 모든 해상도에서 UI의 상대 크기와 배치를 유지합니다. 화면 비율이 다르면 여백이 생깁니다.','UI proportions and layout stay consistent across HD, FHD, QHD and other resolutions. Different aspect ratios use margins.')}</p></div><strong>{text('자동 · 비율 유지','Auto · preserve proportions')}</strong></div>
 
           <div className="settings-option"><div><h3>{text('대전 배경화면','Match backgrounds')}</h3><p>{text('상대 문명에 맞는 배경을 표시합니다.','Show the opposing civilization’s scenery.')}</p></div>{toggle(text('대전 배경화면','Match backgrounds'),preferences.background&&sceneCount>0,value=>onChange({...preferences,background:value}),sceneCount===0)}</div>
           <div className="settings-option"><div><h3>{text('메뉴 배경 자동 전환','Rotate menu backgrounds')}</h3><p>{text('메뉴에서 문명의 풍경을 차례로 보여줍니다.','Cycle through civilization scenery in menus.')}</p></div>{toggle(text('메뉴 배경 자동 전환','Rotate menu backgrounds'),cycling&&sceneCount>1,onCycling,sceneCount<2)}</div>
