@@ -1,8 +1,8 @@
 /* The draft owns the available viewport. No fixed minimum stage height. */
 .home-screen.is-drafting{height:100dvh;min-height:0;display:flex;flex-direction:column;overflow:hidden}
 .home-screen.is-drafting .home-header{flex:0 0 auto;padding:8px 3vw;min-height:0}
-.home-screen.is-drafting .home-content.home-draft-stage{flex:1;min-height:0;width:94%;max-width:2304px;margin:0 auto;padding:0 0 max(8px,env(safe-area-inset-bottom));display:flex;flex-direction:column}
-.home-draft-stage .draft-screen.draft-selection-room{flex:1;min-height:0;height:100%;padding:0;display:flex;flex-direction:column;gap:8px}
+.home-screen.is-drafting .home-content.home-draft-stage{flex:1;min-height:0;width:88%;max-width:2048px;max-height:1100px;margin:auto;padding:clamp(12px,2dvh,28px) 0 max(clamp(16px,3dvh,44px),env(safe-area-inset-bottom));display:flex;flex-direction:column}
+.home-draft-stage .draft-screen.draft-selection-room{flex:1;min-height:0;height:100%;padding:0;display:flex;flex-direction:column;gap:clamp(12px,1.6dvh,22px)}
 .home-draft-stage .draft-mode-bar{flex:none;min-height:36px;gap:8px}
 .home-draft-stage .draft-mode-bar button{min-height:36px;padding:4px 0}
 .home-draft-stage .draft-progress{flex:none;margin:0;gap:12px}
@@ -11,11 +11,11 @@
 .home-draft-stage .draft-intro p{margin:0!important;font-size:12px}
 .home-draft-stage .draft-theater{flex:1;min-height:0;height:auto;margin:0;container-type:size}
 .home-draft-stage .draft-theater .theater-card,.home-draft-stage .draft-theater .theater-center{height:100%;top:0}
-.home-draft-stage .theater-center>.passive-pick-center{height:100%;min-height:0;grid-template-rows:80px minmax(0,1fr);gap:8px}
+.home-draft-stage .theater-center>.passive-pick-center{height:100%;min-height:0;grid-template-rows:80px minmax(0,1fr);gap:12px}
 .home-draft-stage .draft-theater .theater-card>.duel-civ-card{overflow:hidden;padding:12px}
 .home-draft-stage .draft-confirm-controls.draft-controls{position:relative;bottom:auto;flex:none;margin:0;padding:0;min-height:44px}
 .home-draft-stage .draft-confirm-controls>.primary-button{min-height:44px;padding:10px 24px}
-.home-draft-stage .civ-pick-roster{padding:8px;gap:6px;overflow:hidden}
+.home-draft-stage .civ-pick-roster{padding:12px;gap:10px;overflow:hidden}
 .home-draft-stage .civ-continent-filter{flex:none;flex-wrap:wrap;margin:0;gap:2px}
 .home-draft-stage .civ-continent-filter button{min-height:28px;padding:4px 7px;font-size:11px}
 .home-draft-stage .civ-pick-search{flex:none;margin:0;min-height:34px;padding:4px 8px}
@@ -110,3 +110,18 @@
  .draft-pick-header .draft-pick-menu{max-width:72px;white-space:normal;font-size:10px}
 }
 @media(max-width:420px){.draft-pick-header .draft-navigation-back>span{display:none}.draft-pick-header .draft-navigation-back{width:36px}.draft-pick-status>span{font-size:11px}}
+
+/* Preserve breathing room without forcing small screens to scroll. */
+@media(min-width:761px){
+ .home-draft-stage .draft-theater .theater-card{width:21%}
+}
+@media(max-width:760px){
+ .home-screen.is-drafting .home-content.home-draft-stage{width:94%;max-height:none;padding:8px 0 max(12px,env(safe-area-inset-bottom))}
+ .home-draft-stage .draft-screen.draft-selection-room{gap:10px}
+ .home-draft-stage .civ-pick-roster{padding:8px;gap:6px}
+}
+@media(max-height:650px){
+ .home-screen.is-drafting .home-content.home-draft-stage{width:94%;padding:6px 0 max(8px,env(safe-area-inset-bottom))}
+ .home-draft-stage .draft-screen.draft-selection-room{gap:6px}
+ .home-draft-stage .theater-center>.passive-pick-center{gap:6px}
+}
