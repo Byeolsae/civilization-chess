@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {displayGeometry} from '../src/displayPreferences';
+import {displayGeometry,parseResolution,resolutions} from '../src/displayPreferences';
 import {squareAtPoint} from '../src/boardPointer';
 const viewports=[[390,844],[844,390],[1024,768],[1280,720],[1366,768],[1920,1080],[2560,1440],[3440,1440],[3840,2160]];
 test('every device fits the full layout without scrolling',()=>{
@@ -29,4 +29,18 @@ test('letterboxed coordinate mapping preserves every square and drag endpoint',(
    assert.equal(squareAtPoint(clientX,clientY,board,flipped),`${'abcdefgh'[flipped?7-col:col]}${flipped?row+1:8-row}`);
   }
  }
+});
+
+test('manual presets cap display size while preserving fit and proportions',()=>{
+ for(const [resolution,width] of Object.entries(resolutions)){
+  const preset=resolution as keyof typeof resolutions;
+  assert.equal(displayGeometry(3840,2160,preset).scale,width/2560);
+  for(const [w,h] of viewports){
+   const g=displayGeometry(w,h,preset);
+   assert.ok(g.width*g.scale<=w+.001);assert.ok(g.height*g.scale<=h+.001);
+   assert.equal(g.width/g.height,16/9);
+  }
+ }
+ assert.equal(parseResolution('fhd'),'fhd');
+ for(const value of [null,'auto','bogus','toString','__proto__'])assert.equal(parseResolution(value),'auto');
 });
