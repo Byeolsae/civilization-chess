@@ -1,3 +1,7 @@
+## 다른 컴퓨터 작업 보존 — 2026-10-19
+
+작업 시작 및 푸시 전에 원격 최신 이력을 fetch하고 로컬과 비교한다. 원격의 다른 컴퓨터 작업을 먼저 보존·통합한 뒤 요청된 변경만 추가한다. 전체 파일 덮어쓰기, 강제 푸시, 무관한 변경 일괄 스테이징을 하지 않는다.
+
 # Visual direction
 
 Latest skill-art direction, 2026-10-19: read SKILL_ART_STANDARD.md before creating skill imagery. The user supplied a monochrome filled-path SVG as the style reference: high-contrast vector masses and negative space, with people, objects or actions allowed. This supersedes symbols-only and no-portraits restrictions for new skill art, but does not restore detailed engraved portraits or authorize replacing existing assets automatically. Background rules remain separate.
