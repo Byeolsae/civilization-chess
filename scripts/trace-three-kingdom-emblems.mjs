@@ -34,7 +34,7 @@ for(const [id,name] of Object.entries(names)){
  let area=0;for(let i=1;i<pts.length;i++)area+=pts[i-1][0]*pts[i][1]-pts[i][0]*pts[i-1][1];
  if(Math.abs(area)>4)loops.push(simplify(pts));
  }
- const scale=48/Math.max(maxX-minX,maxY-minY),ox=32-(minX+maxX)/2*scale,oy=32-(minY+maxY)/2*scale;
+ const scale=38.4/Math.max(maxX-minX,maxY-minY),ox=32-(minX+maxX)/2*scale,oy=32-(minY+maxY)/2*scale;
  const d=loops.map(points=>points.map(([x,y],i)=>`${i?'L':'M'}${(x*scale+ox).toFixed(2)} ${(y*scale+oy).toFixed(2)}`).join('')+'Z').join('');
  const hex=n=>n.toString(16).padStart(2,'0');
  const background='#'+[data[0],data[1],data[2]].map(hex).join('');
